@@ -1,0 +1,9 @@
+[ClassVersion("1.0.0.0"),FriendlyName("ReplaceString")]
+class MSFT_ReplaceString : OMI_BaseResource
+{
+  [Key, Description("The path to the text file to replace the string in.")] String Path;
+  [Key, Description("The RegEx string to use to search the text file.")] String Search;
+  [Write, Description("Specifies the value type to use as the replacement string."),ValueMap{"Text", "Password"},Values{"Text", "Password"}] string Type;
+  [Write, Description("The text to replace the text identifed by the RegEx. Only used when Type is set to 'Text'.")] String Text;
+  [write, Description("The password to replace the text identified by the RegEx. Only used when Type is set to 'Password'."),EmbeddedInstance("MSFT_Credential")] string Password;
+};
