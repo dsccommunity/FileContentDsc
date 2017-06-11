@@ -19,10 +19,10 @@ Author = 'Microsoft Corporation'
 CompanyName = 'MicrosoftCorporation'
 
 # Copyright statement for this module
-Copyright = '(c) 2016 Microsoft Corporation. All rights reserved.'
+Copyright = '(c) 2017 Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'This module contains the DSC resources for manipulating text files.'
+Description = 'This module contains the DSC resources for manipulating the content of text files.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '4.0'

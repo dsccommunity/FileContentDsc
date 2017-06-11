@@ -86,4 +86,5 @@ try
 finally
 {
     Exit-DscResourceTestEnvironment -TestEnvironment $script:testEnvironment
+    Remove-Module -Name CommonTestHelper
 }

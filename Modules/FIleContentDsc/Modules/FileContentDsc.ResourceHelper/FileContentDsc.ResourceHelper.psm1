@@ -1,14 +1,38 @@
 ﻿<#
     .SYNOPSIS
+    Tests if the specified command can be found.
+
+    .PARAMETER name
+    The name of the command to test.
+#>
+function Test-Command
+{
+    param
+    (
+        [String] $Name
+    )
+
+    return ($null -ne (Get-Command -Name $Name -ErrorAction Continue 2> $null))
+}
+
+<#
+    .SYNOPSIS
     Tests if the current machine is a Nano server.
 #>
 function Test-IsNanoServer
 {
-    [OutputType([Boolean])]
-    [CmdletBinding()]
-    param ()
+    if(Test-Command -Name Get-ComputerInfo)
+    {
+        $computerInfo = Get-ComputerInfo
 
-    return $PSVersionTable.PSEdition -ieq 'Core'
+        if("Server" -eq $computerInfo.OsProductType `
+            -and "NanoServer" -eq $computerInfo.OsServerLevel)
+        {
+            return $true
+        }
+    }
+
+    return $false
 }
 
 <#
@@ -118,16 +142,20 @@ function Get-LocalizedData
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $ResourceName
+        $ResourceName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ResourcePath
     )
 
-    $resourceDirectory = (Join-Path -Path $PSScriptRoot -ChildPath $ResourceName)
-    $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath $PSUICulture
+    $localizedStringFileLocation = Join-Path -Path $ResourcePath -ChildPath $PSUICulture
 
     if (-not (Test-Path -Path $localizedStringFileLocation))
     {
         # Fallback to en-US
-        $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath 'en-US'
+        $localizedStringFileLocation = Join-Path -Path $ResourcePath -ChildPath 'en-US'
     }
 
     Import-LocalizedData `
@@ -138,5 +166,8 @@ function Get-LocalizedData
     return $localizedData
 }
 
-Export-ModuleMember -Function @( 'Test-IsNanoServer', 'New-InvalidArgumentException',
-    'New-InvalidOperationException', 'Get-LocalizedData' )
+Export-ModuleMember -Function `
+    Test-IsNanoServer, `
+    New-InvalidArgumentException, `
+    New-InvalidOperationException, `
+    Get-LocalizedData
