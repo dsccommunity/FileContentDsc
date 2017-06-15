@@ -141,15 +141,15 @@ function Set-TargetResource
 
     if ($Type -eq 'Password')
     {
-        Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
-            $Path,$Text)
+        Write-Verbose -Message ($localizedData.StringReplacePasswordMessage -f `
+            $Path)
 
         $Text = $Password.Password
     }
     else
     {
-        Write-Verbose -Message ($localizedData.StringReplacePasswordMessage -f `
-            $Path)
+        Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            $Path,$Text)
     } # if
 
     $fileContent = $fileContent -Replace $Search,$Text
