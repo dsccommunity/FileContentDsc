@@ -5,11 +5,22 @@ param ()
 
 Set-StrictMode -Version 'Latest'
 
-Import-Module `
-    -Name (Join-Path `
-        -Path (Split-Path -Path $PSScriptRoot -Parent) `
-        -ChildPath 'CommonResourceHelper.psm1')
-$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_ReplaceText'
+$modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
+
+# Import the Storage Common Modules
+Import-Module -Name (Join-Path -Path $modulePath `
+                               -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
+                                                     -ChildPath 'FileContentDsc.Common.psm1'))
+
+# Import the Storage Resource Helper Module
+Import-Module -Name (Join-Path -Path $modulePath `
+                               -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
+                                                     -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
+
+# Import Localization Strings
+$localizedData = Get-LocalizedData `
+    -ResourceName 'MSFT_ReplaceText' `
+    -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
 
 <#
     .SYNOPSIS
@@ -38,26 +49,29 @@ function Get-TargetResource
         $Search
     )
 
-    Assert-ParametersValid
+    Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path
+    $fileContent = Get-Content -Path $Path -Raw
 
-    Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
+    Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
         $Path,$Search)
 
     $text = ''
 
-    if ($fileContent -match $Search)
-    {
-        $text = $Matches.Values
+    # Search the file content for any matches
+    $results = [regex]::Matches($fileContent,$Search)
 
-        Write-Verbose -Message ($script:localizedData.StringMatchFoundMessage -f `
-            $Path,$Search,$text)
+    if ($results.Count -eq 0) {
+        # No matches found - already in state
+        Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+            $Path,$Search)
     }
     else
     {
-        Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
-            $Path,$Search)
+        $text = ($results.Value -join ',')
+
+        Write-Verbose -Message ($localizedData.StringMatchFoundMessage -f `
+            $Path,$Search,$text)
     } # if
 
     return @{
@@ -106,41 +120,39 @@ function Set-TargetResource
         [String]
         $Search,
 
+        [Parameter()]
         [ValidateSet('Text', 'Password')]
         [String]
         $Type = 'Text',
 
+        [Parameter()]
         [String]
         $Text,
 
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
         $Password
     )
 
-    Assert-ParametersValid
+    Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path
+    $fileContent = Get-Content -Path $Path -Raw
 
-    switch ($Type)
+    if ($Type -eq 'Password')
     {
-        'Text'
-        {
-            Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
-                $Path,$Text)
+        Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            $Path,$Text)
 
-            $fileContent = $fileContent -Replace $Search,$Text
-            break
-        } # 'Text'
-        'Password'
-        {
-            Write-Verbose -Message ($script:localizedData.StringReplacePasswordMessage -f `
-                $Path)
+        $Text = $Password.Password
+    }
+    else
+    {
+        Write-Verbose -Message ($localizedData.StringReplacePasswordMessage -f `
+            $Path)
+    } # if
 
-            $fileContent = $fileContent -Replace $Search,$Password.Password
-            break
-        } # 'Password'
-    } # switch
+    $fileContent = $fileContent -Replace $Search,$Text
 
     Set-Content `
         -Path $Path `
@@ -185,62 +197,67 @@ function Test-TargetResource
         [String]
         $Search,
 
+        [Parameter()]
         [ValidateSet('Text', 'Password')]
         [String]
         $Type = 'Text',
 
+        [Parameter()]
         [String]
         $Text,
 
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
         $Password
     )
 
-    Assert-ParametersValid
+    Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path
+    $fileContent = Get-Content -Path $Path -Raw
 
-    Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
+    Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
         $Path,$Search)
 
-    if (-not ($fileContent -match $Search)) {
-        Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
+    # Search the file content for any matches
+    $results = [regex]::Matches($fileContent,$Search)
+
+    if ($results.Count -eq 0) {
+        # No matches found - already in state
+        Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
             $Path,$Search)
 
-        return $false
+        return $true
+    }
+
+    # Flag to signal whether settings are correct
+    [Boolean] $desiredConfigurationMatch = $true
+
+    if ($Type -eq 'Password')
+    {
+        $Text = $Password.Password
     } # if
 
-    switch ($Type)
+    foreach ($result in $results)
     {
-        'Text'
+        if ($result.Value -ne $Text)
         {
-            if ($Matches.Values -eq $Text)
-            {
-                Write-Verbose -Message ($script:localizedData.StringAlreadyMatchesTextMessage -f `
-                    $Path,$Search,$Text)
+            $desiredConfigurationMatch = $false
+        } # if
+    } # foreach
 
-                return $false
-            } # if
-            break
-        } # 'Text'
-        'Password'
-        {
-            if ($Matches.Values -eq $Password.Password)
-            {
-                Write-Verbose -Message ($script:localizedData.StringAlreadyMatchesPasswordMessage -f `
-                    $Path,$Search)
+    if ($desiredConfigurationMatch)
+    {
+        Write-Verbose -Message ($localizedData.StringNoReplacementMessage -f `
+            $Path,$Search)
+    }
+    else
+    {
+        Write-Verbose -Message ($localizedData.StringReplacementRequiredMessage -f `
+            $Path,$Search)
+    } # if
 
-                return $false
-            } # if
-            break
-        } # 'Password'
-    } # switch
-
-    Write-Verbose -Message ($script:localizedData.StringMatchFoundMessage -f `
-        $Path,$Search,$Matches.Values)
-
-    return $true
+    return $desiredConfigurationMatch
 }
 
 <#
@@ -281,13 +298,16 @@ function Assert-ParametersValid
         [String]
         $Search,
 
+        [Parameter()]
         [ValidateSet('Text', 'Password')]
         [String]
         $Type = 'Text',
 
+        [Parameter()]
         [String]
         $Text,
 
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
         $Password
@@ -297,9 +317,9 @@ function Assert-ParametersValid
     if (-not (Test-Path -Path $Path))
     {
         New-InvalidArgumentException `
-            -Message ($script:localizedData.FileNotFoundError -f $Path) `
+            -Message ($localizedData.FileNotFoundError -f $Path) `
             -ArgumentName 'Path'
     } # if
 }
 
-Export-ModuleMember -Function '*-TargetResource'
+Export-ModuleMember -Function *-TargetResource

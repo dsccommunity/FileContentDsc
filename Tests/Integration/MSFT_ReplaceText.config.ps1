@@ -1,4 +1,6 @@
-﻿param
+﻿
+# Integration Test Config Template Version 1.0.0
+param
 (
     [Parameter(Mandatory = $true)]
     [String]
@@ -33,14 +35,16 @@ Configuration $ConfigurationName
         $Password
     )
 
-    Import-DscResource -ModuleName 'FileContentDsc'
+    Import-DscResource -ModuleName FileContentDsc
 
-    ReplaceText ReplaceTextIntegrationTest
-    {
-        Path     = $Path
-        Search   = $Search
-        Type     = $Type
-        Text     = $Text
-        Password = $Password
+    Node localhost {
+        ReplaceText ReplaceTextIntegrationTest
+        {
+            Path     = $Path
+            Search   = $Search
+            Type     = $Type
+            Text     = $Text
+            Password = $Password
+        }
     }
 }

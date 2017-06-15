@@ -10,7 +10,7 @@ ModuleVersion = '1.0.0.0'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '4ac4593d-3f4d-44f0-95eb-4ea01fa7b2a5'
+GUID = '6c9fe2f4-8af9-4bad-bd95-5909188c0f0a'
 
 # Author of this module
 Author = 'Microsoft Corporation'
@@ -37,7 +37,7 @@ PowerShellVersion = '4.0'
 # DotNetFrameworkVersion = ''
 
 # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-# CLRVersion = ''
+CLRVersion = '4.0'
 
 # Processor architecture (None, X86, Amd64) required by this module
 # ProcessorArchitecture = ''
@@ -61,19 +61,19 @@ PowerShellVersion = '4.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = '*'
+FunctionsToExport = @()
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = '*'
+AliasesToExport = @()
 
 # DSC resources to export from this module
-# DscResourcesToExport = @()
+DscResourcesToExport = 'ReplaceText'
 
 # List of all modules packaged with this module
 # ModuleList = @()
@@ -112,4 +112,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-

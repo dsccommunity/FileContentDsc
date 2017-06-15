@@ -1,4 +1,4 @@
-[ClassVersion("1.0.0.0"),FriendlyName("ReplaceText")]
+[ClassVersion("1.0.0.0"), FriendlyName("ReplaceText")]
 class MSFT_ReplaceText : OMI_BaseResource
 {
   [Key, Description("The path to the text file to replace the string in.")] String Path;
