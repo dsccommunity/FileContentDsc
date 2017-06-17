@@ -16,13 +16,15 @@ function Invoke-TestHarness
 
     $testCoverageFiles = @()
     Get-ChildItem -Path "$repoDir\modules\FileContentDsc\DSCResources\**\*.psm1" -Recurse | ForEach-Object {
-        if ($_.FullName -notlike '*\DSCResource.Tests\*') {
+        if ($_.FullName -notlike '*\DSCResource.Tests\*')
+        {
             $testCoverageFiles += $_.FullName
         }
     }
 
     $testResultSettings = @{ }
-    if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false) {
+    if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false)
+    {
         $testResultSettings.Add('OutputFormat', 'NUnitXml' )
         $testResultSettings.Add('OutputFile', $TestResultsFile)
     }

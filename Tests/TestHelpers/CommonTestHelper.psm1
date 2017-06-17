@@ -27,7 +27,7 @@ function Get-InvalidArgumentRecord
     $argumentException = New-Object -TypeName 'ArgumentException' -ArgumentList @( $Message,
         $ArgumentName )
     $newObjectParams = @{
-        TypeName = 'System.Management.Automation.ErrorRecord'
+        TypeName     = 'System.Management.Automation.ErrorRecord'
         ArgumentList = @( $argumentException, $ArgumentName, 'InvalidArgument', $null )
     }
     return New-Object @newObjectParams
@@ -63,18 +63,18 @@ function Get-InvalidOperationRecord
     }
     elseif ($null -eq $ErrorRecord)
     {
-        $invalidOperationException =
-            New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message )
+        $invalidOperationException = 
+        New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message )
     }
     else
     {
-        $invalidOperationException =
-            New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message,
-                $ErrorRecord.Exception )
+        $invalidOperationException = 
+        New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message,
+            $ErrorRecord.Exception )
     }
 
     $newObjectParams = @{
-        TypeName = 'System.Management.Automation.ErrorRecord'
+        TypeName     = 'System.Management.Automation.ErrorRecord'
         ArgumentList = @( $invalidOperationException.ToString(), 'MachineStateIncorrect',
             'InvalidOperation', $null )
     }

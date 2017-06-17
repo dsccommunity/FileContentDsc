@@ -9,13 +9,13 @@ $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot 
 
 # Import the Storage Common Modules
 Import-Module -Name (Join-Path -Path $modulePath `
-                               -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
-                                                     -ChildPath 'FileContentDsc.Common.psm1'))
+        -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
+            -ChildPath 'FileContentDsc.Common.psm1'))
 
 # Import the Storage Resource Helper Module
 Import-Module -Name (Join-Path -Path $modulePath `
-                               -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
-                                                     -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
+        -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
+            -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
 
 # Import Localization Strings
 $localizedData = Get-LocalizedData `
@@ -54,31 +54,32 @@ function Get-TargetResource
     $fileContent = Get-Content -Path $Path -Raw
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-        $Path,$Search)
+            $Path, $Search)
 
     $text = ''
 
     # Search the file content for any matches
-    $results = [regex]::Matches($fileContent,$Search)
-
-    if ($results.Count -eq 0) {
+    $results = [regex]::Matches($fileContent, $Search)
+    
+    if ($results.Count -eq 0)
+    {
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-            $Path,$Search)
+                $Path, $Search)
     }
     else
     {
         $text = ($results.Value -join ',')
 
         Write-Verbose -Message ($localizedData.StringMatchFoundMessage -f `
-            $Path,$Search,$text)
+                $Path, $Search, $text)
     } # if
 
     return @{
-        Path       = $Path
-        Search     = $Search
-        Type       = 'Text'
-        Text       = $text
+        Path   = $Path
+        Search = $Search
+        Type   = 'Text'
+        Text   = $text
     }
 }
 
@@ -93,15 +94,15 @@ function Get-TargetResource
         The RegEx string to use to search the text file.
 
     .PARAMETER Type
-        Specifies the value type to use as the replacement string.
+        Specifies the value type to use as the replacement string. Defaults to 'Text'.
 
     .PARAMETER Text
         The text to replace the text identifed by the RegEx.
         Only used when Type is set to 'Text'.
 
-    .PARAMETER Password
-        The password to replace the text identified by the RegEx.
-        Only used when Type is set to 'Password'.
+    .PARAMETER Secret
+        The secret text to replace the text identified by the RegEx.
+        Only used when Type is set to 'Secret'.
 #>
 function Set-TargetResource
 {
@@ -121,7 +122,7 @@ function Set-TargetResource
         $Search,
 
         [Parameter()]
-        [ValidateSet('Text', 'Password')]
+        [ValidateSet('Text', 'Secret')]
         [String]
         $Type = 'Text',
 
@@ -132,31 +133,32 @@ function Set-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Password
+        $Secret
     )
 
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
 
-    if ($Type -eq 'Password')
+    if ($Type -eq 'Secret')
     {
-        Write-Verbose -Message ($localizedData.StringReplacePasswordMessage -f `
-            $Path)
+        Write-Verbose -Message ($localizedData.StringReplaceSecretMessage -f `
+                $Path)
 
-        $Text = $Password.Password
+        $Text = $Secret.GetNetworkCredential().Password
     }
     else
     {
         Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
-            $Path,$Text)
+                $Path, $Text)
     } # if
 
-    $fileContent = $fileContent -Replace $Search,$Text
+    $fileContent = $fileContent -Replace $Search, $Text
 
     Set-Content `
         -Path $Path `
         -Value $fileContent `
+        -NoNewline `
         -Force
 }
 
@@ -171,15 +173,15 @@ function Set-TargetResource
         The RegEx string to use to search the text file.
 
     .PARAMETER Type
-        Specifies the value type to use as the replacement string.
+        Specifies the value type to use as the replacement string. Defaults to 'Text'.
 
     .PARAMETER Text
         The text to replace the text identifed by the RegEx.
         Only used when Type is set to 'Text'.
 
-    .PARAMETER Password
-        The password to replace the text identified by the RegEx.
-        Only used when Type is set to 'Password'.
+    .PARAMETER Secret
+        The secret text to replace the text identified by the RegEx.
+        Only used when Type is set to 'Secret'.
 #>
 function Test-TargetResource
 {
@@ -198,7 +200,7 @@ function Test-TargetResource
         $Search,
 
         [Parameter()]
-        [ValidateSet('Text', 'Password')]
+        [ValidateSet('Text', 'Secret')]
         [String]
         $Type = 'Text',
 
@@ -209,7 +211,7 @@ function Test-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Password
+        $Secret
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -217,15 +219,16 @@ function Test-TargetResource
     $fileContent = Get-Content -Path $Path -Raw
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-        $Path,$Search)
+            $Path, $Search)
 
     # Search the file content for any matches
-    $results = [regex]::Matches($fileContent,$Search)
+    $results = [regex]::Matches($fileContent, $Search)
 
-    if ($results.Count -eq 0) {
+    if ($results.Count -eq 0)
+    {
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-            $Path,$Search)
+                $Path, $Search)
 
         return $true
     }
@@ -233,9 +236,9 @@ function Test-TargetResource
     # Flag to signal whether settings are correct
     [Boolean] $desiredConfigurationMatch = $true
 
-    if ($Type -eq 'Password')
+    if ($Type -eq 'Secret')
     {
-        $Text = $Password.Password
+        $Text = $Secret.Password
     } # if
 
     foreach ($result in $results)
@@ -249,12 +252,12 @@ function Test-TargetResource
     if ($desiredConfigurationMatch)
     {
         Write-Verbose -Message ($localizedData.StringNoReplacementMessage -f `
-            $Path,$Search)
+                $Path, $Search)
     }
     else
     {
         Write-Verbose -Message ($localizedData.StringReplacementRequiredMessage -f `
-            $Path,$Search)
+                $Path, $Search)
     } # if
 
     return $desiredConfigurationMatch
@@ -272,15 +275,15 @@ function Test-TargetResource
         The RegEx string to use to search the text file.
 
     .PARAMETER Type
-        Specifies the value type to use as the replacement string.
+        Specifies the value type to use as the replacement string. Defaults to 'Text'.
 
     .PARAMETER Text
         The text to replace the text identifed by the RegEx.
         Only used when Type is set to 'Text'.
 
-    .PARAMETER Password
-        The password to replace the text identified by the RegEx.
-        Only used when Type is set to 'Password'.
+    .PARAMETER Secret
+        The secret text to replace the text identified by the RegEx.
+        Only used when Type is set to 'Secret'.
 #>
 function Assert-ParametersValid
 {
@@ -299,7 +302,7 @@ function Assert-ParametersValid
         $Search,
 
         [Parameter()]
-        [ValidateSet('Text', 'Password')]
+        [ValidateSet('Text', 'Secret')]
         [String]
         $Type = 'Text',
 
@@ -310,7 +313,7 @@ function Assert-ParametersValid
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Password
+        $Secret
     )
 
     # Does the file in path exist?

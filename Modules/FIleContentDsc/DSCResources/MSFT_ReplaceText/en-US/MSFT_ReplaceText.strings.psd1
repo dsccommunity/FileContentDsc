@@ -7,6 +7,6 @@ ConvertFrom-StringData @'
     StringReplacementRequiredMessage = String found using RegEx '{1}' in file '{0}', replacement required.
     StringNoReplacementMessage = String found using RegEx '{1}' in file '{0}', no replacement required.
     StringReplaceTextMessage = String replaced by '{1}' in file '{0}'.
-    StringReplacePasswordMessage = String replaced by password in file '{0}'.
+    StringReplaceSecretMessage = String replaced by secret text in file '{0}'.
     FileNotFoundError = File '{0}' not found.
 '@
