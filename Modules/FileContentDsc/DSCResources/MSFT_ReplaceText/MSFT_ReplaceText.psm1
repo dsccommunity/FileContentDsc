@@ -238,7 +238,7 @@ function Test-TargetResource
 
     if ($Type -eq 'Secret')
     {
-        $Text = $Secret.Password
+        $Text = $Secret.GetNetworkCredential().Password
     } # if
 
     foreach ($result in $results)
@@ -287,7 +287,6 @@ function Test-TargetResource
 #>
 function Assert-ParametersValid
 {
-    [OutputType([Boolean])]
     [CmdletBinding()]
     param
     (
