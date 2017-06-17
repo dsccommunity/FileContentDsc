@@ -246,6 +246,45 @@ Setting3.Test=Value4
 
         #region Function Test-TargetResource
         Describe 'MSFT_ReplaceString\Test-TargetResource' {
+            Context 'File exists and search text can not be found' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Text $script:testTextReplace `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return true' {
+                    $script:result | Should Be $true
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
             Context 'File exists and search text can be found but does not match replace string' {
                 # verifiable (should be called) mocks
                 Mock `
