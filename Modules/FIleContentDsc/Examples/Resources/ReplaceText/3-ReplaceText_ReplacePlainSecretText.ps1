@@ -12,7 +12,7 @@ Configuration Example
         [System.String[]]
         $NodeName = 'localhost',
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [ValidateNotNullorEmpty()]
         [PSCredential]
         $Secret
