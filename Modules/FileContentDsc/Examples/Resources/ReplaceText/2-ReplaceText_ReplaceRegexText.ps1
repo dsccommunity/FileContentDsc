@@ -1,8 +1,8 @@
 <#
     .EXAMPLE
     Set all occrurances of a string matching the regular expression 
-    "<img src=['`"][a-zA-Z0-9.]*['`"]>" with the text '<img src="imgs/placeholder.jpg">'
-    in the file 'c:\inetpub\wwwroot\default.htm'
+    `<img src=['`"][a-zA-Z0-9.]*['`"]>` with the text `<img src="imgs/placeholder.jpg">`
+    in the file `c:\inetpub\wwwroot\default.htm`
 #>
 Configuration Example
 {

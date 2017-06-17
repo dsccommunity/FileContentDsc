@@ -1,7 +1,7 @@
 <#
     .EXAMPLE
-    Set all occrurances of the string '%appname%' to be 'Awesome App'
-    in the file 'c:\inetpub\wwwroot\default.htm'.
+    Set all occrurances of the string `%appname%` to be Awesome App`
+    in the file `c:\inetpub\wwwroot\default.htm`.
 #>
 Configuration Example
 {
