@@ -1,7 +1,7 @@
 # FileContentDsc
 
-[![Build status](https://ci.appveyor.com/api/projects/status/obmudad7gy8usbx2/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xnetworking/branch/master)
-[![codecov](https://codecov.io/gh/PowerShell/xNetworking/branch/master/graph/badge.svg)](https://codecov.io/gh/PowerShell/xNetworking)
+[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc)
+[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc)
 
 The **FileContent** module contains the following resources:
 
