@@ -18,10 +18,10 @@ Configuration Example
     {
         ReplaceText SetText
         {
-                Path     = 'c:\inetpub\wwwroot\default.htm'
-                Search   = '%appname%'
-                Type     = 'Text'
-                Text     = 'Awesome App'
+            Path   = 'c:\inetpub\wwwroot\default.htm'
+            Search = '%appname%'
+            Type   = 'Text'
+            Text   = 'Awesome App'
         }
     }
- }
+}

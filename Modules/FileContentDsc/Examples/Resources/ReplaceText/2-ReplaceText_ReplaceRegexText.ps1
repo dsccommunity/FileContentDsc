@@ -19,10 +19,10 @@ Configuration Example
     {
         ReplaceText SetTextWithRegex
         {
-                Path     = 'c:\inetpub\wwwroot\default.htm'
-                Search   = "<img src=['`"][a-zA-Z0-9.]*['`"]>"
-                Type     = 'Text'
-                Text     = '<img src="imgs/placeholder.jpg">'
+            Path   = 'c:\inetpub\wwwroot\default.htm'
+            Search = "<img src=['`"][a-zA-Z0-9.]*['`"]>"
+            Type   = 'Text'
+            Text   = '<img src="imgs/placeholder.jpg">'
         }
     }
- }
+}

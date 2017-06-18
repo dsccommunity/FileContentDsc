@@ -1,8 +1,7 @@
 <#
     .EXAMPLE
-    Set all occrurances of the string `%secret%` to be the value in
-    the password set in the parameter $Secret PSCredential object
-    in the file `c:\inetpub\wwwroot\default.htm`.
+    Set all `Core.Password` keys to the password provided in the $Secret
+    credential object or add it if it is missing in the file `c:\inetpub\wwwroot\default.htm`.
 #>
 Configuration Example
 {
@@ -22,10 +21,11 @@ Configuration Example
 
     Node $NodeName
     {
-        ReplaceText SetSecretText
+        KeyValuePairFile SetCoreLogging
         {
-            Path   = 'c:\inetpub\wwwroot\default.htm'
-            Search = '%secret%'
+            Path    = 'c:\myapp\myapp.conf'
+            KeyName = 'Core.Password'
+            Ensure  = 'Present'
             Type   = 'Secret'
             Secret = $Secret
         }

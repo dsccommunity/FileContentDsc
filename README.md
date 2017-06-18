@@ -6,6 +6,8 @@
 The **FileContent** module contains the following resources:
 
 - **ReplaceText**: Replaces strings matching a regular expression in a file.
+- **KeyValuePairFile**: Add, remove or set key/value pairs in a text file containing
+  key/value pairs.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)

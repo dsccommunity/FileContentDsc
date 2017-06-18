@@ -73,7 +73,7 @@ VariablesToExport = @()
 AliasesToExport = @()
 
 # DSC resources to export from this module
-DscResourcesToExport = 'ReplaceText'
+DscResourcesToExport = 'ReplaceText','KeyValuePairFile'
 
 # List of all modules packaged with this module
 # ModuleList = @()

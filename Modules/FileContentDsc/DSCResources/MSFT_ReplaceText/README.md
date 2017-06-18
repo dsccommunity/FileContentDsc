@@ -1,6 +1,6 @@
 # Description
 
-The resource is used to replaces strings matching a regular expression in a
+The resource is used to replace strings matching a regular expression in a
 text file.
 
 It can be used to replace strings matched with a regular expression with
