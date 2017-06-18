@@ -1,7 +1,7 @@
 <#
     .EXAMPLE
-    Set all `Core.Password` keys to the password provided in the $Secret
-    credential object or add it if it is missing in the file `c:\myapp\myapp.conf`.
+    Set the `ConnectionString` entry in the [Database] section to the password
+    provided in the $Secret credential object in the file `c:\myapp\myapp.ini`.
 #>
 Configuration Example
 {
@@ -21,11 +21,11 @@ Configuration Example
 
     Node $NodeName
     {
-        KeyValuePairFile SetCorePassword
+        IniSettingsFile SetConnectionString
         {
-            Path   = 'c:\myapp\myapp.conf'
-            Name   = 'Core.Password'
-            Ensure = 'Present'
+            Path   = 'c:\myapp\myapp.ini'
+            Entry  = 'Database'
+            Key    = 'ConnectionString'
             Type   = 'Secret'
             Secret = $Secret
         }
