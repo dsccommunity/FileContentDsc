@@ -60,14 +60,14 @@ function Get-TargetResource
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
 
     # Search the key that matches the requested key
-    $results = [regex]::Matches($fileContent, "^[\s]*$Name=(.*)$", $regExOptions)
+    $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
+
+    $ensure = 'Absent'
+    $text = $null
 
     if ($results.Count -eq 0)
     {
         # No matches found
-        $ensure = 'Absent'
-        $text = ''
-
         Write-Verbose -Message ($localizedData.KeyNotFoundMessage -f `
                 $Path, $Name)
     }
@@ -75,15 +75,14 @@ function Get-TargetResource
     {
         # One of more key value pairs were found
         $ensure = 'Present'
+        $textValues = @()
 
-        $groups = @()
         foreach ($match in $results)
         {
-            Write-Verbose -Verbose -Message ($match.Groups[1])
-            $groups += $match.Groups[1]
+            $textValues += $match.Groups[1]
         }
 
-        $text = ($groups -join ',')
+        $text = ($textValues -join ',')
 
         Write-Verbose -Message ($localizedData.KeyFoundMessage -f `
                 $Path, $Name, $text)
@@ -195,11 +194,11 @@ function Set-TargetResource
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
     if ($IgnoreNameCase)
     {
-        $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreNameCase
+        $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
     }
 
     # Search the key that matches the requested key
-    $results = [regex]::Matches($fileContent, "^[\s]*$Name=(.*)$", $regExOptions)
+    $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
 
     if ($Ensure -eq 'Present')
     {
@@ -230,7 +229,12 @@ function Set-TargetResource
     }
     else
     {
-        if ($results.Count -gt 0)
+        if ($results.Count -eq 0)
+        {
+            # The Key does not exists and should not so don't do anything
+            return
+        }
+        else
         {
             # The Key exists in the file but should not so remove it
             $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)$eolChars", '', $regExOptions)
@@ -336,11 +340,11 @@ function Test-TargetResource
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
     if ($IgnoreNameCase)
     {
-        $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreNameCase
+        $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
     }
 
     # Search the key that matches the requested key
-    $results = [regex]::Matches($fileContent, "^[\s]*$Name=(.*)$", $regExOptions)
+    $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
 
     if ($results.Count -eq 0)
     {
@@ -374,8 +378,8 @@ function Test-TargetResource
             # Check each found key value pair and check it has the correct value
             foreach ($match in $results)
             {
-                if (($IgnoreValueCase -and ($match.Groups[1] -ne $Text)) -or `
-                    (-not $IgnoreValueCase -and ($match.Groups[1] -cne $Text)))
+                if (($IgnoreValueCase -and ($match.Groups[1].Value -ne $Text)) -or `
+                    (-not $IgnoreValueCase -and ($match.Groups[1].Value -cne $Text)))
                 {
                     $desiredConfigurationMatch = $false
                 } #

@@ -7,7 +7,7 @@ ConvertFrom-StringData @'
     KeyReplaceSecretMessage = Key '{1}' found in file '{0}' being updated with secret value.
     KeyReplaceTextMessage = Key '{1}' found in file '{0}' being updated with '{2}'.
     KeyRemoveMessage = Key '{1}' found in file '{0}' but has been removed.
-    KeyAddMessage = Key '{1}' not found in file '{0}' so has being added.
+    KeyAddMessage = Key '{1}' not found in file '{0}' so has been added.
     KeyUpdateMessage = Key '{1}' found in file '{0}' and has been updated.
     KeyNotFoundButShouldExistMessage = Key '{1}' not found in file '{0}' but should exist. Change required.
     KeyNotFoundAndShouldNotExistMessage = Key '{1}' not found in file '{0}' and should not exist. Change not required.

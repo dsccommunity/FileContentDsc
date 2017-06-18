@@ -15,15 +15,15 @@ try
         $script:configurationName = 'KeyValuePairFile'
         $script:testTextFile = Join-Path -Path $TestDrive -ChildPath 'TestFile.txt'
         $script:testName = 'Setting.Two'
-        $script:testText = 'TestText'
-        $script:testSecret = 'TestSecret'
+        $script:testText = 'Test Text'
+        $script:testSecret = 'Test Secret'
         $script:testSecureSecret = ConvertTo-SecureString -String $script:testSecret -AsPlainText -Force
         $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecret)
 
         $script:testFileContent = @"
 Setting1=Value1
-$($script:testName)=Value2
-$($script:testName)=Value3
+$($script:testName)=Value 2
+$($script:testName)=Value 3
 $($script:testName)=$($script:testText)
 Setting3.Test=Value4
 
@@ -195,10 +195,10 @@ Setting3.Test=Value4
                     $configData = @{
                         AllNodes = @(
                             @{
-                                NodeName                    = 'localhost'
-                                Path                        = $script:testTextFile
-                                Name                        = $script:testName
-                                Ensure                      = 'Absent'
+                                NodeName = 'localhost'
+                                Path     = $script:testTextFile
+                                Name     = $script:testName
+                                Ensure   = 'Absent'
                             }
                         )
                     }
