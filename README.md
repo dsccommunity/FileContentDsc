@@ -8,10 +8,10 @@ Configuration text files are the most common use case for this module.
 
 The **FileContent** module contains the following resources:
 
-- **ReplaceText**: Replaces strings matching a regular expression in a file.
+- **IniSettingsFile**: Add, set or clear entries in Windows INI settings files.
 - **KeyValuePairFile**: Add, remove or set key/value pairs in a text file containing
   key/value pairs.
-- **IniSettingsFile**: Add, set or clear entries in Windows INI settings files.
+- **ReplaceText**: Replaces strings matching a regular expression in a file.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
