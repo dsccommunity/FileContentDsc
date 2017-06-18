@@ -23,11 +23,11 @@ Configuration Example
     {
         IniSettingsFile SetConnectionString
         {
-            Path   = 'c:\myapp\myapp.ini'
-            Entry  = 'Database'
-            Key    = 'ConnectionString'
-            Type   = 'Secret'
-            Secret = $Secret
+            Path    = 'c:\myapp\myapp.ini'
+            Section = 'Database'
+            Key     = 'ConnectionString'
+            Type    = 'Secret'
+            Secret  = $Secret
         }
     }
 }
