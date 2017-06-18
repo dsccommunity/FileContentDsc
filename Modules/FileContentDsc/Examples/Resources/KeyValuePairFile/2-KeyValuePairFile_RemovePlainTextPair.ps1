@@ -1,6 +1,6 @@
 <#
     .EXAMPLE
-    Remove all `Core.Logging` keys in the file `c:\inetpub\wwwroot\default.htm`.
+    Remove all `Core.Logging` keys in the file `c:\myapp\myapp.conf`.
 #>
 Configuration Example
 {

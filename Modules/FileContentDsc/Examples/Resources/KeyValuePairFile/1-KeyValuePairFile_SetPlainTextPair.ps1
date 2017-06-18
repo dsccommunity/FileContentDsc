@@ -1,7 +1,7 @@
 <#
     .EXAMPLE
     Set all `Core.Logging` keys to `Information` or add it
-    if it is missing in the file `c:\inetpub\wwwroot\default.htm`.
+    if it is missing in the file `c:\myapp\myapp.conf`.
 #>
 Configuration Example
 {
