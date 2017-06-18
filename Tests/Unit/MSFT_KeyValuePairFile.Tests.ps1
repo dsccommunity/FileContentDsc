@@ -773,6 +773,44 @@ $($script:testAddedName)=$($script:testText)
                         -Exactly 1
                 }
             }
+
+            Context 'File exists and contains matching key that should not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName `
+                        -Ensure 'Absent' `
+                        -Text $script:testText `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return false' {
+                    $script:result | Should Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
         }
         #endregion
 
