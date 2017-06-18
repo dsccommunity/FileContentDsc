@@ -1,5 +1,0 @@
-Setting1=Value1
-Setting.Two=Test Secret
-Setting.Two=Test Secret
-Setting.Two=Test Secret
-Setting3.Test=Value4
