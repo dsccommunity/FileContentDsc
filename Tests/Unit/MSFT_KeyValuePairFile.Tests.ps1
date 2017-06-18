@@ -467,7 +467,7 @@ $($script:testAddedName)=$($script:testText)
 
         #region Function Test-TargetResource
         Describe 'MSFT_KeyValuePairFile\Test-TargetResource' {
-            Context 'File exists and does not containing matching key but it should' {
+            Context 'File exists and does not contain matching key but it should' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -505,6 +505,43 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
+            Context 'File exists and does not contain matching key but should not' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName.ToUpper() `
+                        -Ensure 'Absent' `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return true' {
+                    $script:result | Should Be $true
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
             Context 'File exists and contains matching key that should exist and values match' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -524,6 +561,123 @@ $($script:testAddedName)=$($script:testText)
                         -Name $script:testName `
                         -Ensure 'Present' `
                         -Text $script:testText `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return true' {
+                    $script:result | Should Be $true
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and contains matching key that should exist and values do not match secret text' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName `
+                        -Ensure 'Present' `
+                        -Type 'Secret' `
+                        -Secret $script:testSecretCredential `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return false' {
+                    $script:result | Should Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and contains matching key that should exist and values match secret text' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileExpectedSecretContent } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName `
+                        -Ensure 'Present' `
+                        -Type 'Secret' `
+                        -Secret $script:testSecretCredential `
+                        -Verbose
+                    } | Should Not Throw
+                }
+
+                It 'Should return true' {
+                    $script:result | Should Be $true
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMocks
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and contains key with different case that should exist and values match and IgnoreNameCase is True' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName.ToUpper() `
+                        -Ensure 'Present' `
+                        -Text $script:testText `
+                        -IgnoreNameCase:$true `
                         -Verbose
                     } | Should Not Throw
                 }
