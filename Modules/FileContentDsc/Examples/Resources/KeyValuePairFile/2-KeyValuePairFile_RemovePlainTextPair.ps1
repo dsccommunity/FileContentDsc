@@ -17,9 +17,9 @@ Configuration Example
     {
         KeyValuePairFile RemoveCoreLogging
         {
-            Path    = 'c:\myapp\myapp.conf'
-            KeyName = 'Core.Logging'
-            Ensure  = 'Absent'
+            Path   = 'c:\myapp\myapp.conf'
+            Name   = 'Core.Logging'
+            Ensure = 'Absent'
         }
     }
 }

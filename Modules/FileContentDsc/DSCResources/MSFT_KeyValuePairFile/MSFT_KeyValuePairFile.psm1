@@ -79,7 +79,7 @@ function Get-TargetResource
 
         foreach ($match in $results)
         {
-            $textValues += $match.Groups[1]
+            $textValues += $match.Groups[1].Value
         }
 
         $text = ($textValues -join ',')

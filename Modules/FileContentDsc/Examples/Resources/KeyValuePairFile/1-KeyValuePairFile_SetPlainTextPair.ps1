@@ -18,10 +18,10 @@ Configuration Example
     {
         KeyValuePairFile SetCoreLogging
         {
-            Path    = 'c:\myapp\myapp.conf'
-            KeyName = 'Core.Logging'
-            Ensure  = 'Present'
-            Text    = 'Information'
+            Path   = 'c:\myapp\myapp.conf'
+            Name   = 'Core.Logging'
+            Ensure = 'Present'
+            Text   = 'Information'
         }
     }
 }

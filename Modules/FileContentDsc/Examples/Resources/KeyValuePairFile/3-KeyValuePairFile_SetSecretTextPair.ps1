@@ -23,9 +23,9 @@ Configuration Example
     {
         KeyValuePairFile SetCoreLogging
         {
-            Path    = 'c:\myapp\myapp.conf'
-            KeyName = 'Core.Password'
-            Ensure  = 'Present'
+            Path   = 'c:\myapp\myapp.conf'
+            Name   = 'Core.Password'
+            Ensure = 'Present'
             Type   = 'Secret'
             Secret = $Secret
         }
