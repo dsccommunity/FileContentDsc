@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Returns an invalid argument exception object
 
@@ -63,12 +63,12 @@ function Get-InvalidOperationRecord
     }
     elseif ($null -eq $ErrorRecord)
     {
-        $invalidOperationException = 
+        $invalidOperationException =
         New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message )
     }
     else
     {
-        $invalidOperationException = 
+        $invalidOperationException =
         New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $Message,
             $ErrorRecord.Exception )
     }
@@ -184,4 +184,4 @@ Export-ModuleMember -Function `
     'Get-InvalidOperationRecord', `
     'Enter-DscResourceTestEnvironment', `
     'Exit-DscResourceTestEnvironment'
-    
+
