@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.0
+
 - DSR_ReplaceText:
   - Created new resource for replacing text in text files.
 - DSR_KeyValuePairFile:
