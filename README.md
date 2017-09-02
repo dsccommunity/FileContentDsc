@@ -30,7 +30,7 @@ the [iSCSIDsc wiki](https://github.com/PlagueHO/iSCSIDsc/wiki).
 
 ### master
 
-[![Build status](https://ci.appveyor.com/api/projects/status/xnuik3kpyag237mv/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/FileContentDsc/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/master?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/master)
 [![codecov](https://codecov.io/gh/PowerShell/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
 
 This is the branch containing the latest release - no contributions should be made
@@ -38,7 +38,7 @@ directly to this branch.
 
 ### dev
 
-[![Build status](https://ci.appveyor.com/api/projects/status/xnuik3kpyag237mv/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/FileContentDsc/branch/dev)
+[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/dev)
 [![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/FileContentDsc/branch/dev)
 
 This is the development branch to which contributions should be proposed by contributors
