@@ -5,54 +5,56 @@ Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot 
 
 $script:testEnvironment = Enter-DscResourceTestEnvironment `
     -DscResourceModuleName 'FileContentDsc' `
-    -DscResourceName 'MSFT_ReplaceText' `
+    -DscResourceName 'DSR_IniSettingsFile' `
     -TestType 'Integration'
 
 try
 {
-    Describe 'ReplaceText Integration Tests' {
-        $script:confgurationFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'MSFT_ReplaceText.config.ps1'
-        $script:configurationName = 'ReplaceText'
-        $script:testTextFile = Join-Path -Path $TestDrive -ChildPath 'TestFile.txt'
-        $script:testText = 'TestText'
-        $script:testSecret = 'TestSecret'
-        $script:testSearch = "Setting\.Two='(.)*'"
-        $script:testTextReplace = "Setting.Two='$($script:testText)'"
-        $script:testSecretReplace = "Setting.Two='$($script:testSecret)'"
-        $script:testSecureSecretReplace = ConvertTo-SecureString -String $script:testSecretReplace -AsPlainText -Force
-        $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecretReplace)
+    Describe 'IniSettingsFile Integration Tests' {
+        $script:confgurationFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'DSR_IniSettingsFile.config.ps1'
+        $script:configurationName = 'IniSettingsFile'
+        $script:testTextFile = Join-Path -Path $TestDrive -ChildPath 'TestFile.ini'
+        $script:testText = 'Test Text'
+        $script:testSecret = 'Test Secret'
+        $script:testSection = 'Section One'
+        $script:testKey = 'SettingTwo'
+        $script:testSecureSecret = ConvertTo-SecureString -String $script:testSecret -AsPlainText -Force
+        $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecret)
 
         $script:testFileContent = @"
-Setting1=Value1
-Setting.Two='Value2'
-Setting.Two='Value3'
-Setting.Two='$($script:testText)'
-Setting3.Test=Value4
+[Section One]
+SettingOne=Value1
+SettingTwo=Value2
+
+[Section Two]
+SettingThree=Value3
 
 "@
 
         $script:testFileExpectedTextContent = @"
-Setting1=Value1
-Setting.Two='$($script:testText)'
-Setting.Two='$($script:testText)'
-Setting.Two='$($script:testText)'
-Setting3.Test=Value4
+[Section One]
+SettingOne=Value1
+SettingTwo=$($script:testText)
+
+[Section Two]
+SettingThree=Value3
 
 "@
 
         $script:testFileExpectedSecretContent = @"
-Setting1=Value1
-Setting.Two='$($script:testSecret)'
-Setting.Two='$($script:testSecret)'
-Setting.Two='$($script:testSecret)'
-Setting3.Test=Value4
+[Section One]
+SettingOne=Value1
+SettingTwo=$($script:testSecret)
+
+[Section Two]
+SettingThree=Value3
 
 "@
 
         # Load the DSC config to use for testing
         . $script:confgurationFilePath -ConfigurationName $script:configurationName
 
-        Context 'A text file containing text to be replaced with another text string' {
+        Context 'An INI settings file containing an entry to be replaced with another text string' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -70,9 +72,10 @@ Setting3.Test=Value4
                             @{
                                 NodeName = 'localhost'
                                 Path     = $script:testTextFile
-                                Search   = $script:testSearch
+                                Section  = $script:testSection
+                                Key      = $script:testKey
                                 Type     = 'Text'
-                                Text     = $script:testTextReplace
+                                Text     = $script:testText
                             }
                         )
                     }
@@ -94,9 +97,10 @@ Setting3.Test=Value4
                     $_.ConfigurationName -eq $script:configurationName
                 }
                 $current.Path             | Should Be $script:testTextFile
-                $current.Search           | Should Be $script:testSearch
+                $current.Section          | Should Be $script:testSection
+                $current.Key              | Should Be $script:testKey
                 $current.Type             | Should Be 'Text'
-                $current.Text             | Should Be "$($script:testTextReplace),$($script:testTextReplace),$($script:testTextReplace)"
+                $current.Text             | Should Be $script:testText
             }
 
             It 'Should be convert the file content to match expected content' {
@@ -111,7 +115,7 @@ Setting3.Test=Value4
             }
         }
 
-        Context 'A text file containing text to be replaced with secret text' {
+        Context 'An INI settings file containing an entry to be replaced with another secret text string' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -129,7 +133,8 @@ Setting3.Test=Value4
                             @{
                                 NodeName                    = 'localhost'
                                 Path                        = $script:testTextFile
-                                Search                      = $script:testSearch
+                                Section                     = $script:testSection
+                                Key                         = $script:testKey
                                 Type                        = 'Secret'
                                 Secret                      = $script:testSecretCredential
                                 PsDscAllowPlainTextPassword = $true
@@ -154,9 +159,10 @@ Setting3.Test=Value4
                     $_.ConfigurationName -eq $script:configurationName
                 }
                 $current.Path             | Should Be $script:testTextFile
-                $current.Search           | Should Be $script:testSearch
+                $current.Section          | Should Be $script:testSection
+                $current.Key              | Should Be $script:testKey
                 $current.Type             | Should Be 'Text'
-                $current.Text             | Should Be "$($script:testSecretReplace),$($script:testSecretReplace),$($script:testSecretReplace)"
+                $current.Text             | Should Be $script:testSecret
             }
 
             It 'Should be convert the file content to match expected content' {

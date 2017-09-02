@@ -19,7 +19,7 @@ Import-Module -Name (Join-Path -Path $modulePath `
 
 # Import Localization Strings
 $localizedData = Get-LocalizedData `
-    -ResourceName 'MSFT_ReplaceText' `
+    -ResourceName 'DSR_ReplaceText' `
     -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
 
 <#
@@ -60,7 +60,7 @@ function Get-TargetResource
 
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
-    
+
     if ($results.Count -eq 0)
     {
         # No matches found - already in state

@@ -5,7 +5,7 @@ Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot 
 
 $script:testEnvironment = Enter-DscResourceTestEnvironment `
     -DscResourceModuleName 'FileContentDsc' `
-    -DscResourceName 'MSFT_KeyValuePairFile' `
+    -DscResourceName 'DSR_KeyValuePairFile' `
     -TestType 'Unit'
 
 # Begin Testing
@@ -15,7 +15,7 @@ try
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope 'MSFT_KeyValuePairFile' {
+    InModuleScope 'DSR_KeyValuePairFile' {
         #region Pester Test Initialization
         $script:testTextFile = 'TestFile.txt'
         $script:testName = 'Setting.Two'
@@ -81,12 +81,12 @@ $($script:testAddedName)=$($script:testText)
         #endregion
 
         #region Function Get-TargetResource
-        Describe 'MSFT_KeyValuePairFile\Get-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Get-TargetResource' {
             Context 'File exists and contains matching key' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -128,7 +128,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -169,12 +169,12 @@ $($script:testAddedName)=$($script:testText)
         #endregion
 
         #region Function Set-TargetResource
-        Describe 'MSFT_KeyValuePairFile\Set-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Set-TargetResource' {
             Context 'File exists and contains matching key that should exist' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -224,7 +224,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -275,7 +275,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -325,7 +325,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -376,7 +376,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -417,7 +417,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -466,12 +466,12 @@ $($script:testAddedName)=$($script:testText)
         #endregion
 
         #region Function Test-TargetResource
-        Describe 'MSFT_KeyValuePairFile\Test-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Test-TargetResource' {
             Context 'File exists and does not contain matching key but it should' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -509,7 +509,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -546,7 +546,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -584,7 +584,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -623,7 +623,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -662,7 +662,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -701,7 +701,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -739,7 +739,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -778,7 +778,7 @@ $($script:testAddedName)=$($script:testText)
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_KeyValuePairFile' `
+                    -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
                 Mock `
@@ -815,7 +815,7 @@ $($script:testAddedName)=$($script:testText)
         #endregion
 
         #region Function Assert-ParametersValid
-        Describe 'MSFT_KeyValuePairFile\Assert-ParametersValid' {
+        Describe 'DSR_KeyValuePairFile\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
                 Mock `

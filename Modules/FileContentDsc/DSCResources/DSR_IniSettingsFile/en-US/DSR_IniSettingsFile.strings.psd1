@@ -1,4 +1,4 @@
-# Localized resources for MSFT_ReplaceText
+# Localized resources for DSR_ReplaceText
 
 ConvertFrom-StringData @'
     GetIniSettingMessage = Reading the entry '{1}' key '{2}' from INI settings file '{0}'.

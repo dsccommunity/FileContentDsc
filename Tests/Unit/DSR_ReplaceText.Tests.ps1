@@ -5,7 +5,7 @@ Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot 
 
 $script:testEnvironment = Enter-DscResourceTestEnvironment `
     -DscResourceModuleName 'FileContentDsc' `
-    -DscResourceName 'MSFT_ReplaceText' `
+    -DscResourceName 'DSR_ReplaceText' `
     -TestType 'Unit'
 
 # Begin Testing
@@ -15,7 +15,7 @@ try
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope 'MSFT_ReplaceText' {
+    InModuleScope 'DSR_ReplaceText' {
         #region Pester Test Initialization
         $script:testTextFile = 'TestFile.txt'
         $script:testText = 'TestText'
@@ -56,12 +56,12 @@ Setting3.Test=Value4
         #endregion
 
         #region Function Get-TargetResource
-        Describe 'MSFT_ReplaceText\Get-TargetResource' {
+        Describe 'DSR_ReplaceText\Get-TargetResource' {
             Context 'File exists and search text can be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -102,7 +102,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -142,12 +142,12 @@ Setting3.Test=Value4
         #endregion
 
         #region Function Set-TargetResource
-        Describe 'MSFT_ReplaceText\Set-TargetResource' {
+        Describe 'DSR_ReplaceText\Set-TargetResource' {
             Context 'File exists and search text can be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -196,7 +196,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -245,12 +245,12 @@ Setting3.Test=Value4
         #endregion
 
         #region Function Test-TargetResource
-        Describe 'MSFT_ReplaceString\Test-TargetResource' {
+        Describe 'DSR_ReplaceString\Test-TargetResource' {
             Context 'File exists and search text can not be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -289,7 +289,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -328,7 +328,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -367,7 +367,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -407,7 +407,7 @@ Setting3.Test=Value4
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_ReplaceText' `
+                    -ModuleName 'DSR_ReplaceText' `
                     -Verifiable
 
                 Mock `
@@ -446,7 +446,7 @@ Setting3.Test=Value4
         #endregion
 
         #region Function Assert-ParametersValid
-        Describe 'MSFT_ReplaceText\Assert-ParametersValid' {
+        Describe 'DSR_ReplaceText\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
                 Mock `

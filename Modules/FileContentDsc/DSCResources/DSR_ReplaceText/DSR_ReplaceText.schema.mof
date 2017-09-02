@@ -1,9 +1,9 @@
 [ClassVersion("1.0.0.0"), FriendlyName("ReplaceText")]
-class MSFT_ReplaceText : OMI_BaseResource
+class DSR_ReplaceText : OMI_BaseResource
 {
   [Key, Description("The path to the text file to replace the string in.")] String Path;
   [Key, Description("The RegEx string to use to search the text file.")] String Search;
   [Write, Description("Specifies the value type to use as the replacement string. Defaults to 'Text'."),ValueMap{"Text", "Secret"},Values{"Text", "Secret"}] String Type;
   [Write, Description("The text to replace the text identified by the RegEx. Only used when Type is set to 'Text'.")] String Text;
-  [write, Description("The secret text to replace the text identified by the RegEx. Only used when Type is set to 'Secret'."),EmbeddedInstance("MSFT_Credential")] String Secret;
+  [write, Description("The secret text to replace the text identified by the RegEx. Only used when Type is set to 'Secret'."),EmbeddedInstance("DSR_Credential")] String Secret;
 };

@@ -1,4 +1,4 @@
-# Localized resources for MSFT_ReplaceText
+# Localized resources for DSR_ReplaceText
 
 ConvertFrom-StringData @'
     SearchForTextMessage = Searching using RegEx '{1}' in file '{0}'.

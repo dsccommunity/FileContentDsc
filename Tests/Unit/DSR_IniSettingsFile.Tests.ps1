@@ -5,7 +5,7 @@ Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot 
 
 $script:testEnvironment = Enter-DscResourceTestEnvironment `
     -DscResourceModuleName 'FileContentDsc' `
-    -DscResourceName 'MSFT_IniSettingsFile' `
+    -DscResourceName 'DSR_IniSettingsFile' `
     -TestType 'Unit'
 
 # Begin Testing
@@ -15,7 +15,7 @@ try
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope 'MSFT_IniSettingsFile' {
+    InModuleScope 'DSR_IniSettingsFile' {
         #region Pester Test Initialization
         $script:testTextFile = 'TestFile.ini'
         $script:testText = 'Test Text'
@@ -28,12 +28,12 @@ try
         #endregion
 
         #region Function Get-TargetResource
-        Describe 'MSFT_IniSettingsFile\Get-TargetResource' {
+        Describe 'DSR_IniSettingsFile\Get-TargetResource' {
             Context 'File exists and entry can be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -84,7 +84,7 @@ try
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -134,12 +134,12 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe 'MSFT_IniSettingsFile\Set-TargetResource' {
+        Describe 'DSR_IniSettingsFile\Set-TargetResource' {
             Context 'File exists and text is passed' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -182,7 +182,7 @@ try
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -225,12 +225,12 @@ try
         #endregion
 
         #region Function Test-TargetResource
-        Describe 'MSFT_ReplaceString\Test-TargetResource' {
+        Describe 'DSR_ReplaceString\Test-TargetResource' {
             Context 'File exists and text is passed and matches' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -278,7 +278,7 @@ try
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -326,7 +326,7 @@ try
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -375,7 +375,7 @@ try
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
-                    -ModuleName 'MSFT_IniSettingsFile' `
+                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 Mock `
@@ -423,7 +423,7 @@ try
         #endregion
 
         #region Function Assert-ParametersValid
-        Describe 'MSFT_IniSettingsFile\Assert-ParametersValid' {
+        Describe 'DSR_IniSettingsFile\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
                 Mock `

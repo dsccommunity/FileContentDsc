@@ -19,7 +19,7 @@ Import-Module -Name (Join-Path -Path $modulePath `
 
 # Import Localization Strings
 $localizedData = Get-LocalizedData `
-    -ResourceName 'MSFT_IniSettingsFile' `
+    -ResourceName 'DSR_IniSettingsFile' `
     -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
 
 <#

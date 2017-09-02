@@ -13,11 +13,34 @@ The **FileContent** module contains the following resources:
   key/value pairs.
 - **ReplaceText**: Replaces strings matching a regular expression in a file.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
-or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any
-additional questions or comments.
+**This project is not maintained or supported by Microsoft.**
 
-## Contributing
+It has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/).
 
-Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+This module should meet the [PowerShell DSC Resource Kit High Quality Resource
+Module Guidelines](https://github.com/PowerShell/DscResources/blob/master/HighQualityModuleGuidelines.md).
+
+## Documentation and Examples
+
+For a full list of resources in iSCSIDsc and examples on their use, check out
+the [iSCSIDsc wiki](https://github.com/PlagueHO/iSCSIDsc/wiki).
+
+## Branches
+
+### master
+
+[![Build status](https://ci.appveyor.com/api/projects/status/xnuik3kpyag237mv/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/FileContentDsc/branch/master)
+[![codecov](https://codecov.io/gh/PowerShell/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
+
+This is the branch containing the latest release - no contributions should be made
+directly to this branch.
+
+### dev
+
+[![Build status](https://ci.appveyor.com/api/projects/status/xnuik3kpyag237mv/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/FileContentDsc/branch/dev)
+[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/FileContentDsc/branch/dev)
+
+This is the development branch to which contributions should be proposed by contributors
+as pull requests. This development branch will periodically be merged to the master
+branch, and be released to [PowerShell Gallery](https://www.powershellgallery.com/).

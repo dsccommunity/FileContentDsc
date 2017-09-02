@@ -13,13 +13,13 @@ ModuleVersion = '1.0.0.0'
 GUID = '6c9fe2f4-8af9-4bad-bd95-5909188c0f0a'
 
 # Author of this module
-Author = 'Microsoft Corporation'
+Author = 'Daniel Scott-Raynsford'
 
 # Company or vendor of this module
-CompanyName = 'MicrosoftCorporation'
+CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) 2017 Microsoft Corporation. All rights reserved.'
+Copyright = '(c) 2017 Daniel Scott-Raynsford. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'This module contains the DSC resources for manipulating the content of text files.'
@@ -73,7 +73,7 @@ VariablesToExport = @()
 AliasesToExport = @()
 
 # DSC resources to export from this module
-DscResourcesToExport = 'ReplaceText','KeyValuePairFile'
+DscResourcesToExport = @('ReplaceText','KeyValuePairFile','IniSettingsFile')
 
 # List of all modules packaged with this module
 # ModuleList = @()
@@ -93,7 +93,7 @@ PrivateData = @{
         LicenseUri = 'https://github.com/PowerShell/FileContentDsc/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/PowerShell/FileContentDsc'
+        ProjectUri = 'https://github.com/PlagueHO/FileContentDsc'
 
         # A URL to an icon representing this module.
         # IconUri = ''
