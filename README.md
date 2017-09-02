@@ -1,8 +1,5 @@
 # FileContentDsc
 
-[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc)
-
 This resource module contains resources for setting the content of files.
 Configuration text files are the most common use case for this module.
 
