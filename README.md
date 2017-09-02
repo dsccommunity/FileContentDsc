@@ -28,7 +28,7 @@ the [FileContentDsc wiki](https://github.com/PlagueHO/FileContentDsc/wiki).
 ### master
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/master?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/master)
-[![codecov](https://codecov.io/gh/PowerShell/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
+[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
 
 This is the branch containing the latest release - no contributions should be made
 directly to this branch.
@@ -36,8 +36,12 @@ directly to this branch.
 ### dev
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/dev)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/FileContentDsc/branch/dev)
+[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev)
 
 This is the development branch to which contributions should be proposed by contributors
 as pull requests. This development branch will periodically be merged to the master
 branch, and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
+
+## Contributing
+
+Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
