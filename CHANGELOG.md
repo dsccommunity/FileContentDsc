@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Enabled PSSA rule violations to fail build - Fixes [Issue #6](https://github.com/PlagueHO/FileContentDsc/issues/6).
+
 ## 1.0.0.0
 
 - DSR_ReplaceText:
