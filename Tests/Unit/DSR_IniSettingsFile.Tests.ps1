@@ -54,19 +54,19 @@ try
                             -Section $script:testSection `
                             -Key $script:testKey `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path    | Should Be $script:testTextFile
-                    $script:result.Section | Should Be $script:testSection
-                    $script:result.Key     | Should Be $script:testKey
-                    $script:result.Type    | Should Be 'Text'
-                    $script:result.Text    | Should Be $script:testText
+                    $script:result.Path    | Should -Be $script:testTextFile
+                    $script:result.Section | Should -Be $script:testSection
+                    $script:result.Key     | Should -Be $script:testKey
+                    $script:result.Type    | Should -Be 'Text'
+                    $script:result.Text    | Should -Be $script:testText
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -105,19 +105,19 @@ try
                             -Section $script:testSection `
                             -Key $script:testKey `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path    | Should Be $script:testTextFile
-                    $script:result.Section | Should Be $script:testSection
-                    $script:result.Key     | Should Be $script:testKey
-                    $script:result.Type    | Should Be 'Text'
-                    $script:result.Text    | Should Be ''
+                    $script:result.Path    | Should -Be $script:testTextFile
+                    $script:result.Section | Should -Be $script:testSection
+                    $script:result.Key     | Should -Be $script:testKey
+                    $script:result.Type    | Should -Be 'Text'
+                    $script:result.Text    | Should -Be ''
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -159,11 +159,11 @@ try
                             -Key $script:testKey `
                             -Text $script:testText `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -203,11 +203,11 @@ try
                             -Type 'Secret' `
                             -Secret $script:testSecretCredential `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -252,15 +252,15 @@ try
                             -Key $script:testKey `
                             -Text $script:testText `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -300,15 +300,15 @@ try
                             -Key $script:testKey `
                             -Text $script:testText `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -349,15 +349,15 @@ try
                             -Type 'Secret' `
                             -Secret $script:testSecretCredential `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -398,15 +398,15 @@ try
                             -Type 'Secret' `
                             -Secret $script:testSecretCredential `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -438,11 +438,11 @@ try
                             -Section $script:testSection `
                             -Key $script:testKey `
                             -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Test-Path -Exactly 1
                 }
             }
@@ -465,11 +465,11 @@ try
                             -Section $script:testSection `
                             -Key $script:testKey `
                             -Verbose
-                    } | Should Throw $errorRecord
+                    } | Should -Throw $errorRecord
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Test-Path -Exactly 1
                 }
             }
