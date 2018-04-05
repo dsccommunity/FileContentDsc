@@ -33,25 +33,25 @@ try
 
             Context 'text with no new line' {
                 It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textNoNewLine | Should Be "`r`n"
+                    Get-TextEolCharacter -Text $textNoNewLine | Should -Be "`r`n"
                 }
             }
 
             Context 'text with CRLF only' {
                 It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textCRLFOnly | Should Be "`r`n"
+                    Get-TextEolCharacter -Text $textCRLFOnly | Should -Be "`r`n"
                 }
             }
 
             Context 'text with CR only' {
                 It 'should return CR' {
-                    Get-TextEolCharacter -Text $textCROnly | Should Be "`r"
+                    Get-TextEolCharacter -Text $textCROnly | Should -Be "`r"
                 }
             }
 
             Context 'text with both CR and CRLF' {
                 It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textBoth | Should Be "`r`n"
+                    Get-TextEolCharacter -Text $textBoth | Should -Be "`r`n"
                 }
             }
         }
