@@ -102,19 +102,19 @@ $($script:testAddedName)=$($script:testText)
                         -Path $script:testTextFile `
                         -Name $script:testName `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should Be $script:testTextFile
-                    $script:result.Name   | Should Be $script:testName
-                    $script:result.Ensure | Should Be 'Present'
-                    $script:result.Type   | Should Be 'Text'
-                    $script:result.Text   | Should Be "$($script:testText),$($script:testText),$($script:testText)"
+                    $script:result.Path   | Should -Be $script:testTextFile
+                    $script:result.Name   | Should -Be $script:testName
+                    $script:result.Ensure | Should -Be 'Present'
+                    $script:result.Type   | Should -Be 'Text'
+                    $script:result.Text   | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -144,19 +144,19 @@ $($script:testAddedName)=$($script:testText)
                         -Path $script:testTextFile `
                         -Name $script:testName.ToUpper() `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should Be $script:testTextFile
-                    $script:result.Name   | Should Be $script:testName
-                    $script:result.Ensure | Should Be 'Absent'
-                    $script:result.Type   | Should Be 'Text'
-                    $script:result.Text   | Should BeNullOrEmpty
+                    $script:result.Path   | Should -Be $script:testTextFile
+                    $script:result.Name   | Should -Be $script:testName
+                    $script:result.Ensure | Should -Be 'Absent'
+                    $script:result.Type   | Should -Be 'Text'
+                    $script:result.Text   | Should -BeNullOrEmpty
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -198,11 +198,11 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Present' `
                         -Text $script:testText `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -249,11 +249,11 @@ $($script:testAddedName)=$($script:testText)
                         -Type 'Secret' `
                         -Secret $script:testSecretCredential `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -299,11 +299,11 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Present' `
                         -Text $script:testText `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -350,11 +350,11 @@ $($script:testAddedName)=$($script:testText)
                         -Text $script:testText `
                         -IgnoreNameCase:$true `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -395,11 +395,11 @@ $($script:testAddedName)=$($script:testText)
                         -Name $script:testName.ToUpper() `
                         -Ensure 'Absent' `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -441,11 +441,11 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Absent' `
                         -IgnoreNameCase:$true `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -487,15 +487,15 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Present' `
                         -Text $script:testText `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -524,15 +524,15 @@ $($script:testAddedName)=$($script:testText)
                         -Name $script:testName.ToUpper() `
                         -Ensure 'Absent' `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -562,15 +562,15 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Present' `
                         -Text $script:testText `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -601,15 +601,15 @@ $($script:testAddedName)=$($script:testText)
                         -Type 'Secret' `
                         -Secret $script:testSecretCredential `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -640,15 +640,15 @@ $($script:testAddedName)=$($script:testText)
                         -Type 'Secret' `
                         -Secret $script:testSecretCredential `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -679,15 +679,15 @@ $($script:testAddedName)=$($script:testText)
                         -Text $script:testText `
                         -IgnoreNameCase:$true `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -717,15 +717,15 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Present' `
                         -Text $script:testText.ToUpper() `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -756,15 +756,15 @@ $($script:testAddedName)=$($script:testText)
                         -Text $script:testText.ToUpper() `
                         -IgnoreValueCase:$true `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return true' {
-                    $script:result | Should Be $true
+                    $script:result | Should -Be $true
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -794,15 +794,15 @@ $($script:testAddedName)=$($script:testText)
                         -Ensure 'Absent' `
                         -Text $script:testText `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should return false' {
-                    $script:result | Should Be $false
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
@@ -829,11 +829,11 @@ $($script:testAddedName)=$($script:testText)
                         -Path $script:testTextFile `
                         -Name $script:testName `
                         -Verbose
-                    } | Should Not Throw
+                    } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Test-Path -Exactly 1
                 }
             }
@@ -855,11 +855,11 @@ $($script:testAddedName)=$($script:testText)
                         -Path $script:testTextFile `
                         -Name $script:testName `
                         -Verbose
-                    } | Should Throw $errorRecord
+                    } | Should -Throw $errorRecord
                 }
 
                 It 'Should call the expected mocks' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                     Assert-MockCalled -CommandName Test-Path -Exactly 1
                 }
             }

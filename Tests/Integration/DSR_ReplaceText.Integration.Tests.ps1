@@ -1,4 +1,4 @@
-﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
 param ()
 
 Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'TestHelpers') -ChildPath 'CommonTestHelper.psm1')
@@ -82,25 +82,25 @@ Setting3.Test=Value4
                         -ConfigurationData $configData
 
                     Start-DscConfiguration -Path $TestDrive -ErrorAction 'Stop' -Wait -Force -Verbose
-                } | Should Not Throw
+                } | Should -Not -Throw
             }
 
             It 'Should be able to call Get-DscConfiguration without throwing' {
-                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should Not throw
+                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should -Not -throw
             }
 
             It 'Should have set the resource and all the parameters should match' {
                 $script:current = $script:currentDscConfig | Where-Object {
                     $_.ConfigurationName -eq $script:configurationName
                 }
-                $current.Path             | Should Be $script:testTextFile
-                $current.Search           | Should Be $script:testSearch
-                $current.Type             | Should Be 'Text'
-                $current.Text             | Should Be "$($script:testTextReplace),$($script:testTextReplace),$($script:testTextReplace)"
+                $current.Path             | Should -Be $script:testTextFile
+                $current.Search           | Should -Be $script:testSearch
+                $current.Type             | Should -Be 'Text'
+                $current.Text             | Should -Be "$($script:testTextReplace),$($script:testTextReplace),$($script:testTextReplace)"
             }
 
             It 'Should be convert the file content to match expected content' {
-                Get-Content -Path $script:testTextFile -Raw | Should Be $script:testFileExpectedTextContent
+                Get-Content -Path $script:testTextFile -Raw | Should -Be $script:testFileExpectedTextContent
             }
 
             AfterAll {
@@ -142,25 +142,25 @@ Setting3.Test=Value4
                         -ConfigurationData $configData
 
                     Start-DscConfiguration -Path $TestDrive -ErrorAction 'Stop' -Wait -Force -Verbose
-                } | Should Not Throw
+                } | Should -Not -Throw
             }
 
             It 'Should be able to call Get-DscConfiguration without throwing' {
-                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should Not throw
+                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should -Not -throw
             }
 
             It 'Should have set the resource and all the parameters should match' {
                 $script:current = $script:currentDscConfig | Where-Object {
                     $_.ConfigurationName -eq $script:configurationName
                 }
-                $current.Path             | Should Be $script:testTextFile
-                $current.Search           | Should Be $script:testSearch
-                $current.Type             | Should Be 'Text'
-                $current.Text             | Should Be "$($script:testSecretReplace),$($script:testSecretReplace),$($script:testSecretReplace)"
+                $current.Path             | Should -Be $script:testTextFile
+                $current.Search           | Should -Be $script:testSearch
+                $current.Type             | Should -Be 'Text'
+                $current.Text             | Should -Be "$($script:testSecretReplace),$($script:testSecretReplace),$($script:testSecretReplace)"
             }
 
             It 'Should be convert the file content to match expected content' {
-                Get-Content -Path $script:testTextFile -Raw | Should Be $script:testFileExpectedSecretContent
+                Get-Content -Path $script:testTextFile -Raw | Should -Be $script:testFileExpectedSecretContent
             }
 
             AfterAll {
