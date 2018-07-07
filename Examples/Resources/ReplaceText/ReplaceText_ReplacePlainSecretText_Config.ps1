@@ -1,5 +1,7 @@
+#Requires -module FileContentDsc
+
 <#
-    .EXAMPLE
+    .DESCRIPTION
     Set all occrurances of the string `%secret%` to be the value in
     the password set in the parameter $Secret PSCredential object
     in the file `c:\inetpub\wwwroot\default.htm`.
@@ -9,10 +11,6 @@ Configuration Example
     param
     (
         [Parameter()]
-        [System.String[]]
-        $NodeName = 'localhost',
-
-        [Parameter()]
         [ValidateNotNullorEmpty()]
         [PSCredential]
         $Secret
@@ -20,7 +18,7 @@ Configuration Example
 
     Import-DSCResource -ModuleName FileContentDsc
 
-    Node $NodeName
+    Node localhost
     {
         ReplaceText SetSecretText
         {

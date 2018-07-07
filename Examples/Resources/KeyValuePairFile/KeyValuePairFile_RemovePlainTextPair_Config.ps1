@@ -1,19 +1,14 @@
+#Requires -module FileContentDsc
+
 <#
-    .EXAMPLE
+    .DESCRIPTION
     Remove all `Core.Logging` keys in the file `c:\myapp\myapp.conf`.
 #>
 Configuration Example
 {
-    param
-    (
-        [Parameter()]
-        [System.String[]]
-        $NodeName = 'localhost'
-    )
-
     Import-DSCResource -ModuleName FileContentDsc
 
-    Node $NodeName
+    Node localhost
     {
         KeyValuePairFile RemoveCoreLogging
         {

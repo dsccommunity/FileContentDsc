@@ -1,20 +1,15 @@
+#Requires -module FileContentDsc
+
 <#
-    .EXAMPLE
+    .DESCRIPTION
     Set all `Core.Logging` keys to `Information` or add it
     if it is missing in the file `c:\myapp\myapp.conf`.
 #>
 Configuration Example
 {
-    param
-    (
-        [Parameter()]
-        [System.String[]]
-        $NodeName = 'localhost'
-    )
-
     Import-DSCResource -ModuleName FileContentDsc
 
-    Node $NodeName
+    Node localhost
     {
         KeyValuePairFile SetCoreLogging
         {
