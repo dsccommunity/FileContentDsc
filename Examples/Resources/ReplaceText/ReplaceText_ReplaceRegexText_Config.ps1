@@ -1,21 +1,16 @@
+#Requires -module FileContentDsc
+
 <#
-    .EXAMPLE
-    Set all occrurances of a string matching the regular expression 
+    .DESCRIPTION
+    Set all occrurances of a string matching the regular expression
     `<img src=['``"][a-zA-Z0-9.]*['``"]>` with the text `<img src="imgs/placeholder.jpg">`
     in the file `c:\inetpub\wwwroot\default.htm`
 #>
 Configuration Example
 {
-    param
-    (
-        [Parameter()]
-        [System.String[]]
-        $NodeName = 'localhost'
-    )
-
     Import-DSCResource -ModuleName FileContentDsc
 
-    Node $NodeName
+    Node localhost
     {
         ReplaceText SetTextWithRegex
         {

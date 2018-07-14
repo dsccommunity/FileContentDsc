@@ -5,6 +5,8 @@
 - Enabled PSSA rule violations to fail build - Fixes [Issue #6](https://github.com/PlagueHO/FileContentDsc/issues/6).
 - Updated tests to meet Pester v4 standard.
 - Added Open Code of Conduct.
+- Refactored module folder structure to move resource
+  to root folder of repository and remove test harness - Fixes [Issue #11](https://github.com/PlagueHO/FileContentDsc/issues/11).
 
 ## 1.0.0.0
 
