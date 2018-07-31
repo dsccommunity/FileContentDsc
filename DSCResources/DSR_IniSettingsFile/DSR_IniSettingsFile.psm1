@@ -220,6 +220,12 @@ function Test-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
+    # Check if file being managed exists. If not return $False.
+    if (-not (Test-Path -Path $Path))
+    {
+        return $false
+    }
+
     if ($Type -eq 'Secret')
     {
         $Text = $Secret.GetNetworkCredential().Password
@@ -306,8 +312,9 @@ function Assert-ParametersValid
         $Secret
     )
 
-    # Does the file in path exist?
-    if (-not (Test-Path -Path $Path))
+    # Does the file in parent path exist?
+    $parentPath = Split-Path -Path $Path -Parent
+    if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
             -Message ($localizedData.FileNotFoundError -f $Path) `
