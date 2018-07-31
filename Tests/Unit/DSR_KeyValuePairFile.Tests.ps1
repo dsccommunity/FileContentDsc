@@ -488,6 +488,12 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -527,6 +533,12 @@ $($script:testAddedName)=$($script:testText)
                     -Verifiable
 
                 Mock `
+                -CommandName Test-Path `
+                -ModuleName 'DSR_KeyValuePairFile' `
+                -MockWith { $true } `
+                -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileContent } `
@@ -561,6 +573,12 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -599,6 +617,12 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -640,6 +664,12 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -677,6 +707,12 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -718,6 +754,12 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -756,6 +798,12 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -764,12 +812,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText.ToUpper() `
-                        -IgnoreValueCase:$true `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText.ToUpper() `
+                            -IgnoreValueCase:$true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -793,6 +841,12 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                    Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -830,8 +884,14 @@ $($script:testAddedName)=$($script:testText)
 
         #region Function Assert-ParametersValid
         Describe 'DSR_KeyValuePairFile\Assert-ParametersValid' {
-            Context 'File exists' {
+            Context 'File parent path exists' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -840,9 +900,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Assert-ParametersValid `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -852,8 +912,14 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'File parent path does not exist' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -866,9 +932,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should throw expected exception' {
                     { Assert-ParametersValid `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Verbose
                     } | Should -Throw $errorRecord
                 }
 
