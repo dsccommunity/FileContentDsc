@@ -138,7 +138,7 @@ function Set-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw
+    $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
 
     if ($Type -eq 'Secret')
     {
@@ -153,7 +153,14 @@ function Set-TargetResource
                 $Path, $Text)
     } # if
 
-    $fileContent = $fileContent -Replace $Search, $Text
+    if ($null -eq $fileContent)
+    {
+        $fileContent = $Text
+    }
+    else
+    {
+        $fileContent = $fileContent -Replace $Search, $Text
+    }
 
     Set-Content `
         -Path $Path `
@@ -215,6 +222,12 @@ function Test-TargetResource
     )
 
     Assert-ParametersValid @PSBoundParameters
+
+    # Check if file being managed exists. If not return $False.
+    if (-not (Test-Path -Path $Path))
+    {
+        return $false
+    }
 
     $fileContent = Get-Content -Path $Path -Raw
 
@@ -315,11 +328,12 @@ function Assert-ParametersValid
         $Secret
     )
 
-    # Does the file in path exist?
-    if (-not (Test-Path -Path $Path))
+    # Does the file's parent path exist?
+    $parentPath = Split-Path -Path $Path -Parent
+    if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileNotFoundError -f $Path) `
+            -Message ($localizedData.FileParentNotFoundError -f $parentPath) `
             -ArgumentName 'Path'
     } # if
 }

@@ -927,7 +927,7 @@ $($script:testAddedName)=$($script:testText)
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileNotFoundError -f $script:testTextFile) `
+                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {

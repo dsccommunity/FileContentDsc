@@ -6,5 +6,5 @@ ConvertFrom-StringData @'
     SetIniSettingSecretMessage = Setting the entry '{1}' key '{2}' to secret text in INI settings file '{0}'.
     IniSettingMatchesMessage = The entry '{1}' key '{2}' in INI settings file '{0}' is in the correct state. Change not required.
     IniSettingMismatchMessage = The entry '{1}' key '{2}' in INI settings file '{0}' is not in the correct state. Change required.
-    FileNotFoundError = File '{0}' not found.
+    FileParentNotFoundError = File parent path '{0}' not found.
 '@

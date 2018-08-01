@@ -441,6 +441,12 @@ try
             Context 'File exists' {
                 # verifiable (should be called) mocks
                 Mock `
+                -CommandName Split-Path `
+                -ParameterFilter { $path -eq $script:testTextFile } `
+                -MockWith { $script:testTextFile } `
+                -Verifiable
+
+                Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $true } `
@@ -461,8 +467,14 @@ try
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'File parent does not exist' {
                 # verifiable (should be called) mocks
+                Mock `
+                -CommandName Split-Path `
+                -ParameterFilter { $path -eq $script:testTextFile } `
+                -MockWith { $script:testTextFile } `
+                -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -470,7 +482,7 @@ try
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileNotFoundError -f $script:testTextFile) `
+                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {

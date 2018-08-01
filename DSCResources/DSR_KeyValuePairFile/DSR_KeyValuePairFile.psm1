@@ -497,12 +497,12 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false
     )
 
-    # Does the file in parent path exist?
+    # Does the file's parent path exist?
     $parentPath = Split-Path -Path $Path -Parent
     if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileNotFoundError -f $Path) `
+            -Message ($localizedData.FileParentNotFoundError -f $Path) `
             -ArgumentName 'Path'
     } # if
 }

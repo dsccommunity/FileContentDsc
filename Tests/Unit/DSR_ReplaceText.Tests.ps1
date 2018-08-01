@@ -268,6 +268,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileContent } `
@@ -304,6 +310,12 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -346,6 +358,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedTextContent } `
@@ -382,6 +400,12 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -425,6 +449,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedSecretContent } `
@@ -464,6 +494,12 @@ Setting3.Test=Value4
             Context 'File exists' {
                 # verifiable (should be called) mocks
                 Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $true } `
@@ -483,8 +519,14 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'File parent does not exist' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -492,7 +534,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileNotFoundError -f $script:testTextFile) `
+                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {
