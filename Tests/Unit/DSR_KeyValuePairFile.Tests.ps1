@@ -184,6 +184,56 @@ $($script:testAddedName)=$($script:testText)
 
         #region Function Set-TargetResource
         Describe 'DSR_KeyValuePairFile\Set-TargetResource' {
+            Context 'File does not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $null } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq "$script:testName=$script:testText")
+                    } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { Set-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName `
+                        -Ensure 'Present' `
+                        -Text $script:testText `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq "$script:testName=$script:testText")
+                        } `
+                        -Exactly 1
+                }
+            }
+
             Context 'File exists and contains matching key that should exist' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -488,7 +538,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -533,10 +583,10 @@ $($script:testAddedName)=$($script:testText)
                     -Verifiable
 
                 Mock `
-                -CommandName Test-Path `
-                -ModuleName 'DSR_KeyValuePairFile' `
-                -MockWith { $true } `
-                -Verifiable
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $true } `
+                    -Verifiable
 
                 Mock `
                     -CommandName Get-Content `
@@ -575,7 +625,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -619,7 +669,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -664,7 +714,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -709,7 +759,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -754,7 +804,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -798,7 +848,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -843,7 +893,7 @@ $($script:testAddedName)=$($script:testText)
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -Verifiable
 
-                    Mock `
+                Mock `
                     -CommandName Test-Path `
                     -ModuleName 'DSR_KeyValuePairFile' `
                     -MockWith { $true } `
@@ -879,6 +929,40 @@ $($script:testAddedName)=$($script:testText)
                         -Exactly 1
                 }
             }
+
+            Context 'File exists and does not contain matching key but it should' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -MockWith { $false } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName.ToUpper() `
+                        -Ensure 'Present' `
+                        -Text $script:testText `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return false' {
+                    $script:result | Should -Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+                }
+            }
+
         }
         #endregion
 
