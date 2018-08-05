@@ -9,6 +9,7 @@
   to root folder of repository and remove test harness - Fixes [Issue #11](https://github.com/PlagueHO/FileContentDsc/issues/11).
 - Converted Examples to support format for publishing to PowerShell
   Gallery.
+- Refactor Test-TargetResource to return $false in all DSC resource -Fixes [Issue #12](https://github.com/PlagueHO/FileContentDsc/issues/13)
 
 ## 1.0.0.0
 

@@ -14,5 +14,5 @@ ConvertFrom-StringData @'
     KeyFoundButNoReplacementMessage = Key '{1}' found in file '{0}' and should exist and value(s) are correct. Change not required.
     KeyFoundReplacementRequiredMessage = Key '{1}' found in file '{0}' and should exist but value(s) are not correct. Change required.
     KeyFoundButShouldNotExistMessage = Key '{1}' found in file '{0}' but should not exist. Change required.
-    FileNotFoundError = File '{0}' not found.
+    FileParentNotFoundError = File parent path '{0}' not found.
 '@

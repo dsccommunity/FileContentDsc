@@ -235,6 +235,60 @@ try
                         -Exactly 1
                 }
             }
+
+            Context 'File does not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-IniSettingFileValue `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($section -eq $script:testSection) -and `
+                        ($key -eq $script:testKey) -and `
+                        ($value -eq $script:testText)
+                    } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_IniSettingsFile' `
+                    -MockWith { $false } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Out-File `
+                    -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { Set-TargetResource `
+                            -Path $script:testTextFile `
+                            -Section $script:testSection `
+                            -Key $script:testKey `
+                            -Text $script:testText `
+                            -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-IniSettingFileValue `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($section -eq $script:testSection) -and `
+                            ($key -eq $script:testKey) -and `
+                            ($value -eq $script:testText)
+                        } `
+                        -Exactly 1
+                }
+            }
         }
         #endregion
 
@@ -433,6 +487,33 @@ try
                         -Exactly 1
                 }
             }
+
+            Context 'File does not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_IniSettingsFile' `
+                    -MockWith { $false }
+
+                It 'Should return false' {
+                    $result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Section $script:testSection `
+                        -Key $script:testKey `
+                        -Text $script:testText
+
+                    $result | Should -Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                }
+            }
         }
         #endregion
 
@@ -440,6 +521,12 @@ try
         Describe 'DSR_IniSettingsFile\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -461,8 +548,14 @@ try
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'File parent does not exist' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -470,7 +563,7 @@ try
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileNotFoundError -f $script:testTextFile) `
+                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {

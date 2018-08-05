@@ -177,7 +177,7 @@ function Set-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw
+    $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
             $Path, $Name)
@@ -187,61 +187,68 @@ function Set-TargetResource
         $Text = $Secret.GetNetworkCredential().Password
     } # if
 
-    # Determine the EOL characters used in the file
-    $eolChars = Get-TextEolCharacter -Text $fileContent
-
-    # Setup the Regex Options that will be used
-    $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
-    if ($IgnoreNameCase)
+    if ($null -ne $fileContent)
     {
-        $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
-    }
+        # Determine the EOL characters used in the file
+        $eolChars = Get-TextEolCharacter -Text $fileContent
 
-    # Search the key that matches the requested key
-    $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
-
-    if ($Ensure -eq 'Present')
-    {
-        # The key value pair should exist
-        $keyValuePair = '{0}={1}{2}' -f $Name, $Text, $eolChars
-
-        if ($results.Count -eq 0)
+        # Setup the Regex Options that will be used
+        $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
+        if ($IgnoreNameCase)
         {
-            # The key value pair was not found so add it to the end of the file
-            if (-not $fileContent.EndsWith($eolChars))
+            $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+        }
+
+        # Search the key that matches the requested key
+        $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
+
+        if ($Ensure -eq 'Present')
+        {
+            # The key value pair should exist
+            $keyValuePair = '{0}={1}{2}' -f $Name, $Text, $eolChars
+
+            if ($results.Count -eq 0)
             {
-                $fileContent += $eolChars
+                # The key value pair was not found so add it to the end of the file
+                if (-not $fileContent.EndsWith($eolChars))
+                {
+                    $fileContent += $eolChars
+                } # if
+
+                $fileContent += $keyValuePair
+
+                Write-Verbose -Message ($localizedData.KeyAddMessage -f `
+                        $Path, $Name)
+            }
+            else
+            {
+                # The key value pair was found so update it
+                $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)($eolChars*)", $keyValuePair, $regExOptions)
+
+                Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
+                        $Path, $Name)
             } # if
-
-            $fileContent += $keyValuePair
-
-            Write-Verbose -Message ($localizedData.KeyAddMessage -f `
-                    $Path, $Name)
         }
         else
         {
-            # The key value pair was found so update it
-            $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)($eolChars*)", $keyValuePair, $regExOptions)
+            if ($results.Count -eq 0)
+            {
+                # The Key does not exists and should not so don't do anything
+                return
+            }
+            else
+            {
+                # The Key exists in the file but should not so remove it
+                $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)$eolChars", '', $regExOptions)
 
-            Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
-                    $Path, $Name)
+                Write-Verbose -Message ($localizedData.KeyRemoveMessage -f `
+                        $Path, $Name)
+            }
         } # if
     }
     else
     {
-        if ($results.Count -eq 0)
-        {
-            # The Key does not exists and should not so don't do anything
-            return
-        }
-        else
-        {
-            # The Key exists in the file but should not so remove it
-            $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)$eolChars", '', $regExOptions)
-
-            Write-Verbose -Message ($localizedData.KeyRemoveMessage -f `
-                    $Path, $Name)
-        }
+        $fileContent = '{0}={1}' -f $Name, $Text
     } # if
 
     Set-Content `
@@ -330,6 +337,12 @@ function Test-TargetResource
 
     # Flag to signal whether settings are correct
     [Boolean] $desiredConfigurationMatch = $true
+
+    # Check if file being managed exists. If not return $False.
+    if (-not (Test-Path -Path $Path))
+    {
+        return $false
+    }
 
     $fileContent = Get-Content -Path $Path -Raw
 
@@ -484,11 +497,12 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false
     )
 
-    # Does the file in path exist?
-    if (-not (Test-Path -Path $Path))
+    # Does the file's parent path exist?
+    $parentPath = Split-Path -Path $Path -Parent
+    if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileNotFoundError -f $Path) `
+            -Message ($localizedData.FileParentNotFoundError -f $Path) `
             -ArgumentName 'Path'
     } # if
 }

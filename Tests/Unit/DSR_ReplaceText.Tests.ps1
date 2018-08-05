@@ -255,6 +255,56 @@ Setting3.Test=Value4
                         -Exactly 1
                 }
             }
+
+            Context 'File does not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $null } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testTextReplace)
+                    } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { Set-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearch `
+                        -Text $script:testTextReplace `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq $script:testTextReplace)
+                        } `
+                        -Exactly 1
+                }
+            }
+
         }
         #endregion
 
@@ -265,6 +315,12 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -307,6 +363,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileContent } `
@@ -346,6 +408,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedTextContent } `
@@ -382,6 +450,12 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -425,6 +499,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedSecretContent } `
@@ -456,6 +536,49 @@ Setting3.Test=Value4
                         -Exactly 1
                 }
             }
+
+            Context 'File does not exist' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $false } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent }
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Text $script:testTextReplace `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return true' {
+                    $script:result | Should -Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -Exactly 0
+                }
+            }
         }
         #endregion
 
@@ -463,6 +586,12 @@ Setting3.Test=Value4
         Describe 'DSR_ReplaceText\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -483,8 +612,14 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'File parent does not exist' {
                 # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Split-Path `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testTextFile } `
+                    -Verifiable
+
                 Mock `
                     -CommandName Test-Path `
                     -ParameterFilter { $path -eq $script:testTextFile } `
@@ -492,7 +627,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileNotFoundError -f $script:testTextFile) `
+                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {
