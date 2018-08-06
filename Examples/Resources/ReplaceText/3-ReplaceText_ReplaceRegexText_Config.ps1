@@ -23,7 +23,7 @@
     `<img src=['``"][a-zA-Z0-9.]*['``"]>` with the text `<img src="imgs/placeholder.jpg">`
     in the file `c:\inetpub\wwwroot\default.htm`
 #>
-Configuration Example
+Configuration ReplaceText_ReplaceRegexText_Config
 {
     Import-DSCResource -ModuleName FileContentDsc
 

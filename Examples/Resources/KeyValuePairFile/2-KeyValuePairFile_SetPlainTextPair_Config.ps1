@@ -22,7 +22,7 @@
     Set all `Core.Logging` keys to `Information` or add it
     if it is missing in the file `c:\myapp\myapp.conf`.
 #>
-Configuration Example
+Configuration KeyValuePairFile_SetPlainTextPair_Config
 {
     Import-DSCResource -ModuleName FileContentDsc
 

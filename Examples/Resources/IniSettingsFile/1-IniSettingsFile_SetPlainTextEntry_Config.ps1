@@ -22,7 +22,7 @@
     Set the `Level` entry in the [Logging] section to `Information`
     in the file `c:\myapp\myapp.ini`.
 #>
-Configuration Example
+Configuration IniSettingsFile_SetPlainTextEntry_Config
 {
     Import-DSCResource -ModuleName FileContentDsc
 
