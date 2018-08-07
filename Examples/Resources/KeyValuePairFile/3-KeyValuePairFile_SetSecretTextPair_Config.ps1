@@ -22,7 +22,7 @@
     Set all `Core.Password` keys to the password provided in the $Secret
     credential object or add it if it is missing in the file `c:\myapp\myapp.conf`.
 #>
-Configuration Example
+Configuration KeyValuePairFile_SetSecretTextPair_Config
 {
     param
     (

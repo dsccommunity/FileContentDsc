@@ -23,7 +23,7 @@
     the password set in the parameter $Secret PSCredential object
     in the file `c:\inetpub\wwwroot\default.htm`.
 #>
-Configuration Example
+Configuration ReplaceText_ReplacePlainSecretText_Config
 {
     param
     (

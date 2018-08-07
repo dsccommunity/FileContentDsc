@@ -21,7 +21,7 @@
     .DESCRIPTION
     Remove all `Core.Logging` keys in the file `c:\myapp\myapp.conf`.
 #>
-Configuration Example
+Configuration KeyValuePairFile_RemovePlainTextPair_Config
 {
     Import-DSCResource -ModuleName FileContentDsc
 

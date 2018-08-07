@@ -22,7 +22,7 @@
     Set the `ConnectionString` entry in the [Database] section to the password
     provided in the $Secret credential object in the file `c:\myapp\myapp.ini`.
 #>
-Configuration Example
+Configuration IniSettingsFile_SetSecretTextEntry_Config
 {
     param
     (
