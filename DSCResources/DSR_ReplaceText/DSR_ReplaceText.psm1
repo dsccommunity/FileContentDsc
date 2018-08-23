@@ -52,9 +52,10 @@ function Get-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-            $Path, $Search)
+        $Path, $Search)
 
     $text = ''
 
@@ -65,21 +66,22 @@ function Get-TargetResource
     {
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     }
     else
     {
         $text = ($results.Value -join ',')
 
         Write-Verbose -Message ($localizedData.StringMatchFoundMessage -f `
-                $Path, $Search, $text)
+            $Path, $Search, $text)
     } # if
 
     return @{
-        Path   = $Path
-        Search = $Search
-        Type   = 'Text'
-        Text   = $text
+        Path     = $Path
+        Search   = $Search
+        Type     = 'Text'
+        Text     = $text
+        Encoding = $fileEncoding
     }
 }
 
@@ -103,6 +105,9 @@ function Get-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Set-TargetResource
 {
@@ -133,7 +138,11 @@ function Set-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [String]
+        $Encoding = 'Default'
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -143,14 +152,14 @@ function Set-TargetResource
     if ($Type -eq 'Secret')
     {
         Write-Verbose -Message ($localizedData.StringReplaceSecretMessage -f `
-                $Path)
+            $Path)
 
         $Text = $Secret.GetNetworkCredential().Password
     }
     else
     {
         Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
-                $Path, $Text)
+            $Path, $Text)
     } # if
 
     if ($null -eq $fileContent)
@@ -165,6 +174,7 @@ function Set-TargetResource
     Set-Content `
         -Path $Path `
         -Value $fileContent `
+        -Encoding $Encoding `
         -NoNewline `
         -Force
 }
@@ -189,6 +199,9 @@ function Set-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Test-TargetResource
 {
@@ -218,21 +231,38 @@ function Test-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [String]
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    # Check if file being managed exists. If not return $False.
+    # Check for the file being managed. If it does not exist return $false.
+    # If it exists but is using the wrong encoding return $false.
     if (-not (Test-Path -Path $Path))
     {
         return $false
+    }
+    else
+    {
+        $fileEncoding = Get-FileEncoding $Path
+
+        if ($Encoding -ne $fileEncoding)
+        {
+            Write-Verbose -Message ($localizedData.FileEncodingNotSetProperly -f `
+                $fileEncoding, $Encoding)
+
+            return $false
+        }
     }
 
     $fileContent = Get-Content -Path $Path -Raw
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-            $Path, $Search)
+        $Path, $Search)
 
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
@@ -241,7 +271,7 @@ function Test-TargetResource
     {
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-                $Path, $Search)
+            $Path, $Search)
 
         return $true
     }
@@ -265,12 +295,12 @@ function Test-TargetResource
     if ($desiredConfigurationMatch)
     {
         Write-Verbose -Message ($localizedData.StringNoReplacementMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     }
     else
     {
         Write-Verbose -Message ($localizedData.StringReplacementRequiredMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     } # if
 
     return $desiredConfigurationMatch
@@ -297,6 +327,9 @@ function Test-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -325,7 +358,11 @@ function Assert-ParametersValid
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [String]
+        $Encoding
     )
 
     # Does the file's parent path exist?

@@ -9,4 +9,5 @@ ConvertFrom-StringData @'
     StringReplaceTextMessage = String replaced by '{1}' in file '{0}'.
     StringReplaceSecretMessage = String replaced by secret text in file '{0}'.
     FileParentNotFoundError = File parent path '{0}' not found.
+    FileEncodingNotSetProperly = File encoding is set to {0} but should be set to {1}, change required.
 '@
