@@ -52,6 +52,7 @@ function Get-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
             $Path, $Name)
@@ -91,6 +92,7 @@ function Get-TargetResource
     return @{
         Path            = $Path
         Name            = $Name
+        Encoding        = $fileEncoding
         Ensure          = $ensure
         Type            = 'Text'
         Text            = $text
@@ -129,6 +131,9 @@ function Get-TargetResource
     .PARAMETER IgnoreValueCase
         Ignore the case of any text or secret when determining if it they need to be updated.
         Defaults to $False.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Set-TargetResource
 {
@@ -172,12 +177,17 @@ function Set-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $IgnoreValueCase = $false
+        $IgnoreValueCase = $false,
+
+        [Parameter()]
+        [String]
+        $Encoding = 'Default'
     )
 
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
             $Path, $Name)
@@ -218,7 +228,7 @@ function Set-TargetResource
                 $fileContent += $keyValuePair
 
                 Write-Verbose -Message ($localizedData.KeyAddMessage -f `
-                        $Path, $Name)
+                    $Path, $Name)
             }
             else
             {
@@ -226,15 +236,27 @@ function Set-TargetResource
                 $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)($eolChars*)", $keyValuePair, $regExOptions)
 
                 Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
-                        $Path, $Name)
+                    $Path, $Name)
             } # if
         }
         else
         {
             if ($results.Count -eq 0)
             {
-                # The Key does not exists and should not so don't do anything
-                return
+                # The Key does not exists and should not so don't do anything, unless encoding doesn't match
+                if ($Encoding -ne $fileEncoding)
+                {
+                    Set-Content `
+                        -Path $Path `
+                        -Value $fileContent `
+                        -Encoding $Encoding `
+                        -NoNewline `
+                        -Force
+                }
+                else
+                {
+                    return
+                }
             }
             else
             {
@@ -242,7 +264,7 @@ function Set-TargetResource
                 $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)$eolChars", '', $regExOptions)
 
                 Write-Verbose -Message ($localizedData.KeyRemoveMessage -f `
-                        $Path, $Name)
+                    $Path, $Name)
             }
         } # if
     }
@@ -254,6 +276,7 @@ function Set-TargetResource
     Set-Content `
         -Path $Path `
         -Value $fileContent `
+        -Encoding $Encoding `
         -NoNewline `
         -Force
 }
@@ -288,6 +311,9 @@ function Set-TargetResource
     .PARAMETER IgnoreValueCase
         Ignore the case of any text or secret when determining if it they need to be updated.
         Defaults to $False.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Test-TargetResource
 {
@@ -330,7 +356,11 @@ function Test-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $IgnoreValueCase = $false
+        $IgnoreValueCase = $false,
+
+        [Parameter()]
+        [String]
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -343,11 +373,23 @@ function Test-TargetResource
     {
         return $false
     }
+    else
+    {
+        $fileEncoding = Get-FileEncoding $Path
+
+        if ($Encoding -ne $fileEncoding)
+        {
+            Write-Verbose -Message ($localizedData.FileEncodingNotSetProperly -f `
+                $fileEncoding, $Encoding)
+
+            return $false
+        }
+    }
 
     $fileContent = Get-Content -Path $Path -Raw
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-            $Path, $Name)
+        $Path, $Name)
 
     # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
@@ -366,7 +408,7 @@ function Test-TargetResource
         {
             # The key value pairs should exist but do not
             Write-Verbose -Message ($localizedData.KeyNotFoundButShouldExistMessage -f `
-                    $Path, $Name)
+                $Path, $Name)
 
             $desiredConfigurationMatch = $false
         }
@@ -374,7 +416,7 @@ function Test-TargetResource
         {
             # The key value pairs should exist and do
             Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
-                    $Path, $Name)
+                $Path, $Name)
         } # if
     }
     else
@@ -401,19 +443,19 @@ function Test-TargetResource
             if ($desiredConfigurationMatch)
             {
                 Write-Verbose -Message ($localizedData.KeyFoundButNoReplacementMessage -f `
-                        $Path, $Name)
+                    $Path, $Name)
             }
             else
             {
                 Write-Verbose -Message ($localizedData.KeyFoundReplacementRequiredMessage -f `
-                        $Path, $Name)
+                    $Path, $Name)
             } # if
         }
         else
         {
             # The key value pairs should not exist
             Write-Verbose -Message ($localizedData.KeyFoundButShouldNotExistMessage -f `
-                    $Path, $Name)
+                $Path, $Name)
 
             $desiredConfigurationMatch = $false
         } # if
@@ -453,6 +495,9 @@ function Test-TargetResource
     .PARAMETER IgnoreValueCase
         Ignore the case of any text or secret when determining if it they need to be updated.
         Defaults to $False.
+
+    .PARAMETER Encoding
+        Specifies the file encoding.  The default value is ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -494,7 +539,11 @@ function Assert-ParametersValid
 
         [Parameter()]
         [System.Boolean]
-        $IgnoreValueCase = $false
+        $IgnoreValueCase = $false,
+
+        [Parameter()]
+        [String]
+        $Encoding
     )
 
     # Does the file's parent path exist?
