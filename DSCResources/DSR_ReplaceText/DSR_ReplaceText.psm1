@@ -155,18 +155,26 @@ function Set-TargetResource
 
     if ($null -eq $fileContent)
     {
+        # configuration file does not exist
         $fileContent = $Text
+    }
+    elseif ( [regex]::Matches($fileContent, $Search).Count -eq 0 )
+    {
+        # configuration file exists but Text does not exist so lets add it
+        $fileContent = "{0}`n`r{1}" -f $fileContent, $Text
     }
     else
     {
+        # configuration file exists but Text not in a desired state so lets update it
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
     Set-Content `
         -Path $Path `
         -Value $fileContent `
-        -NoNewline `
         -Force
+        #-NoNewline `
+
 }
 
 <#
@@ -243,7 +251,7 @@ function Test-TargetResource
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
                 $Path, $Search)
 
-        return $true
+        return $false
     }
 
     # Flag to signal whether settings are correct

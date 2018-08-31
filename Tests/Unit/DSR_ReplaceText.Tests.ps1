@@ -341,7 +341,7 @@ Setting3.Test=Value4
                 }
 
                 It 'Should return true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -Be $false
                 }
 
                 It 'Should call the expected mocks' {
@@ -535,6 +535,10 @@ Setting3.Test=Value4
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
                 }
+            }
+
+            Context 'File exists and search text cannot be found' {
+
             }
 
             Context 'File does not exist' {
