@@ -36,6 +36,7 @@ try
         $script:testSecret = 'TestSecret'
         $script:testSearch = "Setting\.Two='(.)*'"
         $script:testSearchNoFind = "Setting.NotExist='(.)*'"
+        $script:testTextReplaceNoFind = "Setting.NotExist='$($script:testText)'"
         $script:testTextReplace = "Setting.Two='$($script:testText)'"
         $script:testSecretReplace = "Setting.Two='$($script:testSecret)'"
         $script:testSecureSecretReplace = ConvertTo-SecureString -String $script:testSecretReplace -AsPlainText -Force
@@ -56,6 +57,16 @@ Setting.Two='$($script:testText)'
 Setting.Two='$($script:testText)'
 Setting.Two='$($script:testText)'
 Setting3.Test=Value4
+
+"@
+
+$script:testFileExpectedTextContentNewKey = @"
+Setting1=Value1
+Setting.Two='Value2'
+Setting.Two='Value3'
+Setting.Two='$($script:testText)'
+Setting3.Test=Value4
+Setting.NotExist='$($script:testText)'
 
 "@
 
@@ -201,6 +212,55 @@ Setting3.Test=Value4
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedTextContent)
+                        } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and search text can not be found'{
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContentNewKey)
+                    } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Set-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Text $script:testTextReplaceNoFind `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq $script:testFileExpectedTextContentNewKey)
                         } `
                         -Exactly 1
                 }

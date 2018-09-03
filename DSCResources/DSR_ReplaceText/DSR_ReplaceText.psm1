@@ -161,7 +161,7 @@ function Set-TargetResource
     elseif ( [regex]::Matches($fileContent, $Search).Count -eq 0 )
     {
         # configuration file exists but Text does not exist so lets add it
-        $fileContent = "{0}`n`r{1}" -f $fileContent, $Text
+        $fileContent = Add-ConfigurationEntry -FileContent $fileContent -Text $Text
     }
     else
     {
@@ -172,9 +172,8 @@ function Set-TargetResource
     Set-Content `
         -Path $Path `
         -Value $fileContent `
+        -NoNewline `
         -Force
-        #-NoNewline `
-
 }
 
 <#
@@ -344,6 +343,43 @@ function Assert-ParametersValid
             -Message ($localizedData.FileParentNotFoundError -f $parentPath) `
             -ArgumentName 'Path'
     } # if
+}
+
+<#
+    .SYNOPSIS
+        Uses the stringBuilder class to append a configuration entry to the existing file content.
+
+    .PARAMETER FileContent
+        The existing file content of the configuration file.
+
+    .PARAMETER Text
+        The text to replace the text identifed by the RegEx.
+#>
+function Add-ConfigurationEntry
+{
+    param
+    (
+        [Parameter()]
+        [string]
+        $FileContent,
+
+        [Parameter()]
+        [string]
+        $Text
+    )
+
+    $stringBuilder = New-Object System.Text.StringBuilder
+
+    $fileContentArray = $FileContent.Trim() -split '\n'
+
+    foreach ($line in $fileContentArray)
+    {
+        $null = $stringBuilder.AppendLine($line.Trim())
+    }
+
+    $null = $stringBuilder.AppendLine($Text)
+
+    return $stringBuilder.ToString()
 }
 
 Export-ModuleMember -Function *-TargetResource
