@@ -155,17 +155,17 @@ function Set-TargetResource
 
     if ($null -eq $fileContent)
     {
-        # configuration file does not exist
+        # Configuration file does not exist
         $fileContent = $Text
     }
     elseif ( [regex]::Matches($fileContent, $Search).Count -eq 0 )
     {
-        # configuration file exists but Text does not exist so lets add it
+        # Configuration file exists but Text does not exist so lets add it
         $fileContent = Add-ConfigurationEntry -FileContent $fileContent -Text $Text
     }
     else
     {
-        # configuration file exists but Text not in a desired state so lets update it
+        # Configuration file exists but Text not in a desired state so lets update it
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
@@ -360,11 +360,11 @@ function Add-ConfigurationEntry
     param
     (
         [Parameter()]
-        [string]
+        [String]
         $FileContent,
 
         [Parameter()]
-        [string]
+        [String]
         $Text
     )
 
