@@ -52,10 +52,11 @@ function Get-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
-    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-            $Path, $Name)
+        $Path, $Name)
+
+    $fileEncoding = Get-FileEncoding -Path $Path
 
     # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
@@ -70,7 +71,7 @@ function Get-TargetResource
     {
         # No matches found
         Write-Verbose -Message ($localizedData.KeyNotFoundMessage -f `
-                $Path, $Name)
+            $Path, $Name)
     }
     else
     {
@@ -86,7 +87,7 @@ function Get-TargetResource
         $text = ($textValues -join ',')
 
         Write-Verbose -Message ($localizedData.KeyFoundMessage -f `
-                $Path, $Name, $text)
+            $Path, $Name, $text)
     } # if
 
     return @{
@@ -187,10 +188,10 @@ function Set-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
-    $fileEncoding = Get-FileEncoding $Path
+    $fileEncoding = Get-FileEncoding -Path $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-            $Path, $Name)
+        $Path, $Name)
 
     if ($Type -eq 'Secret')
     {
@@ -243,19 +244,15 @@ function Set-TargetResource
         {
             if ($results.Count -eq 0)
             {
-                # The Key does not exists and should not so don't do anything, unless encoding doesn't match
-                if ($Encoding -ne $fileEncoding)
+                if ($Encoding -eq $fileEncoding)
                 {
-                    Set-Content `
-                        -Path $Path `
-                        -Value $fileContent `
-                        -Encoding $Encoding `
-                        -NoNewline `
-                        -Force
+                    # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
+                    return
                 }
                 else
                 {
-                    return
+                    Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                        $fileEncoding, $Encoding)
                 }
             }
             else
@@ -373,23 +370,13 @@ function Test-TargetResource
     {
         return $false
     }
-    else
-    {
-        $fileEncoding = Get-FileEncoding $Path
-
-        if ($Encoding -ne $fileEncoding)
-        {
-            Write-Verbose -Message ($localizedData.FileEncodingNotSetProperly -f `
-                $fileEncoding, $Encoding)
-
-            return $false
-        }
-    }
 
     $fileContent = Get-Content -Path $Path -Raw
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
         $Path, $Name)
+
+    $fileEncoding = Get-FileEncoding -Path $Path
 
     # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
@@ -415,13 +402,17 @@ function Test-TargetResource
         else
         {
             # The key value pairs should exist and do
-            Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
+
+            if ($Encoding -eq $fileEncoding)
+            {
+                Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
                 $Path, $Name)
+            }
         } # if
     }
     else
     {
-        # One of more key value pairs were found
+        # One or more key value pairs were found
         if ($Ensure -eq 'Present')
         {
             # The key value pairs should exist - but check values
@@ -445,11 +436,6 @@ function Test-TargetResource
                 Write-Verbose -Message ($localizedData.KeyFoundButNoReplacementMessage -f `
                     $Path, $Name)
             }
-            else
-            {
-                Write-Verbose -Message ($localizedData.KeyFoundReplacementRequiredMessage -f `
-                    $Path, $Name)
-            } # if
         }
         else
         {
@@ -460,6 +446,15 @@ function Test-TargetResource
             $desiredConfigurationMatch = $false
         } # if
     } # if
+
+    if ($Encoding -ne $fileEncoding)
+    {
+        # File encoding is not in desired state
+        Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+            $fileEncoding, $Encoding)
+
+        $desiredConfigurationMatch = $false
+    }
 
     return $desiredConfigurationMatch
 }
