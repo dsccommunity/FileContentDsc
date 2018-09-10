@@ -15,5 +15,5 @@ ConvertFrom-StringData @'
     KeyFoundReplacementRequiredMessage = Key '{1}' found in file '{0}' and should exist but value(s) are not correct. Change required.
     KeyFoundButShouldNotExistMessage = Key '{1}' found in file '{0}' but should not exist. Change required.
     FileParentNotFoundError = File parent path '{0}' not found.
-    FileEncodingNotSetProperly = File encoding is set to {0} but should be set to {1}, change required.
+    FileEncodingNotInDesiredState = File encoding is set to {0} but should be set to {1}, Change required.
 '@

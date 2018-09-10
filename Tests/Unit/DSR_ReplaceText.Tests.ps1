@@ -42,6 +42,21 @@ try
         $script:testSecureSecretReplace = ConvertTo-SecureString -String $script:testSecretReplace -AsPlainText -Force
         $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecretReplace)
 
+        $script:fileEncodingParameters = @{
+            Path     =  $script:testTextFile
+            Encoding = 'ASCII'
+        }
+
+        $script:testCompliantEncoding = @{
+            Path     = $script:fileEncodingParameters.Path
+            Encoding = $script:fileEncodingParameters.Encoding
+        }
+
+        $script:testNonCompliantEncoding = @{
+            Path     = $script:fileEncodingParameters.Path
+            Encoding = 'UTF8'
+        }
+
         $script:testFileContent = @"
 Setting1=Value1
 Setting.Two='Value2'
@@ -82,7 +97,7 @@ Setting3.Test=Value4
 
         #region Function Get-TargetResource
         Describe 'DSR_ReplaceText\Get-TargetResource' {
-            Context 'File exists and search text can be found' {
+            Context 'File exists and search text can be found and encoding is compliant' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -93,6 +108,12 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 $script:result = $null
@@ -110,6 +131,7 @@ Setting3.Test=Value4
                     $script:result.Search | Should -Be $script:testSearch
                     $script:result.Type   | Should -Be 'Text'
                     $script:result.Text   | Should -Be "$($script:testTextReplace),$($script:testTextReplace),$($script:testTextReplace)"
+                    $script:result.Encoding | Should -Be $script:fileEncodingParameters.Encoding
                 }
 
                 It 'Should call the expected mocks' {
@@ -120,10 +142,15 @@ Setting3.Test=Value4
                         -CommandName Get-Content `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
                 }
             }
 
-            Context 'File exists and search text can not be found' {
+            Context 'File exists and search text can be found but encoding is not compliant' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -134,6 +161,65 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testNonCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Get-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearch `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return expected values' {
+                    $script:result.Path   | Should -Be $script:testTextFile
+                    $script:result.Search | Should -Be $script:testSearch
+                    $script:result.Type   | Should -Be 'Text'
+                    $script:result.Text   | Should -Be "$($script:testTextReplace),$($script:testTextReplace),$($script:testTextReplace)"
+                    $script:result.Encoding | Should -Be $script:testNonCompliantEncoding.Encoding
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and search text can not be found and encoding is compliant' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 $script:result = $null
@@ -151,6 +237,7 @@ Setting3.Test=Value4
                     $script:result.Search | Should -Be $script:testSearchNoFind
                     $script:result.Type   | Should -Be 'Text'
                     $script:result.Text   | Should -BeNullOrEmpty
+                    $script:result.Encoding | Should -Be $script:fileEncodingParameters.Encoding
                 }
 
                 It 'Should call the expected mocks' {
@@ -161,6 +248,64 @@ Setting3.Test=Value4
                         -CommandName Get-Content `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and search text can not be found but encoding is not compliant' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testNonCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Get-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return expected values' {
+                    $script:result.Path   | Should -Be $script:testTextFile
+                    $script:result.Search | Should -Be $script:testSearchNoFind
+                    $script:result.Type   | Should -Be 'Text'
+                    $script:result.Text   | Should -BeNullOrEmpty
+                    $script:result.Encoding | Should -Be $script:testNonCompliantEncoding.Encoding
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
                 }
             }
         }
@@ -168,7 +313,7 @@ Setting3.Test=Value4
 
         #region Function Set-TargetResource
         Describe 'DSR_ReplaceText\Set-TargetResource' {
-            Context 'File exists and search text can be found' {
+            Context 'File exists and search text can be found and encoding is compliant' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -238,6 +383,12 @@ Setting3.Test=Value4
                 } `
                     -Verifiable
 
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
+                    -Verifiable
+
                 It 'Should not throw an exception' {
                     { $script:result = Set-TargetResource `
                             -Path $script:testTextFile `
@@ -258,6 +409,11 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Set-Content `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
@@ -267,7 +423,8 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists search text can not be found and AllowAppend is FALSE' {
+            Context 'File exists and search secret can be found and encoding is compliant' {
+                # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_ReplaceText' `
@@ -277,6 +434,12 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 Mock `
@@ -310,7 +473,8 @@ Setting3.Test=Value4
                         -CommandName Set-Content `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testFileContent)
+                        ($value -eq $script:testFileExpectedSecretContent) -and `
+                        ($encoding -eq $script:fileEncodingParameters.Encoding)
                     } `
                         -Exactly 1
                 }
@@ -339,11 +503,12 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                            -Path $script:testTextFile `
-                            -Search $script:testSearch `
-                            -Type 'Secret' `
-                            -Secret $script:testSecretCredential `
-                            -Verbose
+                        -Path $script:testTextFile `
+                        -Search $script:testSearch `
+                        -Type 'Secret' `
+                        -Secret $script:testSecretCredential `
+                        -Encoding $script:fileEncodingParameters.Encoding `
+                        -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -353,6 +518,11 @@ Setting3.Test=Value4
 
                     Assert-MockCalled `
                         -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
 
@@ -437,6 +607,11 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
                     -Verifiable
 
                 $script:result = $null
@@ -532,6 +707,11 @@ Setting3.Test=Value4
                     -MockWith { $script:testFileContent } `
                     -Verifiable
 
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -Verifiable
+
                 $script:result = $null
 
                 It 'Should not throw an exception' {
@@ -575,6 +755,11 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedTextContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
                     -Verifiable
 
                 $script:result = $null
@@ -622,6 +807,11 @@ Setting3.Test=Value4
                     -MockWith { $script:testFileContent } `
                     -Verifiable
 
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -Verifiable
+
                 $script:result = $null
 
                 It 'Should not throw an exception' {
@@ -666,6 +856,11 @@ Setting3.Test=Value4
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testFileExpectedSecretContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
                     -Verifiable
 
                 $script:result = $null
