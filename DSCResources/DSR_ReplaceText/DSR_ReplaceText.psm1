@@ -133,7 +133,11 @@ function Set-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -158,7 +162,7 @@ function Set-TargetResource
         # Configuration file does not exist
         $fileContent = $Text
     }
-    elseif ( [regex]::Matches($fileContent, $Search).Count -eq 0 )
+    elseif ([regex]::Matches($fileContent, $Search).Count -eq 0 -and $AllowAppend -eq $true)
     {
         # Configuration file exists but Text does not exist so lets add it
         $fileContent = Add-ConfigurationEntry -FileContent $fileContent -Text $Text
@@ -225,7 +229,11 @@ function Test-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -246,11 +254,20 @@ function Test-TargetResource
 
     if ($results.Count -eq 0)
     {
+        if ($AllowAppend -eq $true)
+        {
+            # No matches found - but we want to append
+            Write-Verbose -Message ($localizedData.StringNotFoundMessageAppend -f `
+                    $Path, $Search)
+
+            return $false
+        }
+
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
                 $Path, $Search)
 
-        return $false
+        return $true
     }
 
     # Flag to signal whether settings are correct
@@ -332,7 +349,11 @@ function Assert-ParametersValid
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     # Does the file's parent path exist?
@@ -361,11 +382,11 @@ function Add-ConfigurationEntry
     [CmdletBinding()]
     param
     (
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [String]
         $FileContent,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [String]
         $Text
     )
@@ -376,7 +397,8 @@ function Add-ConfigurationEntry
 
     foreach ($line in $fileContentArray)
     {
-        $null = $stringBuilder.AppendLine($line)
+        # Lets remove the return character since AppendLine() always adds one
+        $null = $stringBuilder.AppendLine($line -replace '\r')
     }
 
     $null = $stringBuilder.AppendLine($Text)

@@ -60,7 +60,7 @@ Setting3.Test=Value4
 
 "@
 
-$script:testFileExpectedTextContentNewKey = @"
+        $script:testFileExpectedTextContentNewKey = @"
 Setting1=Value1
 Setting.Two='Value2'
 Setting.Two='Value3'
@@ -99,9 +99,9 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -140,9 +140,9 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearchNoFind `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -184,17 +184,17 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
-                        ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testFileExpectedTextContent)
-                    } `
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testFileExpectedTextContent)
+                } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Text $script:testTextReplace `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -210,14 +210,14 @@ Setting3.Test=Value4
                     Assert-MockCalled `
                         -CommandName Set-Content `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedTextContent)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContent)
+                    } `
                         -Exactly 1
                 }
             }
 
-            Context 'File exists and search text can not be found' {
+            Context 'File exists search text can not be found and AllowAppend is TRUE' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -233,17 +233,18 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
-                        ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testFileExpectedTextContentNewKey)
-                    } `
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testFileExpectedTextContentNewKey)
+                } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
                     { $script:result = Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearchNoFind `
-                        -Text $script:testTextReplaceNoFind `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Text $script:testTextReplaceNoFind `
+                            -AllowAppend $true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -259,9 +260,58 @@ Setting3.Test=Value4
                     Assert-MockCalled `
                         -CommandName Set-Content `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedTextContentNewKey)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContentNewKey)
+                    } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists search text can not be found and AllowAppend is FALSE' {
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testFileContent)
+                } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { $script:result = Set-TargetResource `
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Text $script:testTextReplaceNoFind `
+                            -AllowAppend $false `
+                            -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileContent)
+                    } `
                         -Exactly 1
                 }
             }
@@ -282,18 +332,18 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
-                        ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testFileExpectedSecretContent)
-                    } `
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testFileExpectedSecretContent)
+                } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -309,9 +359,9 @@ Setting3.Test=Value4
                     Assert-MockCalled `
                         -CommandName Set-Content `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedSecretContent)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedSecretContent)
+                    } `
                         -Exactly 1
                 }
             }
@@ -332,17 +382,17 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
-                        ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testTextReplace)
-                    } `
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testTextReplace)
+                } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Text $script:testTextReplace `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -358,9 +408,9 @@ Setting3.Test=Value4
                     Assert-MockCalled `
                         -CommandName Set-Content `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testTextReplace)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testTextReplace)
+                    } `
                         -Exactly 1
                 }
             }
@@ -370,7 +420,7 @@ Setting3.Test=Value4
 
         #region Function Test-TargetResource
         Describe 'DSR_ReplaceString\Test-TargetResource' {
-            Context 'File exists and search text can not be found' {
+            Context 'File exists search text can not be found and AllowAppend is TRUE' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -393,10 +443,11 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearchNoFind `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Text $script:testTextReplace `
+                            -AllowAppend $true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -414,6 +465,53 @@ Setting3.Test=Value4
                         -Exactly 1
                 }
             }
+
+            Context 'File exists search text can not be found and AllowAppend is FALSE' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Text $script:testTextReplace `
+                            -AllowAppend $false `
+                            -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return false' {
+                    $script:result | Should -Be $true
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
 
             Context 'File exists and search text can be found but does not match replace string' {
                 # verifiable (should be called) mocks
@@ -438,10 +536,10 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Text $script:testTextReplace `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -483,10 +581,10 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Text $script:testTextReplace `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -528,11 +626,11 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -574,11 +672,11 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -619,10 +717,10 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearchNoFind `
-                        -Text $script:testTextReplace `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearchNoFind `
+                            -Text $script:testTextReplace `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -660,9 +758,9 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { Assert-ParametersValid `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -692,9 +790,9 @@ Setting3.Test=Value4
 
                 It 'Should throw expected exception' {
                     { Assert-ParametersValid `
-                        -Path $script:testTextFile `
-                        -Search $script:testSearch `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Search $script:testSearch `
+                            -Verbose
                     } | Should -Throw $errorRecord
                 }
 
@@ -705,6 +803,18 @@ Setting3.Test=Value4
             }
         }
         #endregion
+
+        Describe 'DSR_ReplaceText\Add-ConfigurationEntry' {
+            Context 'Append text' {
+                $result = Add-ConfigurationEntry `
+                    -Text "Setting.NotExist='$($script:testText)'" `
+                    -FileContent $script:testFileContent
+
+                It 'Should append line to end of text' {
+                    $result | Should -Be $script:testFileExpectedTextContentNewKey
+                }
+            }
+        }
     }
 }
 finally
