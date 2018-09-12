@@ -597,10 +597,6 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists and search text cannot be found' {
-
-            }
-
             Context 'File does not exist' {
                 # verifiable (should be called) mocks
                 Mock `
