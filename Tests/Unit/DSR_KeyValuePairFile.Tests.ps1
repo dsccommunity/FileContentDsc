@@ -111,7 +111,7 @@ $($script:testAddedName)=$($script:testText)
 
         #region Function Get-TargetResource
         Describe 'DSR_KeyValuePairFile\Get-TargetResource' {
-            Context 'File exists and contains matching key and encoding is compliant' {
+            Context 'File exists, contains matching key, and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -141,11 +141,11 @@ $($script:testAddedName)=$($script:testText)
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should -Be $script:testTextFile
-                    $script:result.Name   | Should -Be $script:testName
-                    $script:result.Ensure | Should -Be 'Present'
-                    $script:result.Type   | Should -Be 'Text'
-                    $script:result.Text   | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
+                    $script:result.Path     | Should -Be $script:testTextFile
+                    $script:result.Name     | Should -Be $script:testName
+                    $script:result.Ensure   | Should -Be 'Present'
+                    $script:result.Type     | Should -Be 'Text'
+                    $script:result.Text     | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
                     $script:result.Encoding | Should -Be $script:fileEncodingParameters.Encoding
                 }
 
@@ -165,7 +165,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File exists and contains matching key and encoding is not compliant' {
+            Context 'File exists, contains matching key but encoding is not in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -195,11 +195,11 @@ $($script:testAddedName)=$($script:testText)
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should -Be $script:testTextFile
-                    $script:result.Name   | Should -Be $script:testName
-                    $script:result.Ensure | Should -Be 'Present'
-                    $script:result.Type   | Should -Be 'Text'
-                    $script:result.Text   | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
+                    $script:result.Path     | Should -Be $script:testTextFile
+                    $script:result.Name     | Should -Be $script:testName
+                    $script:result.Ensure   | Should -Be 'Present'
+                    $script:result.Type     | Should -Be 'Text'
+                    $script:result.Text     | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
                     $script:result.Encoding | Should -Be $script:testNonCompliantEncoding.Encoding
                 }
 
@@ -219,7 +219,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File exists and does not contain matching key and encoding is compliant' {
+            Context 'File exists, does not contain matching key and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -249,11 +249,11 @@ $($script:testAddedName)=$($script:testText)
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should -Be $script:testTextFile
-                    $script:result.Name   | Should -Be $script:testName
-                    $script:result.Ensure | Should -Be 'Absent'
-                    $script:result.Type   | Should -Be 'Text'
-                    $script:result.Text   | Should -BeNullOrEmpty
+                    $script:result.Path     | Should -Be $script:testTextFile
+                    $script:result.Name     | Should -Be $script:testName
+                    $script:result.Ensure   | Should -Be 'Absent'
+                    $script:result.Type     | Should -Be 'Text'
+                    $script:result.Text     | Should -BeNullOrEmpty
                     $script:result.Encoding | Should -Be $script:fileEncodingParameters.Encoding
                 }
 
@@ -273,7 +273,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File exists and does not contain matching key and encoding is compliant' {
+            Context 'File exists, does not contain matching key and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -303,11 +303,11 @@ $($script:testAddedName)=$($script:testText)
                 }
 
                 It 'Should return expected values' {
-                    $script:result.Path   | Should -Be $script:testTextFile
-                    $script:result.Name   | Should -Be $script:testName
-                    $script:result.Ensure | Should -Be 'Absent'
-                    $script:result.Type   | Should -Be 'Text'
-                    $script:result.Text   | Should -BeNullOrEmpty
+                    $script:result.Path     | Should -Be $script:testTextFile
+                    $script:result.Name     | Should -Be $script:testName
+                    $script:result.Ensure   | Should -Be 'Absent'
+                    $script:result.Type     | Should -Be 'Text'
+                    $script:result.Text     | Should -BeNullOrEmpty
                     $script:result.Encoding | Should -Be $script:fileEncodingParameters.Encoding
                 }
 
@@ -345,10 +345,53 @@ $($script:testAddedName)=$($script:testText)
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $null } `
+                    -Verifiable
+
+                It 'Should not throw an exception' {
+                    { Set-TargetResource `
+                        -Path $script:testTextFile `
+                        -Name $script:testName `
+                        -Ensure 'Present' `
+                        -Text $script:testText `
+                        -Encoding $script:fileEncodingParameters.Encoding `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+                }
+            }
+
+            Context 'File exists, contains matching key that should exist and encoding is in desired state' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_KeyValuePairFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
-                        ($value -eq "$script:testName=$script:testText")
+                        ($value -eq $script:testFileExpectedTextContent) -and `
+                        ($encoding -eq $script:fileEncodingParameters.Encoding)
                     } `
                     -Verifiable
 
@@ -358,6 +401,7 @@ $($script:testAddedName)=$($script:testText)
                         -Name $script:testName `
                         -Ensure 'Present' `
                         -Text $script:testText `
+                        -Encoding $script:fileEncodingParameters.Encoding `
                         -Verbose
                     } | Should -Not -Throw
                 }
@@ -368,6 +412,11 @@ $($script:testAddedName)=$($script:testText)
 
                     Assert-MockCalled `
                         -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
 
@@ -375,59 +424,14 @@ $($script:testAddedName)=$($script:testText)
                         -CommandName Set-Content `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
-                            ($value -eq "$script:testName=$script:testText")
+                            ($value -eq $script:testFileExpectedTextContent) -and `
+                            ($encoding -eq $script:fileEncodingParameters.Encoding)
                         } `
                         -Exactly 1
                 }
             }
 
-            Context 'File exists and contains matching key that should exist' {
-                # verifiable (should be called) mocks
-                Mock `
-                    -CommandName Assert-ParametersValid `
-                    -ModuleName 'DSR_KeyValuePairFile' `
-                    -Verifiable
-
-                Mock `
-                    -CommandName Get-Content `
-                    -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
-                    -Verifiable
-
-                Mock `
-                    -CommandName Get-FileEncoding `
-                    -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testCompliantEncoding.Encoding } `
-                    -Verifiable
-
-                It 'Should not throw an exception' {
-                    { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Verbose
-                    } | Should -Not -Throw
-                }
-
-                It 'Should call the expected mocks' {
-                    Assert-VerifiableMock
-                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
-
-                    Assert-MockCalled `
-                        -CommandName Get-Content `
-                        -ParameterFilter { $path -eq $script:testTextFile } `
-                        -Exactly 1
-
-                    Assert-MockCalled `
-                        -CommandName Get-FileEncoding `
-                        -ParameterFilter { $path -eq $script:testTextFile } `
-                        -Exactly 1
-                }
-            }
-
-            Context 'File exists and contains matching key that should exist but encoding is not compliant' {
+            Context 'File exists, contains matching key that should exist but encoding is not in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -446,6 +450,15 @@ $($script:testAddedName)=$($script:testText)
                     -MockWith { $script:testNonCompliantEncoding.Encoding } `
                     -Verifiable
 
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContent) -and `
+                        ($encoding -eq $script:fileEncodingParameters.Encoding)
+                    } `
+                    -Verifiable
+
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
                         -Path $script:testTextFile `
@@ -470,10 +483,19 @@ $($script:testAddedName)=$($script:testText)
                         -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq $script:testFileExpectedTextContent) -and `
+                            ($encoding -eq $script:fileEncodingParameters.Encoding)
+                        } `
+                        -Exactly 1
                 }
             }
 
-            Context 'File exists and contains matching key that should exist and contain a secret' {
+            Context 'File exists, contains matching key that should exist, contains a secret and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -489,6 +511,15 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedSecretContent)
+                    } `
                     -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
@@ -517,10 +548,19 @@ $($script:testAddedName)=$($script:testText)
                         -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq $script:testFileExpectedSecretContent) -and `
+                            ($encoding -eq $script:fileEncodingParameters.Encoding)
+                        } `
+                        -Exactly 1
                 }
             }
 
-            Context 'File exists and contains matching key that should exist and contain a secret but encoding is not compliant' {
+            Context 'File exists, contains matching key that should exist, contains a secret but encoding is not in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -537,6 +577,15 @@ $($script:testAddedName)=$($script:testText)
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
                     -MockWith { $script:testNonCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Set-Content `
+                    -ParameterFilter {
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedSecretContent)
+                    } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
@@ -563,6 +612,15 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled `
                         -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Set-Content `
+                        -ParameterFilter {
+                            ($path -eq $script:testTextFile) -and `
+                            ($value -eq $script:testFileExpectedSecretContent) -and `
+                            ($encoding -eq $script:fileEncodingParameters.Encoding)
+                        } `
                         -Exactly 1
                 }
             }

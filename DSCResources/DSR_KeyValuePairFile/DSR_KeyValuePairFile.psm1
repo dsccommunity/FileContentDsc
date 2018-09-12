@@ -52,11 +52,10 @@ function Get-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding -Path $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
         $Path, $Name)
-
-    $fileEncoding = Get-FileEncoding -Path $Path
 
     # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
@@ -372,11 +371,10 @@ function Test-TargetResource
     }
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding -Path $Path
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
         $Path, $Name)
-
-    $fileEncoding = Get-FileEncoding -Path $Path
 
     # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
@@ -433,8 +431,8 @@ function Test-TargetResource
 
             if ($desiredConfigurationMatch)
             {
-                Write-Verbose -Message ($localizedData.KeyFoundButNoReplacementMessage -f `
-                    $Path, $Name)
+                Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
+                $Path, $Name)
             }
         }
         else
