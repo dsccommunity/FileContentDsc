@@ -217,7 +217,7 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists and search text can not be found'{
+            Context 'File exists and search text can not be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -400,7 +400,7 @@ Setting3.Test=Value4
                     } | Should -Not -Throw
                 }
 
-                It 'Should return true' {
+                It 'Should return false' {
                     $script:result | Should -Be $false
                 }
 

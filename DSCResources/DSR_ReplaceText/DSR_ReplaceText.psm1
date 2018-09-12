@@ -357,6 +357,8 @@ function Assert-ParametersValid
 #>
 function Add-ConfigurationEntry
 {
+    [OutputType([String])]
+    [CmdletBinding()]
     param
     (
         [Parameter()]
@@ -368,13 +370,13 @@ function Add-ConfigurationEntry
         $Text
     )
 
-    $stringBuilder = New-Object System.Text.StringBuilder
+    $stringBuilder = New-Object -TypeName System.Text.StringBuilder
 
     $fileContentArray = $FileContent.Trim() -split '\n'
 
     foreach ($line in $fileContentArray)
     {
-        $null = $stringBuilder.AppendLine($line.Trim())
+        $null = $stringBuilder.AppendLine($line)
     }
 
     $null = $stringBuilder.AppendLine($Text)
