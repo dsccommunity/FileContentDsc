@@ -815,12 +815,12 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'Apply a LF (default Linux)' {
-                $linuxString = "Line1`nLine2`n"
+            Context 'Apply a LF (default *nix)' {
+                $nixString = "Line1`nLine2`n"
 
                 $result = Add-ConfigurationEntry `
                     -Text 'Line3' `
-                    -FileContent $linuxString
+                    -FileContent $nixString
 
                 It 'Should end with a LF' {
                     $result -match '\n$'     | Should -BeTrue

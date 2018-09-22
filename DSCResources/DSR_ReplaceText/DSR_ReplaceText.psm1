@@ -399,7 +399,7 @@ function Add-ConfigurationEntry
 
     if ($FileContent -match '\n$' -and $FileContent -notmatch '\r\n$')
     {
-        # default Linux line ending
+        # default *nix line ending
         $detectedNewLineFormat = "`n"
     }
     else
