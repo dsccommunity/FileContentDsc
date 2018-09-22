@@ -103,6 +103,9 @@ function Get-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER AllowAppend
+        Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 #>
 function Set-TargetResource
 {
@@ -200,6 +203,9 @@ function Set-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER AllowAppend
+        Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 #>
 function Test-TargetResource
 {
@@ -374,7 +380,7 @@ function Assert-ParametersValid
         The existing file content of the configuration file.
 
     .PARAMETER Text
-        The text to replace the text identifed by the RegEx.
+        The text to append to the end of the FileContent.
 #>
 function Add-ConfigurationEntry
 {
@@ -391,17 +397,22 @@ function Add-ConfigurationEntry
         $Text
     )
 
-    $stringBuilder = New-Object -TypeName System.Text.StringBuilder
-
-    $fileContentArray = $FileContent.Trim() -split '\n'
-
-    foreach ($line in $fileContentArray)
+    if ($FileContent -match '\n$' -and $FileContent -notmatch '\r\n$')
     {
-        # Lets remove the return character since AppendLine() always adds one
-        $null = $stringBuilder.AppendLine($line -replace '\r')
+        # default Linux line ending
+        $detectedNewLineFormat = "`n"
+    }
+    else
+    {
+        # default Windows line ending
+        $detectedNewLineFormat = "`r`n"
     }
 
-    $null = $stringBuilder.AppendLine($Text)
+    $stringBuilder = New-Object -TypeName System.Text.StringBuilder
+
+    $null = $stringBuilder.Append($FileContent)
+    $null = $stringBuilder.Append($Text)
+    $null = $stringBuilder.Append($detectedNewLineFormat)
 
     return $stringBuilder.ToString()
 }

@@ -814,6 +814,32 @@ Setting3.Test=Value4
                     $result | Should -Be $script:testFileExpectedTextContentNewKey
                 }
             }
+
+            Context 'Apply a LF (default Linux)' {
+                $linuxString = "Line1`nLine2`n"
+
+                $result = Add-ConfigurationEntry `
+                    -Text 'Line3' `
+                    -FileContent $linuxString
+
+                It 'Should end with a LF' {
+                    $result -match '\n$'     | Should -BeTrue
+                    $result -match '\b\r\n$' | Should -BeFalse
+                }
+            }
+
+            Context 'Apply a CRLF (default Windows)' {
+                $windowsString = "Line1`r`nLine2`r`n"
+
+                $result = Add-ConfigurationEntry `
+                    -Text 'Line3' `
+                    -FileContent $windowsString
+
+                It 'Should match a CRLF line ending' {
+                    $result -match '\r\n$' | Should -BeTrue
+                    $result -match '\b\n$' | Should -BeFalse
+                }
+            }
         }
     }
 }
