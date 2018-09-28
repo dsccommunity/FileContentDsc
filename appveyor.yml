@@ -1,10 +1,8 @@
 #---------------------------------#
 #      environment configuration  #
 #---------------------------------#
-version: 1.0.0.{build}
+version: 1.1.0.{build}
 install:
-    # Needed for publishing of examples, build worker defaults to core.autocrlf=input.
-    - git config --global core.autocrlf true
     - git clone https://github.com/PowerShell/DscResource.Tests
 
     - ps: |

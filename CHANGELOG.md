@@ -15,6 +15,14 @@
 - Refactor Test/Set-TargetResource in ReplaceText to be able to add a key if it
   doesn't exist but should -Fixes
   [Issue#20](https://github.com/PlagueHO/FileContentDsc/issues/20).
+- Opted into common tests:
+  - Common Tests - Validate Example Files To Be Published
+  - Common Tests - Validate Markdown Links
+  - Common Tests - Relative Path Length
+  - Common Tests - Relative Path Length
+- Correct test context description in IniSettingsFile tests to include 'When'.
+- Change IniSettingsFile unit tests to be non-destructive - fixes [Issue #22](https://github.com/PowerShell/FileContentDsc/issues/22).
+- Update to new format LICENSE.
 
 ## 1.0.0.0
 
