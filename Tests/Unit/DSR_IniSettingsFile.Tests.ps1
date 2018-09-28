@@ -43,7 +43,7 @@ try
 
         #region Function Get-TargetResource
         Describe 'DSR_IniSettingsFile\Get-TargetResource' {
-            Context 'File exists and entry can be found' {
+            Context 'When file exists and entry can be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -94,7 +94,7 @@ try
                 }
             }
 
-            Context 'File exists and entry can not be found' {
+            Context 'When file exists and entry can not be found' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -149,12 +149,22 @@ try
 
         #region Function Set-TargetResource
         Describe 'DSR_IniSettingsFile\Set-TargetResource' {
-            Context 'File exists and text is passed' {
+            Context 'When file exists and text is passed' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock -CommandName Out-File
 
                 Mock `
                     -CommandName Set-IniSettingFileValue `
@@ -181,6 +191,15 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled -CommandName Out-File -Exactly 0
+
+                    Assert-MockCalled `
                         -CommandName Set-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -192,12 +211,22 @@ try
                 }
             }
 
-            Context 'File exists and secret is passed' {
+            Context 'When file exists and secret is passed' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock -CommandName Out-File
 
                 Mock `
                     -CommandName Set-IniSettingFileValue `
@@ -225,6 +254,15 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled -CommandName Out-File -Exactly 0
+
+                    Assert-MockCalled `
                         -CommandName Set-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -236,11 +274,26 @@ try
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'When file does not exist' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $false } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Out-File `
+                    -ParameterFilter {
+                        ($FilePath -eq $script:testTextFile)
+                    } `
                     -Verifiable
 
                 Mock `
@@ -251,17 +304,6 @@ try
                         ($key -eq $script:testKey) -and `
                         ($value -eq $script:testText)
                     } `
-                    -Verifiable
-
-                Mock `
-                    -CommandName Test-Path `
-                    -ModuleName 'DSR_IniSettingsFile' `
-                    -MockWith { $false } `
-                    -Verifiable
-
-                Mock `
-                    -CommandName Out-File `
-                    -ModuleName 'DSR_IniSettingsFile' `
                     -Verifiable
 
                 It 'Should not throw an exception' {
@@ -279,6 +321,20 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Out-File `
+                        -ParameterFilter {
+                            ($FilePath -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Set-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -294,7 +350,7 @@ try
 
         #region Function Test-TargetResource
         Describe 'DSR_ReplaceString\Test-TargetResource' {
-            Context 'File exists and text is passed and matches' {
+            Context 'When file exists and text is passed and matches' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -302,6 +358,14 @@ try
                     -Verifiable
 
                 Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                 Mock `
                     -CommandName Get-IniSettingFileValue `
                     -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
@@ -332,6 +396,13 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Get-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -342,11 +413,19 @@ try
                 }
             }
 
-            Context 'File exists and text is passed and does not match' {
+            Context 'When file exists and text is passed and does not match' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -380,6 +459,13 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Get-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -390,11 +476,19 @@ try
                 }
             }
 
-            Context 'File exists and secret text is passed and matches' {
+            Context 'When file exists and secret text is passed and matches' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -429,6 +523,13 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Get-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -439,11 +540,19 @@ try
                 }
             }
 
-            Context 'File exists and text is passed and does not match' {
+            Context 'When file exists and text is passed and does not match' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $true } `
                     -Verifiable
 
                 Mock `
@@ -478,6 +587,13 @@ try
                     Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
 
                     Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
                         -CommandName Get-IniSettingFileValue `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -488,11 +604,19 @@ try
                 }
             }
 
-            Context 'File does not exist' {
+            Context 'When file does not exist' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
                     -ModuleName 'DSR_IniSettingsFile' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ParameterFilter {
+                        ($Path -eq $script:testTextFile)
+                    } `
+                    -MockWith { $false } `
                     -Verifiable
 
                 Mock `
@@ -512,6 +636,14 @@ try
 
                 It 'Should call the expected mocks' {
                     Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Test-Path `
+                        -ParameterFilter {
+                            ($Path -eq $script:testTextFile)
+                        } `
+                        -Exactly 1
                 }
             }
         }
@@ -519,7 +651,7 @@ try
 
         #region Function Assert-ParametersValid
         Describe 'DSR_IniSettingsFile\Assert-ParametersValid' {
-            Context 'File exists' {
+            Context 'When file exists' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Split-Path `
@@ -548,7 +680,7 @@ try
                 }
             }
 
-            Context 'File parent does not exist' {
+            Context 'When file parent does not exist' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Split-Path `
