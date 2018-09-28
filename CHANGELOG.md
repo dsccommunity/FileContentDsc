@@ -1,6 +1,6 @@
 # Versions
 
-## Unreleased
+## 1.1.0.0
 
 - Enabled PSSA rule violations to fail build - Fixes [Issue #6](https://github.com/PlagueHO/FileContentDsc/issues/6).
 - Updated tests to meet Pester v4 standard.
