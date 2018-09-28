@@ -22,6 +22,7 @@
   - Common Tests - Relative Path Length
 - Correct test context description in IniSettingsFile tests to include 'When'.
 - Change IniSettingsFile unit tests to be non-destructive - fixes [Issue #22](https://github.com/PowerShell/FileContentDsc/issues/22).
+- Update to new format LICENSE
 
 ## 1.0.0.0
 
