@@ -103,6 +103,9 @@ function Get-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER AllowAppend
+        Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 #>
 function Set-TargetResource
 {
@@ -133,7 +136,11 @@ function Set-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -155,10 +162,17 @@ function Set-TargetResource
 
     if ($null -eq $fileContent)
     {
+        # Configuration file does not exist
         $fileContent = $Text
+    }
+    elseif ([regex]::Matches($fileContent, $Search).Count -eq 0 -and $AllowAppend -eq $true)
+    {
+        # Configuration file exists but Text does not exist so lets add it
+        $fileContent = Add-ConfigurationEntry -FileContent $fileContent -Text $Text
     }
     else
     {
+        # Configuration file exists but Text not in a desired state so lets update it
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
@@ -189,6 +203,9 @@ function Set-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER AllowAppend
+        Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 #>
 function Test-TargetResource
 {
@@ -218,7 +235,11 @@ function Test-TargetResource
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -239,6 +260,15 @@ function Test-TargetResource
 
     if ($results.Count -eq 0)
     {
+        if ($AllowAppend -eq $true)
+        {
+            # No matches found - but we want to append
+            Write-Verbose -Message ($localizedData.StringNotFoundMessageAppend -f `
+                    $Path, $Search)
+
+            return $false
+        }
+
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
                 $Path, $Search)
@@ -325,7 +355,11 @@ function Assert-ParametersValid
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Secret
+        $Secret,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowAppend = $false
     )
 
     # Does the file's parent path exist?
@@ -336,6 +370,51 @@ function Assert-ParametersValid
             -Message ($localizedData.FileParentNotFoundError -f $parentPath) `
             -ArgumentName 'Path'
     } # if
+}
+
+<#
+    .SYNOPSIS
+        Uses the stringBuilder class to append a configuration entry to the existing file content.
+
+    .PARAMETER FileContent
+        The existing file content of the configuration file.
+
+    .PARAMETER Text
+        The text to append to the end of the FileContent.
+#>
+function Add-ConfigurationEntry
+{
+    [OutputType([String])]
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $FileContent,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Text
+    )
+
+    if ($FileContent -match '\n$' -and $FileContent -notmatch '\r\n$')
+    {
+        # default *nix line ending
+        $detectedNewLineFormat = "`n"
+    }
+    else
+    {
+        # default Windows line ending
+        $detectedNewLineFormat = "`r`n"
+    }
+
+    $stringBuilder = New-Object -TypeName System.Text.StringBuilder
+
+    $null = $stringBuilder.Append($FileContent)
+    $null = $stringBuilder.Append($Text)
+    $null = $stringBuilder.Append($detectedNewLineFormat)
+
+    return $stringBuilder.ToString()
 }
 
 Export-ModuleMember -Function *-TargetResource

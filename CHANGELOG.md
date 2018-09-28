@@ -12,6 +12,9 @@
 - Refactor Test-TargetResource to return $false in all DSC resource - Fixes
   [Issue #12](https://github.com/PlagueHO/FileContentDsc/issues/13).
 - Correct configuration names in Examples - fixes [Issue #15](https://github.com/PowerShell/FileContentDsc/issues/15).
+- Refactor Test/Set-TargetResource in ReplaceText to be able to add a key if it
+  doesn't exist but should -Fixes
+  [Issue#20](https://github.com/PlagueHO/FileContentDsc/issues/20).
 
 ## 1.0.0.0
 

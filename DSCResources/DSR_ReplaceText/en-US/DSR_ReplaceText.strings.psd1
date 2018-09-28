@@ -2,6 +2,7 @@
 
 ConvertFrom-StringData @'
     SearchForTextMessage = Searching using RegEx '{1}' in file '{0}'.
+    StringNotFoundMessageAppend = String not found using RegEx '{1}' in file '{0}', change required.
     StringNotFoundMessage = String not found using RegEx '{1}' in file '{0}', change not required.
     StringMatchFoundMessage = String(s) '{2}' found using RegEx '{1}' in file '{0}'.
     StringReplacementRequiredMessage = String found using RegEx '{1}' in file '{0}', replacement required.
