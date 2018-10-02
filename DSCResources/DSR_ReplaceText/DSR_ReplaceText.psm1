@@ -261,7 +261,7 @@ function Test-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
-    # Check for the file being managed. If it does not exist return $false.
+    # Check if file being managed exists. If not return $false.
     if (-not (Test-Path -Path $Path))
     {
         return $false
@@ -291,7 +291,7 @@ function Test-TargetResource
         }
         elseif ($Encoding -eq $fileEncoding)
         {
-            # No matches found - already in state
+            # No matches found and encoding is in desired state
             Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
             $Path, $Search)
 
