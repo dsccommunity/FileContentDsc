@@ -235,31 +235,19 @@ function Test-TargetResource
 
         [Parameter()]
         [String]
-        $Encoding
+        $Encoding = 'ASCII'
     )
 
     Assert-ParametersValid @PSBoundParameters
 
     # Check for the file being managed. If it does not exist return $false.
-    # If it exists but is using the wrong encoding return $false.
     if (-not (Test-Path -Path $Path))
     {
         return $false
     }
-    else
-    {
-        $fileEncoding = Get-FileEncoding $Path
-
-        if ($Encoding -ne $fileEncoding)
-        {
-            Write-Verbose -Message ($localizedData.FileEncodingNotSetProperly -f `
-                $fileEncoding, $Encoding)
-
-            return $false
-        }
-    }
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
         $Path, $Search)
@@ -267,17 +255,27 @@ function Test-TargetResource
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
 
-    if ($results.Count -eq 0)
-    {
-        # No matches found - already in state
-        Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-            $Path, $Search)
-
-        return $true
-    }
-
     # Flag to signal whether settings are correct
     [Boolean] $desiredConfigurationMatch = $true
+
+    if ($results.Count -eq 0)
+    {
+        if ($Encoding -eq $fileEncoding)
+        {
+            # No matches found - already in state
+            Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+            $Path, $Search)
+
+            return $true
+        }
+        else
+        {
+            Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+            $fileEncoding, $Encoding)
+
+            $desiredConfigurationMatch = $false
+        }
+    }
 
     if ($Type -eq 'Secret')
     {
