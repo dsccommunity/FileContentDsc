@@ -120,9 +120,9 @@ Setting3.Test=Value4
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                            -Path $script:testTextFile `
-                            -Search $script:testSearch `
-                            -Verbose
+                        -Path $script:testTextFile `
+                        -Search $script:testSearch `
+                        -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -590,7 +590,7 @@ Setting3.Test=Value4
 
         #region Function Test-TargetResource
         Describe 'DSR_ReplaceString\Test-TargetResource' {
-            Context 'File exists search text can not be found and AllowAppend is TRUE' {
+            Context 'File exists and search text can not be found and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -612,17 +612,18 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 $script:result = $null
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                            -Path $script:testTextFile `
-                            -Search $script:testSearchNoFind `
-                            -Text $script:testTextReplace `
-                            -AllowAppend $true `
-                            -Verbose
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Text $script:testTextReplace `
+                        -Encoding $script:fileEncodingParameters.Encoding `
+                        -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -682,6 +683,68 @@ Setting3.Test=Value4
 
                     Assert-MockCalled `
                         -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+                }
+            }
+
+            Context 'File exists and search text can not be found and encoding is not in desired state' {
+                # verifiable (should be called) mocks
+                Mock `
+                    -CommandName Assert-ParametersValid `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Test-Path `
+                    -ModuleName 'DSR_ReplaceText' `
+                    -MockWith { $true } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-Content `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testNonCompliantEncoding.Encoding } `
+                    -Verifiable
+
+                $script:result = $null
+
+                It 'Should not throw an exception' {
+                    { $script:result = Test-TargetResource `
+                        -Path $script:testTextFile `
+                        -Search $script:testSearchNoFind `
+                        -Text $script:testTextReplace `
+                        -Encoding $script:fileEncodingParameters.Encoding `
+                        -Verbose
+                    } | Should -Not -Throw
+                }
+
+                It 'Should return false' {
+                    $script:result | Should -Be $false
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-VerifiableMock
+                    Assert-MockCalled -CommandName Assert-ParametersValid -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-Content `
+                        -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Exactly 1
+
+                    Assert-MockCalled `
+                        -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
                 }
