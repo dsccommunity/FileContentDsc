@@ -7,8 +7,9 @@ The **FileContent** module contains the following resources:
 
 - **IniSettingsFile**: Add, set or clear entries in Windows INI settings files.
 - **KeyValuePairFile**: Add, remove or set key/value pairs in a text file containing
-  key/value pairs.
-- **ReplaceText**: Replaces strings matching a regular expression in a file.
+  key/value pairs, and set file encoding.
+- **ReplaceText**: Replaces strings matching a regular expression in a file,
+  and sets file encoding.
 
 **This project is not maintained or supported by Microsoft.**
 

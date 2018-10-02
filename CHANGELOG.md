@@ -12,6 +12,7 @@
 - Refactor Test-TargetResource to return $false in all DSC resource - Fixes
   [Issue #12](https://github.com/PlagueHO/FileContentDsc/issues/13).
 - Correct configuration names in Examples - fixes [Issue #15](https://github.com/PowerShell/FileContentDsc/issues/15).
+- Added an Encoding parameter to the KeyValuePairFile and ReplaceText resources - fixes [Issue #5](https://github.com/PlagueHO/FileContentDsc/issues/5)
 
 ## 1.0.0.0
 
