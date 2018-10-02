@@ -238,7 +238,6 @@ $($script:testAddedName)=$($script:testText)
                     -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
-
                 $script:result = $null
 
                 It 'Should not throw an exception' {
@@ -418,7 +417,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File exists and contains matching key that should exist and contains a secret' {
+            Context 'File exists and contains matching key that should exist and contain a secret' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -747,7 +746,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock `
                     -CommandName Get-Content `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileExpectedTextContentAdded } `
+                    -MockWith { $script:testFileContent } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
@@ -823,7 +822,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
 
-                        Assert-MockCalled `
+                    Assert-MockCalled `
                         -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly 1
@@ -1207,7 +1206,7 @@ $($script:testAddedName)=$($script:testText)
                     } | Should -Not -Throw
                 }
 
-                It 'Should return true' {
+                It 'Should return false' {
                     $script:result | Should -Be $false
                 }
 

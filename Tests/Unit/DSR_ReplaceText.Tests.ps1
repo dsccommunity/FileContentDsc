@@ -86,7 +86,7 @@ Setting3.Test=Value4
 
         #region Function Get-TargetResource
         Describe 'DSR_ReplaceText\Get-TargetResource' {
-            Context 'File exists and search text can be found and encoding is compliant' {
+            Context 'File exists and search text can be found and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -139,7 +139,7 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists and search text can be found but encoding is not compliant' {
+            Context 'File exists and search text can be found but encoding is not in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -192,7 +192,7 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists and search text can not be found and encoding is compliant' {
+            Context 'File exists and search text can not be found and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `
@@ -245,7 +245,7 @@ Setting3.Test=Value4
                 }
             }
 
-            Context 'File exists and search text can not be found but encoding is not compliant' {
+            Context 'File exists and search text can not be found but encoding is not in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `

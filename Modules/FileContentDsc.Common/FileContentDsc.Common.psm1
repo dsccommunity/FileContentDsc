@@ -159,7 +159,8 @@ function Get-IniSettingFileValue
         This command gets ps1 files in current directory where encoding is not ASCII
 
     .EXAMPLE
-        Get-ChildItem  *.ps1 | select FullName, @{n='Encoding';e={Get-FileEncoding $_.FullName}} | where {$_.Encoding -ne 'ASCII'} | foreach {(get-content $_.FullName) | set-content $_.FullName -Encoding ASCII}
+        Get-ChildItem  *.ps1 | select FullName, @{n='Encoding';e={Get-FileEncoding $_.FullName}} | where {$_.Encoding -ne 'ASCII'} | `
+            foreach {(get-content $_.FullName) | set-content $_.FullName -Encoding ASCII}
         Same as previous example but fixes encoding using set-content
 #>
 function Get-FileEncoding

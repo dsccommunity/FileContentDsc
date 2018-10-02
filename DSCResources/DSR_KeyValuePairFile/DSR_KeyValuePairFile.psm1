@@ -399,8 +399,7 @@ function Test-TargetResource
         }
         else
         {
-            # The key value pairs should exist and do
-
+            # The key value pairs should exist and do and encoding is in desired state
             if ($Encoding -eq $fileEncoding)
             {
                 Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
@@ -431,7 +430,7 @@ function Test-TargetResource
 
             if ($desiredConfigurationMatch)
             {
-                Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
+                Write-Verbose -Message ($localizedData.KeyFoundButNoReplacementMessage -f `
                 $Path, $Name)
             }
         }
