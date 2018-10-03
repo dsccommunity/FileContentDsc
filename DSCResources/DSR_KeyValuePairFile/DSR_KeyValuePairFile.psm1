@@ -133,7 +133,8 @@ function Get-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Set-TargetResource
 {
@@ -180,6 +181,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding = 'Default'
     )
@@ -309,7 +311,8 @@ function Set-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Test-TargetResource
 {
@@ -355,6 +358,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding
     )
@@ -489,7 +493,8 @@ function Test-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Assert-ParametersValid
 {
@@ -534,6 +539,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding
     )

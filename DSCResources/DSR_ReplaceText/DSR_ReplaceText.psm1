@@ -110,7 +110,8 @@ function Get-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Set-TargetResource
 {
@@ -148,6 +149,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding = 'Default'
     )
@@ -218,7 +220,8 @@ function Set-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Test-TargetResource
 {
@@ -255,6 +258,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding = 'ASCII'
     )
@@ -357,7 +361,8 @@ function Test-TargetResource
         Only used when Type is set to 'Secret'.
 
     .PARAMETER Encoding
-        Specifies the file encoding.  The default value is ASCII.
+        Specifies the file encoding. The default value is ASCII. Accepts the following values:
+        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
 #>
 function Assert-ParametersValid
 {
@@ -393,6 +398,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
         [String]
         $Encoding
     )
