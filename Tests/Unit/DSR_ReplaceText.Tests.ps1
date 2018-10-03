@@ -602,7 +602,6 @@ Setting3.Test=Value4
                             -Search $script:testSearchNoFind `
                             -Text $script:testTextReplace `
                             -AllowAppend $true `
-                            -Encoding $script:fileEncodingParameters `
                             -Verbose
                     } | Should -Not -Throw
                 }
