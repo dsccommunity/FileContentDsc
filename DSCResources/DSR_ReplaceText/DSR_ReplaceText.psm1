@@ -276,9 +276,6 @@ function Test-TargetResource
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
 
-    # Flag to signal whether settings are correct
-    [Boolean] $desiredConfigurationMatch = $true
-
     if ($results.Count -eq 0)
     {
         if ($AllowAppend -eq $true)
@@ -289,7 +286,7 @@ function Test-TargetResource
 
             return $false
         }
-        elseif ($Encoding -eq $fileEncoding)
+        if ($Encoding -eq $fileEncoding)
         {
             # No matches found and encoding is in desired state
             Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
@@ -299,12 +296,16 @@ function Test-TargetResource
         }
         else
         {
+            # No matches found and encoding is in desired state
             Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
             $fileEncoding, $Encoding)
 
-            $desiredConfigurationMatch = $false
+            return $false
         }
     }
+
+    # Flag to signal whether settings are correct
+    [Boolean] $desiredConfigurationMatch = $true
 
     if ($Type -eq 'Secret')
     {
