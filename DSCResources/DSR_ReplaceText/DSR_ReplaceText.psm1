@@ -40,12 +40,12 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search
     )
 
@@ -110,8 +110,7 @@ function Get-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding. The default value is ASCII. Accepts the following values:
-        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
+        Specifies the file encoding. The default value is ASCII.
 #>
 function Set-TargetResource
 {
@@ -122,21 +121,21 @@ function Set-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -150,7 +149,7 @@ function Set-TargetResource
 
         [Parameter()]
         [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
-        [String]
+        [System.String]
         $Encoding = 'Default'
     )
 
@@ -220,8 +219,7 @@ function Set-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding. The default value is ASCII. Accepts the following values:
-        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
+        Specifies the file encoding. The default value is ASCII.
 #>
 function Test-TargetResource
 {
@@ -231,21 +229,21 @@ function Test-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -259,7 +257,7 @@ function Test-TargetResource
 
         [Parameter()]
         [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
-        [String]
+        [System.String]
         $Encoding = 'ASCII'
     )
 
@@ -361,8 +359,7 @@ function Test-TargetResource
         Only used when Type is set to 'Secret'.
 
     .PARAMETER Encoding
-        Specifies the file encoding. The default value is ASCII. Accepts the following values:
-        "ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown"
+        Specifies the file encoding. The default value is ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -371,21 +368,21 @@ function Assert-ParametersValid
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -399,7 +396,7 @@ function Assert-ParametersValid
 
         [Parameter()]
         [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
-        [String]
+        [System.String]
         $Encoding
     )
 
@@ -430,11 +427,11 @@ function Add-ConfigurationEntry
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $FileContent,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $Text
     )
 
