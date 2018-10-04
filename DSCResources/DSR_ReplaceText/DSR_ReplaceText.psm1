@@ -148,7 +148,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding = 'Default'
     )
@@ -256,7 +256,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding = 'ASCII'
     )
@@ -395,7 +395,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding
     )

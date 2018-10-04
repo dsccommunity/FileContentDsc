@@ -183,10 +183,6 @@ function Get-FileEncoding
     {
         return 'Unicode'
     }
-    elseif ($byte[0] -eq 0 -and $byte[1] -eq 0 -and $byte[2] -eq 0xfe -and $byte[3] -eq 0xff)
-    {
-        return 'UTF32'
-    }
     elseif ($byte[0] -eq 0x2b -and $byte[1] -eq 0x2f -and $byte[2] -eq 0x76)
     {
         return 'UTF7'

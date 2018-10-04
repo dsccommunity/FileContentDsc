@@ -180,7 +180,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding = 'Default'
     )
@@ -356,7 +356,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding
     )
@@ -536,7 +536,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "Default", "Byte", "String", "Unicode", "UTF7", "UTF8", "Unknown")]
+        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
         $Encoding
     )
