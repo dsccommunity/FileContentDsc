@@ -182,7 +182,7 @@ function Set-TargetResource
         [Parameter()]
         [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
-        $Encoding = 'Default'
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -244,15 +244,27 @@ function Set-TargetResource
         {
             if ($results.Count -eq 0)
             {
-                if ($Encoding -eq $fileEncoding)
+                if ($PSBoundParameters.ContainsKey('Encoding'))
                 {
-                    # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
-                    return
-                }
-                else
-                {
-                    Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-                        $fileEncoding, $Encoding)
+                    if ($Encoding -eq $fileEncoding)
+                    {
+                        # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
+                        return
+                    }
+                    else
+                    {
+                        Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                            $fileEncoding, $Encoding)
+
+                        Set-Content `
+                            -Path $Path `
+                            -Value $fileContent `
+                            -Encoding $Encoding `
+                            -NoNewline `
+                            -Force
+
+                        return
+                    }
                 }
             }
             else
@@ -273,7 +285,6 @@ function Set-TargetResource
     Set-Content `
         -Path $Path `
         -Value $fileContent `
-        -Encoding $Encoding `
         -NoNewline `
         -Force
 }
@@ -401,12 +412,9 @@ function Test-TargetResource
         }
         else
         {
-            # The key value pairs should exist and do and encoding is in desired state
-            if ($Encoding -eq $fileEncoding)
-            {
-                Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
-                    $Path, $Name)
-            }
+            # The key value pairs should exist and do
+            Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
+                $Path, $Name)
         } # if
     }
     else
@@ -446,11 +454,11 @@ function Test-TargetResource
         } # if
     } # if
 
-    if ($Encoding -ne $fileEncoding)
+    if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne $fileEncoding))
     {
         # File encoding is not in desired state
         Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-            $fileEncoding, $Encoding)
+        $fileEncoding, $Encoding)
 
         $desiredConfigurationMatch = $false
     }

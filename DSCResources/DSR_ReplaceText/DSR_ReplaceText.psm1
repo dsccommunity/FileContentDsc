@@ -150,7 +150,7 @@ function Set-TargetResource
         [Parameter()]
         [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
-        $Encoding = 'Default'
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -186,12 +186,23 @@ function Set-TargetResource
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
-    Set-Content `
+    if ($PSBoundParameters.ContainsKey('Encoding'))
+    {
+        Set-Content `
         -Path $Path `
         -Value $fileContent `
         -Encoding $Encoding `
         -NoNewline `
         -Force
+    }
+    else
+    {
+        Set-Content `
+        -Path $Path `
+        -Value $fileContent `
+        -NoNewline `
+        -Force
+    }
 }
 
 <#
@@ -258,7 +269,7 @@ function Test-TargetResource
         [Parameter()]
         [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
         [System.String]
-        $Encoding = 'ASCII'
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
@@ -288,21 +299,24 @@ function Test-TargetResource
 
             return $false
         }
-        if ($Encoding -eq $fileEncoding)
+        if ($PSBoundParameters.ContainsKey('Encoding'))
         {
-            # No matches found and encoding is in desired state
-            Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-            $Path, $Search)
+            if ($Encoding -eq $fileEncoding)
+            {
+                # No matches found and encoding is in desired state
+                Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+                $Path, $Search)
 
-            return $true
-        }
-        else
-        {
-            # No matches found and encoding is in desired state
-            Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-            $fileEncoding, $Encoding)
+                return $true
+            }
+            else
+            {
+                # No matches found and encoding is in desired state
+                Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                $fileEncoding, $Encoding)
 
-            return $false
+                return $false
+            }
         }
     }
 
