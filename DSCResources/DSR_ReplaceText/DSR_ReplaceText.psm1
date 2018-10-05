@@ -148,7 +148,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -267,7 +267,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -409,7 +409,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
