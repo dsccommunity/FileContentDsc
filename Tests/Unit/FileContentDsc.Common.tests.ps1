@@ -55,6 +55,33 @@ try
                 }
             }
         }
+
+        Describe "$($script:ModuleName)\Get-FileEncoding" {
+
+            $testTextFile = "TestDrive:\TestFile.txt"
+            $value = 'testText'
+
+            $fileEncoding = @(
+                'ASCII',
+                'BigEndianUnicode',
+                'BigEndianUTF32',
+                'UTF8',
+                'UTF32'
+            )
+
+            Context 'Check file encoding' {
+
+                foreach ($file in $fileEncoding)
+                {
+                    $encoding = $file
+                    Set-Content $testTextFile -Value $value -Encoding $encoding
+
+                    It "should return $encoding" {
+                        Get-FileEncoding -Path $testTextFile | Should -Be $encoding
+                    }
+                }
+            }
+        }
     #endregion
 }
 finally

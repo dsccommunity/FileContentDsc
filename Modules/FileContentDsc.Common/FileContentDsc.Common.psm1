@@ -179,13 +179,17 @@ function Get-FileEncoding
     {
         return 'UTF8'
     }
+    elseif ($byte[0] -eq 0xff -and $byte[1] -eq 0xfe)
+    {
+        return 'UTF32'
+    }
     elseif ($byte[0] -eq 0xfe -and $byte[1] -eq 0xff)
     {
-        return 'Unicode'
+        return 'BigEndianUnicode'
     }
-    elseif ($byte[0] -eq 0x2b -and $byte[1] -eq 0x2f -and $byte[2] -eq 0x76)
+    elseif ($byte[0] -eq 0 -and $byte[1] -eq 0 -and $byte[2] -eq 0xfe -and $byte[3] -eq 0xff)
     {
-        return 'UTF7'
+        return 'BigEndianUTF32'
     }
     else
     {
