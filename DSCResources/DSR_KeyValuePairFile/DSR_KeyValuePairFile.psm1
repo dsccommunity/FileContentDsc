@@ -133,7 +133,7 @@ function Get-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding. Defauts to ASCII.
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Set-TargetResource
 {
@@ -321,7 +321,7 @@ function Set-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding. Defauts to ASCII.
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Test-TargetResource
 {
@@ -499,7 +499,7 @@ function Test-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding. Defauts to ASCII.
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Assert-ParametersValid
 {
