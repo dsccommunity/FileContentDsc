@@ -9,5 +9,5 @@ class DSR_KeyValuePairFile : OMI_BaseResource
   [write, Description("The secret text to replace the value with in the identified key. Only used when Type is set to 'Secret'."),EmbeddedInstance("MSFT_Credential")] String Secret;
   [Write, Description("Ignore the case of the name of the key. Defaults to $False.")] Boolean IgnoreNameCase;
   [Write, Description("Ignore the case of any text or secret when determining if it they need to be updated. Defaults to $False.")] Boolean IgnoreValueCase;
-  [Write, Description("Specifies the file encoding."),ValueMap{"ASCII", "Unicode", "UTF7", "UTF8"},Values{"ASCII", "Unicode", "UTF7", "UTF8"}] String Encoding;
+  [Write, Description("Specifies the file encoding."),ValueMap{"ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32"},Values{"ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32"}] String Encoding;
 };

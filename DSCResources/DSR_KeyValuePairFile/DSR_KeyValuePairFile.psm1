@@ -133,7 +133,7 @@ function Get-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Set-TargetResource
 {
@@ -180,7 +180,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -321,7 +321,7 @@ function Set-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Test-TargetResource
 {
@@ -367,7 +367,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -499,7 +499,7 @@ function Test-TargetResource
         Defaults to $False.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -544,7 +544,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )

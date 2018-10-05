@@ -148,7 +148,7 @@ function Get-IniSettingFileValue
 
 <#
     .SYNOPSIS
-        Gets file encoding.
+        Gets file encoding. Defaults to ASCII.
 
     .DESCRIPTION
         The Get-FileEncoding function determines encoding by looking at Byte Order Mark (BOM).

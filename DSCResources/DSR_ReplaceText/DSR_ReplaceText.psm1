@@ -110,7 +110,7 @@ function Get-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Set-TargetResource
 {
@@ -148,7 +148,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -230,7 +230,7 @@ function Set-TargetResource
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Test-TargetResource
 {
@@ -267,7 +267,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -373,7 +373,7 @@ function Test-TargetResource
         Only used when Type is set to 'Secret'.
 
     .PARAMETER Encoding
-        Specifies the file encoding.
+        Specifies the file encoding. Defauts to ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -409,7 +409,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "Unicode", "UTF7", "UTF8")]
+        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUnicode", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
