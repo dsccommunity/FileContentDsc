@@ -651,7 +651,6 @@ $($script:testAddedName)=$($script:testText)
                         -Path $script:testTextFile `
                         -Name $script:testName.ToUpper() `
                         -Encoding $script:fileEncodingParameters.Encoding `
-                        -Ensure 'Absent' `
                         -Verbose
                     } | Should -Not -Throw
                 }

@@ -327,12 +327,17 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testFileExpectedTextContent)
-                    } `
-                    -MockWith { $script:fileEncodingParameters.Encoding } `
+                } `
                     -Verifiable
 
                 It 'Should not throw an exception' {
@@ -340,7 +345,6 @@ Setting3.Test=Value4
                             -Path $script:testTextFile `
                             -Search $script:testSearch `
                             -Text $script:testTextReplace `
-                            -Encoding $script:fileEncodingParameters.Encoding `
                             -Verbose
                     } | Should -Not -Throw
                 }
@@ -359,7 +363,7 @@ Setting3.Test=Value4
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedTextContent)
-                        } `
+                    } `
                         -Exactly 1
                 }
             }
@@ -378,6 +382,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
@@ -391,7 +401,6 @@ Setting3.Test=Value4
                             -Search $script:testSearchNoFind `
                             -Text $script:testTextReplaceNoFind `
                             -AllowAppend $true `
-                            -Encoding $script:fileEncodingParameters.Encoding `
                             -Verbose
                     } | Should -Not -Throw
                 }
@@ -428,6 +437,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
@@ -441,7 +456,6 @@ Setting3.Test=Value4
                             -Search $script:testSearchNoFind `
                             -Text $script:testTextReplaceNoFind `
                             -AllowAppend $false `
-                            -Encoding $script:fileEncodingParameters.Encoding `
                             -Verbose
                     } | Should -Not -Throw
                 }
@@ -479,6 +493,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
@@ -492,7 +512,6 @@ Setting3.Test=Value4
                             -Search $script:testSearch `
                             -Type 'Secret' `
                             -Secret $script:testSecretCredential `
-                            -Encoding $script:fileEncodingParameters.Encoding `
                             -Verbose
                     } | Should -Not -Throw
                 }
@@ -530,6 +549,12 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
+                    -CommandName Get-FileEncoding `
+                    -ParameterFilter { $path -eq $script:testTextFile } `
+                    -MockWith { $script:testFileContent } `
+                    -Verifiable
+
+                Mock `
                     -CommandName Set-Content `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
@@ -564,6 +589,7 @@ Setting3.Test=Value4
                         -Exactly 1
                 }
             }
+
         }
         #endregion
 

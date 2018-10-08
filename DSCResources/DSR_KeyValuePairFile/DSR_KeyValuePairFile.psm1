@@ -180,7 +180,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -189,6 +189,12 @@ function Set-TargetResource
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
     $fileEncoding = Get-FileEncoding -Path $Path
+
+    $FileProperties = @{
+        Path      = $Path
+        NoNewline = $true
+        Force     = $true
+    }
 
     Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
         $Path, $Name)
@@ -256,14 +262,8 @@ function Set-TargetResource
                         Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
                             $fileEncoding, $Encoding)
 
-                        Set-Content `
-                            -Path $Path `
-                            -Value $fileContent `
-                            -Encoding $Encoding `
-                            -NoNewline `
-                            -Force
-
-                        return
+                        # Add encoding parameter and value to the hashtable
+                        $FileProperties.add('Encoding', $Encoding)
                     }
                 }
             }
@@ -282,11 +282,9 @@ function Set-TargetResource
         $fileContent = '{0}={1}' -f $Name, $Text
     } # if
 
-    Set-Content `
-        -Path $Path `
-        -Value $fileContent `
-        -NoNewline `
-        -Force
+    $FileProperties.Add('Value', $fileContent)
+
+    Set-Content @FileProperties
 }
 
 <#
@@ -367,7 +365,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -544,7 +542,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )

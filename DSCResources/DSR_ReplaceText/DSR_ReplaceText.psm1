@@ -148,7 +148,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -156,6 +156,13 @@ function Set-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+    $fileEncoding = Get-FileEncoding $Path
+
+    $FileProperties = @{
+        Path      = $Path
+        NoNewline = $true
+        Force     = $true
+    }
 
     if ($Type -eq 'Secret')
     {
@@ -164,11 +171,22 @@ function Set-TargetResource
 
         $Text = $Secret.GetNetworkCredential().Password
     }
-    else
+    elseif ($PSBoundParameters.ContainsKey('Encoding'))
     {
-        Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+        if ($Encoding -eq $fileEncoding)
+        {
+            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
             $Path, $Text)
-    } # if
+        }
+        else
+        {
+            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            $Path, $Text)
+
+            # Add encoding parameter and value to the hashtable
+            $FileProperties.Add('Encoding', $Encoding)
+        }
+    }
 
     if ($null -eq $fileContent)
     {
@@ -186,23 +204,9 @@ function Set-TargetResource
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
-    if ($PSBoundParameters.ContainsKey('Encoding'))
-    {
-        Set-Content `
-        -Path $Path `
-        -Value $fileContent `
-        -Encoding $Encoding `
-        -NoNewline `
-        -Force
-    }
-    else
-    {
-        Set-Content `
-        -Path $Path `
-        -Value $fileContent `
-        -NoNewline `
-        -Force
-    }
+    $FileProperties.Add('Value', $fileContent)
+
+    Set-Content @FileProperties
 }
 
 <#
@@ -267,7 +271,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
@@ -311,7 +315,7 @@ function Test-TargetResource
             }
             else
             {
-                # No matches found and encoding is in desired state
+                # No matches found but encoding is not in desired state
                 Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
                 $fileEncoding, $Encoding)
 
@@ -409,7 +413,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigIndianUnicode", "BigIndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
         [System.String]
         $Encoding
     )
