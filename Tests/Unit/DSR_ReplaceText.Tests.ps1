@@ -329,7 +329,7 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 Mock `
@@ -384,7 +384,7 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
+                    -MockWith { $script:testCompliantEncoding.encoding } `
                     -Verifiable
 
                 Mock `
@@ -439,7 +439,7 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 Mock `
@@ -495,7 +495,7 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
+                    -MockWith { $script:testCompliantEncoding.Encoding } `
                     -Verifiable
 
                 Mock `
@@ -551,7 +551,7 @@ Setting3.Test=Value4
                 Mock `
                     -CommandName Get-FileEncoding `
                     -ParameterFilter { $path -eq $script:testTextFile } `
-                    -MockWith { $script:testFileContent } `
+                    -MockWith { $script:testCompliantEncoding.encoding } `
                     -Verifiable
 
                 Mock `
