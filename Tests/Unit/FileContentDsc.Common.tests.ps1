@@ -24,64 +24,61 @@ try
         $LocalizedData
     }
 
-        Describe "$($script:ModuleName)\Get-TextEolCharacter" {
+    Describe "$($script:ModuleName)\Get-TextEolCharacter" {
+        $textNoNewLine = 'NoNewLine'
+        $textCRLFOnly = "CRLFOnly`r`n"
+        $textCROnly = "CROnly`r"
+        $textBoth = "CRLFLine`r`nCRLine`r"
 
-            $textNoNewLine = 'NoNewLine'
-            $textCRLFOnly = "CRLFOnly`r`n"
-            $textCROnly = "CROnly`r"
-            $textBoth = "CRLFLine`r`nCRLine`r"
-
-            Context 'text with no new line' {
-                It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textNoNewLine | Should -Be "`r`n"
-                }
-            }
-
-            Context 'text with CRLF only' {
-                It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textCRLFOnly | Should -Be "`r`n"
-                }
-            }
-
-            Context 'text with CR only' {
-                It 'should return CR' {
-                    Get-TextEolCharacter -Text $textCROnly | Should -Be "`r"
-                }
-            }
-
-            Context 'text with both CR and CRLF' {
-                It 'should return CRLF' {
-                    Get-TextEolCharacter -Text $textBoth | Should -Be "`r`n"
-                }
+        Context 'text with no new line' {
+            It 'should return CRLF' {
+                Get-TextEolCharacter -Text $textNoNewLine | Should -Be "`r`n"
             }
         }
 
-        Describe "$($script:ModuleName)\Get-FileEncoding" {
+        Context 'text with CRLF only' {
+            It 'should return CRLF' {
+                Get-TextEolCharacter -Text $textCRLFOnly | Should -Be "`r`n"
+            }
+        }
 
-            $testTextFile = "TestDrive:\TestFile.txt"
-            $value = 'testText'
+        Context 'text with CR only' {
+            It 'should return CR' {
+                Get-TextEolCharacter -Text $textCROnly | Should -Be "`r"
+            }
+        }
 
-            $fileEncoding = @(
-                'ASCII',
-                'BigEndianUnicode',
-                'BigEndianUTF32',
-                'UTF8',
-                'UTF32'
-            )
+        Context 'text with both CR and CRLF' {
+            It 'should return CRLF' {
+                Get-TextEolCharacter -Text $textBoth | Should -Be "`r`n"
+            }
+        }
+    }
 
-            Context 'Check file encoding' {
+    Describe "$($script:ModuleName)\Get-FileEncoding" {
+        $testTextFile = "TestDrive:\TestFile.txt"
+        $value = 'testText'
 
-                foreach ($file in $fileEncoding)
-                {
-                    $encoding = $file
-                    Set-Content $testTextFile -Value $value -Encoding $encoding
+        $fileEncoding = @(
+            'ASCII',
+            'BigEndianUnicode',
+            'BigEndianUTF32',
+            'UTF8',
+            'UTF32'
+        )
 
-                    It "should return $encoding" {
-                        Get-FileEncoding -Path $testTextFile | Should -Be $encoding
-                    }
+        Context 'When checking file encoding' {
+            foreach ($file in $fileEncoding)
+            {
+                $encoding = $file
+                Set-Content $testTextFile -Value $value -Encoding $encoding
+
+                It "should return $encoding" {
+                    Get-FileEncoding -Path $testTextFile | Should -Be $encoding
                 }
             }
         }
+    }
     #endregion
 }
 finally
