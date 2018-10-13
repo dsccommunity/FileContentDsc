@@ -58,24 +58,13 @@ try
     Describe "$($script:ModuleName)\Get-FileEncoding" {
         $testTextFile = "TestDrive:\TestFile.txt"
         $value = 'testText'
-
-        $fileEncoding = @(
-            'ASCII',
-            'BigEndianUnicode',
-            'BigEndianUTF32',
-            'UTF8',
-            'UTF32'
-        )
+        $encoding = @{encoding = 'ASCII'}, @{encoding = 'BigEndianUnicode'}, @{encoding = 'BigEndianUTF32'}, @{encoding = 'UTF8'}, @{encoding = 'UTF32'}
 
         Context 'When checking file encoding' {
-            foreach ($file in $fileEncoding)
-            {
-                $encoding = $file
+            It "encoding is <encoding> and should return <encoding>" -TestCases $encoding {
+                param($encoding)
                 Set-Content $testTextFile -Value $value -Encoding $encoding
-
-                It "should return $encoding" {
-                    Get-FileEncoding -Path $testTextFile | Should -Be $encoding
-                }
+                Get-FileEncoding -Path $testTextFile | Should -Be $encoding
             }
         }
     }
