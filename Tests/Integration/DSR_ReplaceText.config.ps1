@@ -20,6 +20,17 @@ Configuration $ConfigurationName
                 Text     = $Node.Text
             }
         }
+        elseif (($Node.Type -eq 'Text') -and ($Node.Encoding -eq 'ASCII'))
+        {
+            ReplaceText ReplaceTextIntegrationTest
+            {
+                Path     = $Node.Path
+                Search   = $Node.Search
+                Type     = $Node.Type
+                Text     = $Node.Text
+                Encoding = $Node.Encoding
+            }
+        }
         else
         {
             ReplaceText ReplaceTextIntegrationTest
