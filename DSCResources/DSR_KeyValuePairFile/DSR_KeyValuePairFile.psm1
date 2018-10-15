@@ -224,6 +224,10 @@ function Set-TargetResource
             # The key value pair should exist
             $keyValuePair = '{0}={1}{2}' -f $Name, $Text, $eolChars
 
+            if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne $fileEncoding))
+            {
+                $fileProperties.Add('Encoding', $Encoding)
+            }
             if ($results.Count -eq 0)
             {
                 # The key value pair was not found so add it to the end of the file
@@ -244,7 +248,7 @@ function Set-TargetResource
 
                 Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
                     $Path, $Name)
-            } # if
+            }#> # if
         }
         else
         {
