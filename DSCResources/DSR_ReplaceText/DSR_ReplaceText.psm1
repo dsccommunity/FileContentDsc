@@ -158,7 +158,7 @@ function Set-TargetResource
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
     $fileEncoding = Get-FileEncoding $Path
 
-    $fileproperties = @{
+    $fileProperties = @{
         Path      = $Path
         NoNewline = $true
         Force     = $true
@@ -184,7 +184,7 @@ function Set-TargetResource
             $Path, $Text)
 
             # Add encoding parameter and value to the hashtable
-            $fileproperties.Add('Encoding', $Encoding)
+            $fileProperties.Add('Encoding', $Encoding)
         }
     }
 
@@ -204,9 +204,9 @@ function Set-TargetResource
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
-    $fileproperties.Add('Value', $fileContent)
+    $fileProperties.Add('Value', $fileContent)
 
-    Set-Content @fileproperties
+    Set-Content @fileProperties
 }
 
 <#

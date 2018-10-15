@@ -288,7 +288,7 @@ function Set-TargetResource
 
     $fileProperties.Add('Value', $fileContent)
 
-    Set-Content @FileProperties
+    Set-Content @fileProperties
 }
 
 <#
