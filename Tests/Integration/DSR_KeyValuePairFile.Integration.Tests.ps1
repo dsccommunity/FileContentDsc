@@ -36,7 +36,7 @@ try
         $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecret)
 
         $script:fileEncodingParameters = @{
-            Path     =  $script:testTextFile
+            Path     = $script:testTextFile
             Encoding = 'ASCII'
         }
 
