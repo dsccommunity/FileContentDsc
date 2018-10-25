@@ -224,11 +224,6 @@ function Set-TargetResource
             # The key value pair should exist
             $keyValuePair = '{0}={1}{2}' -f $Name, $Text, $eolChars
 
-            if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne $fileEncoding))
-            {
-                $fileProperties.Add('Encoding', $Encoding)
-            }
-
             if ($results.Count -eq 0)
             {
                 # The key value pair was not found so add it to the end of the file
@@ -264,9 +259,6 @@ function Set-TargetResource
                 {
                     Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
                         $fileEncoding, $Encoding)
-
-                    # Add encoding parameter and value to the hashtable
-                    $fileProperties.add('Encoding', $Encoding)
                 }
             }
             else
@@ -285,6 +277,13 @@ function Set-TargetResource
     } # if
 
     $fileProperties.Add('Value', $fileContent)
+
+    # Verify encoding is not set to the passed parameter or the default of ASCII
+    if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne ($fileEncoding -or 'ASCII')))
+    {
+        # Add encoding parameter and value to the hashtable
+        $fileProperties.Add('Encoding', $Encoding)
+    }
 
     Set-Content @fileProperties
 }
