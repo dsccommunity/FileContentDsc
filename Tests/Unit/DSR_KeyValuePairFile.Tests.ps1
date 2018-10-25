@@ -520,6 +520,7 @@ $($script:testAddedName)=$($script:testText)
                     { Set-TargetResource `
                         -Path $script:testTextFile `
                         -Name $script:testName.ToUpper() `
+                        -Encoding $script:fileEncodingParameters.Encoding `
                         -Ensure 'Absent' `
                         -Verbose
                     } | Should -Not -Throw
@@ -536,7 +537,7 @@ $($script:testAddedName)=$($script:testText)
 
                     Assert-MockCalled `
                         -CommandName Set-Content `
-                        -Exactly 1
+                        -Exactly 0
                 }
             }
 
@@ -650,7 +651,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
 
-            Context 'File exists and does not contain matching key but should not' {
+            Context 'File exists and does not contain matching key and should not' {
                 # verifiable (should be called) mocks
                 Mock `
                     -CommandName Assert-ParametersValid `

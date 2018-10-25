@@ -228,6 +228,7 @@ function Set-TargetResource
             {
                 $fileProperties.Add('Encoding', $Encoding)
             }
+
             if ($results.Count -eq 0)
             {
                 # The key value pair was not found so add it to the end of the file
@@ -248,27 +249,24 @@ function Set-TargetResource
 
                 Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
                     $Path, $Name)
-            }#> # if
+            } # if
         }
         else
         {
             if ($results.Count -eq 0)
             {
-                if ($PSBoundParameters.ContainsKey('Encoding'))
+                if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -eq $fileEncoding))
                 {
-                    if ($Encoding -eq $fileEncoding)
-                    {
                         # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
                         return
-                    }
-                    else
-                    {
-                        Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-                            $fileEncoding, $Encoding)
+                }
+                else
+                {
+                    Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                        $fileEncoding, $Encoding)
 
-                        # Add encoding parameter and value to the hashtable
-                        $fileProperties.add('Encoding', $Encoding)
-                    }
+                    # Add encoding parameter and value to the hashtable
+                    $fileProperties.add('Encoding', $Encoding)
                 }
             }
             else
