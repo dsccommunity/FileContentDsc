@@ -16,7 +16,7 @@ if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCR
 
 Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 Import-Module (Join-Path -Path $script:moduleRoot -ChildPath "$($script:DSCModuleName).psd1") -Force
-# Import the helper module for the Get-FileEncoding function
+# Helper module import required for the Get-FileEncoding function
 Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Modules\FileContentDsc.Common') -Force
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $script:DSCModuleName `
