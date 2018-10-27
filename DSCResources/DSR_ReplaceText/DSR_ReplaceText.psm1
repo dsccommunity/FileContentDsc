@@ -40,21 +40,22 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search
     )
 
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-            $Path, $Search)
+        $Path, $Search)
 
     $text = ''
 
@@ -65,21 +66,22 @@ function Get-TargetResource
     {
         # No matches found - already in state
         Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     }
     else
     {
         $text = ($results.Value -join ',')
 
         Write-Verbose -Message ($localizedData.StringMatchFoundMessage -f `
-                $Path, $Search, $text)
+            $Path, $Search, $text)
     } # if
 
     return @{
-        Path   = $Path
-        Search = $Search
-        Type   = 'Text'
-        Text   = $text
+        Path     = $Path
+        Search   = $Search
+        Type     = 'Text'
+        Text     = $text
+        Encoding = $fileEncoding
     }
 }
 
@@ -106,6 +108,9 @@ function Get-TargetResource
 
     .PARAMETER AllowAppend
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
+
+    .PARAMETER Encoding
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Set-TargetResource
 {
@@ -116,21 +121,21 @@ function Set-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -140,25 +145,48 @@ function Set-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $AllowAppend = $false
+        $AllowAppend = $false,
+
+        [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [System.String]
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+    $fileEncoding = Get-FileEncoding $Path
+
+    $fileProperties = @{
+        Path      = $Path
+        NoNewline = $true
+        Force     = $true
+    }
 
     if ($Type -eq 'Secret')
     {
         Write-Verbose -Message ($localizedData.StringReplaceSecretMessage -f `
-                $Path)
+            $Path)
 
         $Text = $Secret.GetNetworkCredential().Password
     }
-    else
+    elseif ($PSBoundParameters.ContainsKey('Encoding'))
     {
-        Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
-                $Path, $Text)
-    } # if
+        if ($Encoding -eq $fileEncoding)
+        {
+            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            $Path, $Text)
+        }
+        else
+        {
+            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            $Path, $Text)
+
+            # Add encoding parameter and value to the hashtable
+            $fileProperties.Add('Encoding', $Encoding)
+        }
+    }
 
     if ($null -eq $fileContent)
     {
@@ -176,11 +204,9 @@ function Set-TargetResource
         $fileContent = $fileContent -Replace $Search, $Text
     }
 
-    Set-Content `
-        -Path $Path `
-        -Value $fileContent `
-        -NoNewline `
-        -Force
+    $fileProperties.Add('Value', $fileContent)
+
+    Set-Content @fileProperties
 }
 
 <#
@@ -206,6 +232,9 @@ function Set-TargetResource
 
     .PARAMETER AllowAppend
         Specifies to append text to the file being modified. Adds the ability to add a configuration entry.
+
+    .PARAMETER Encoding
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Test-TargetResource
 {
@@ -215,21 +244,21 @@ function Test-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -239,21 +268,27 @@ function Test-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $AllowAppend = $false
+        $AllowAppend = $false,
+
+        [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [System.String]
+        $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    # Check if file being managed exists. If not return $False.
+    # Check if file being managed exists. If not return $false.
     if (-not (Test-Path -Path $Path))
     {
         return $false
     }
 
     $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path
 
     Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
-            $Path, $Search)
+        $Path, $Search)
 
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
@@ -268,12 +303,25 @@ function Test-TargetResource
 
             return $false
         }
-
-        # No matches found - already in state
-        Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+        if ($PSBoundParameters.ContainsKey('Encoding'))
+        {
+            if ($Encoding -eq $fileEncoding)
+            {
+                # No matches found and encoding is in desired state
+                Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
                 $Path, $Search)
 
-        return $true
+                return $true
+            }
+            else
+            {
+                # No matches found but encoding is not in desired state
+                Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                $fileEncoding, $Encoding)
+
+                return $false
+            }
+        }
     }
 
     # Flag to signal whether settings are correct
@@ -295,12 +343,12 @@ function Test-TargetResource
     if ($desiredConfigurationMatch)
     {
         Write-Verbose -Message ($localizedData.StringNoReplacementMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     }
     else
     {
         Write-Verbose -Message ($localizedData.StringReplacementRequiredMessage -f `
-                $Path, $Search)
+            $Path, $Search)
     } # if
 
     return $desiredConfigurationMatch
@@ -327,6 +375,9 @@ function Test-TargetResource
     .PARAMETER Secret
         The secret text to replace the text identified by the RegEx.
         Only used when Type is set to 'Secret'.
+
+    .PARAMETER Encoding
+        Specifies the file encoding. Defaults to ASCII.
 #>
 function Assert-ParametersValid
 {
@@ -335,21 +386,21 @@ function Assert-ParametersValid
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Search,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -359,7 +410,12 @@ function Assert-ParametersValid
 
         [Parameter()]
         [System.Boolean]
-        $AllowAppend = $false
+        $AllowAppend = $false,
+
+        [Parameter()]
+        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [System.String]
+        $Encoding
     )
 
     # Does the file's parent path exist?
@@ -389,11 +445,11 @@ function Add-ConfigurationEntry
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $FileContent,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $Text
     )
 

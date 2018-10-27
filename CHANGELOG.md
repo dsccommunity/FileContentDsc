@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Added .VSCode settings for applying DSC PSSA rules - fixes [Issue #25](https://github.com/PlagueHO/FileContentDsc/issues/25).
+- Added an Encoding parameter to the KeyValuePairFile and ReplaceText
+  resources - fixes [Issue #5](https://github.com/PlagueHO/FileContentDsc/issues/5).
 
 ## 1.1.0.0
 

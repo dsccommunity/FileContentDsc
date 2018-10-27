@@ -16,6 +16,8 @@ if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCR
 
 Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 Import-Module (Join-Path -Path $script:moduleRoot -ChildPath "$($script:DSCModuleName).psd1") -Force
+# Helper module import required for the Get-FileEncoding function
+Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Modules\FileContentDsc.Common') -Force
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $script:DSCModuleName `
     -DSCResourceName $script:DSCResourceName `
@@ -33,6 +35,16 @@ try
         $script:testSecret = 'Test Secret'
         $script:testSecureSecret = ConvertTo-SecureString -String $script:testSecret -AsPlainText -Force
         $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecret)
+
+        $script:fileEncodingParameters = @{
+            Path     = $script:testTextFile
+            Encoding = 'ASCII'
+        }
+
+        $script:testNonCompliantEncoding = @{
+            Path     = $script:fileEncodingParameters.Path
+            Encoding = 'UTF8'
+        }
 
         $script:testFileContent = @"
 Setting1=Value1
@@ -260,6 +272,76 @@ Setting3.Test=Value4
 
             It 'Should be convert the file content to match expected content' {
                 Get-Content -Path $script:testTextFile -Raw | Should -Be $script:testFileExpectedAbsentContent
+            }
+
+            AfterAll {
+                if (Test-Path -Path $script:testTextFile)
+                {
+                    Remove-Item -Path $script:testTextFile -Force
+                }
+            }
+        }
+
+        Context 'A text file that requires encoding be changed' {
+            BeforeAll {
+                # Create the text file to use for testing
+                Set-Content `
+                    -Path $script:testTextFile `
+                    -Value $script:testFileContent `
+                    -Encoding $script:testNonCompliantEncoding.Encoding `
+                    -NoNewline `
+                    -Force
+            }
+
+            #region DEFAULT TESTS
+            It 'Should compile and apply the MOF without throwing' {
+                {
+                    $configData = @{
+                        AllNodes = @(
+                            @{
+                                NodeName = 'localhost'
+                                Path     = $script:testTextFile
+                                Name     = $script:testName
+                                Ensure   = 'Present'
+                                Type     = 'Text'
+                                Text     = $script:testText
+                                Encoding = $script:fileEncodingParameters.Encoding
+                            }
+                        )
+                    }
+
+                    & $script:configurationName `
+                        -OutputPath $TestDrive `
+                        -ConfigurationData $configData
+
+                    Start-DscConfiguration `
+                        -Path $TestDrive `
+                        -ComputerName localhost `
+                        -Wait `
+                        -Verbose `
+                        -Force `
+                        -ErrorAction Stop
+                } | Should -Not -Throw
+            }
+
+            It 'Should be able to call Get-DscConfiguration without throwing' {
+                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should -Not -throw
+            }
+
+            It 'Should have set the resource and all the parameters should match' {
+                $script:current = $script:currentDscConfig | Where-Object {
+                    $_.ConfigurationName -eq $script:configurationName
+                }
+                $current.Path             | Should -Be $script:testTextFile
+                $current.Name             | Should -Be $script:testName
+                $current.Ensure           | Should -Be 'Present'
+                $current.Type             | Should -Be 'Text'
+                $current.Text             | Should -Be "$($script:testText),$($script:testText),$($script:testText)"
+                $current.Encoding         | Should -Be $script:fileEncodingParameters.Encoding
+            }
+
+            It 'Should convert file encoding to the expected type' {
+                Get-FileEncoding -Path $script:testTextFile | Should -Be $script:fileEncodingParameters.Encoding
             }
 
             AfterAll {
