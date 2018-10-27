@@ -30,6 +30,18 @@ Configuration $ConfigurationName
                 Text    = $Node.Text
             }
         }
+        elseif (($Node.Type -eq 'Text') -and ($Node.Encoding -eq 'ASCII'))
+        {
+            KeyValuePairFile KeyValuePairFileIntegrationTest
+            {
+                Path     = $Node.Path
+                Name     = $Node.Name
+                Ensure   = $Node.Ensure
+                Type     = $Node.Type
+                Text     = $Node.Text
+                Encoding = $Node.Encoding
+            }
+        }
         else
         {
             KeyValuePairFile KeyValuePairFileIntegrationTest
