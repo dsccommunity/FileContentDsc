@@ -1,26 +1,14 @@
-# Suppressed as per PSSA Rule Severity guidelines for unit/integration tests:
-# https://github.com/PowerShell/DscResources/blob/master/PSSARuleSeverities.md
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-param ()
-
 Set-StrictMode -Version 'Latest'
 
 $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
 
-# Import the Storage Common Modules
+# Import the Networking Common Modules
 Import-Module -Name (Join-Path -Path $modulePath `
         -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
             -ChildPath 'FileContentDsc.Common.psm1'))
 
-# Import the Storage Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath `
-        -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
-            -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
-
 # Import Localization Strings
-$localizedData = Get-LocalizedData `
-    -ResourceName 'DSR_IniSettingsFile' `
-    -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -ResourceName 'DSR_IniSettingsFile'
 
 <#
     .SYNOPSIS
@@ -43,23 +31,23 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Section,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Key
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    Write-Verbose -Message ($localizedData.GetIniSettingMessage -f `
+    Write-Verbose -Message ($script:localizedData.GetIniSettingMessage -f `
             $Path, $Section, $Key)
 
     $text = Get-IniSettingFileValue @PSBoundParameters
@@ -99,33 +87,31 @@ function Get-TargetResource
 #>
 function Set-TargetResource
 {
-    # Should process is called in a helper functions but not directly in Set-TargetResource
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '')]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Section,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Key,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -143,7 +129,7 @@ function Set-TargetResource
 
     if ($Type -eq 'Secret')
     {
-        Write-Verbose -Message ($localizedData.SetIniSettingSecretMessage -f `
+        Write-Verbose -Message ($script:localizedData.SetIniSettingSecretMessage -f `
                 $Path, $Section, $Key)
 
         $Text = $Secret.GetNetworkCredential().Password
@@ -151,7 +137,7 @@ function Set-TargetResource
     }
     else
     {
-        Write-Verbose -Message ($localizedData.SetIniSettingTextMessage -f `
+        Write-Verbose -Message ($script:localizedData.SetIniSettingTextMessage -f `
                 $Path, $Section, $Key, $Text)
     } # if
 
@@ -189,32 +175,32 @@ function Set-TargetResource
 #>
 function Test-TargetResource
 {
-    [OutputType([Boolean])]
+    [OutputType([System.Boolean])]
     [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Section,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Key,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -243,14 +229,14 @@ function Test-TargetResource
 
     if ((Get-IniSettingFileValue @PSBoundParameters) -eq $Text)
     {
-        Write-Verbose -Message ($localizedData.IniSettingMatchesMessage -f `
+        Write-Verbose -Message ($script:localizedData.IniSettingMatchesMessage -f `
                 $Path, $Section, $Key)
 
         return $true
     }
     else
     {
-        Write-Verbose -Message ($localizedData.IniSettingMismatchMessage -f `
+        Write-Verbose -Message ($script:localizedData.IniSettingMismatchMessage -f `
                 $Path, $Section, $Key)
 
         return $false
@@ -289,26 +275,26 @@ function Assert-ParametersValid
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Path,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Section,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Key,
 
         [Parameter()]
         [ValidateSet('Text', 'Secret')]
-        [String]
+        [System.String]
         $Type = 'Text',
 
         [Parameter()]
-        [String]
+        [System.String]
         $Text,
 
         [Parameter()]
@@ -319,10 +305,11 @@ function Assert-ParametersValid
 
     # Does the file's parent path exist?
     $parentPath = Split-Path -Path $Path -Parent
+
     if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileParentNotFoundError -f $parentPath) `
+            -Message ($script:localizedData.FileParentNotFoundError -f $parentPath) `
             -ArgumentName 'Path'
     } # if
 }

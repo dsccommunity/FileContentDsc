@@ -25,12 +25,11 @@ $TestEnvironment = Initialize-TestEnvironment `
 # Begin Testing
 try
 {
-    #region Pester Tests
-
-    # The InModuleScope command allows you to perform white-box unit testing on the internal
-    # (non-exported) code of a Script Module.
+    <#
+        The InModuleScope command allows you to perform white-box unit testing on the internal
+        (non-exported) code of a Script Module.
+    #>
     InModuleScope 'DSR_KeyValuePairFile' {
-        #region Pester Test Initialization
         $script:testTextFile = 'TestFile.txt'
         $script:testName = 'Setting.Two'
         $script:testNameNotFound = 'Setting.NotFound'
@@ -107,10 +106,7 @@ $($script:testAddedName)=$($script:testText)
 
 "@
 
-        #endregion
-
-        #region Function Get-TargetResource
-        Describe 'DSR_KeyValuePairFile\Get-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Get-TargetResource' -Tag 'Get' {
             Context 'File exists and contains matching key' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -207,10 +203,8 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
         }
-        #endregion
 
-        #region Function Set-TargetResource
-        Describe 'DSR_KeyValuePairFile\Set-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Set-TargetResource' -Tag 'Set' {
             Context 'File does not exist' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -597,10 +591,8 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
         }
-        #endregion
 
-        #region Function Test-TargetResource
-        Describe 'DSR_KeyValuePairFile\Test-TargetResource' {
+        Describe 'DSR_KeyValuePairFile\Test-TargetResource' -Tag 'Test' {
             Context 'File exists and does not contain matching key but it should' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -1208,9 +1200,7 @@ $($script:testAddedName)=$($script:testText)
                 }
             }
         }
-        #endregion
 
-        #region Function Assert-ParametersValid
         Describe 'DSR_KeyValuePairFile\Assert-ParametersValid' {
             Context 'File parent path exists' {
                 # verifiable (should be called) mocks
@@ -1255,7 +1245,7 @@ $($script:testAddedName)=$($script:testText)
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
+                    -Message ($script:localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {

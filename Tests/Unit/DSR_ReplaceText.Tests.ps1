@@ -25,12 +25,11 @@ $TestEnvironment = Initialize-TestEnvironment `
 # Begin Testing
 try
 {
-    #region Pester Tests
-
-    # The InModuleScope command allows you to perform white-box unit testing on the internal
-    # (non-exported) code of a Script Module.
+    <#
+        The InModuleScope command allows you to perform white-box unit testing on the internal
+        (non-exported) code of a Script Module.
+    #>
     InModuleScope 'DSR_ReplaceText' {
-        #region Pester Test Initialization
         $script:testTextFile = 'TestFile.txt'
         $script:testText = 'TestText'
         $script:testSecret = 'TestSecret'
@@ -93,10 +92,8 @@ Setting.Two='$($script:testSecret)'
 Setting3.Test=Value4
 
 "@
-        #endregion
 
-        #region Function Get-TargetResource
-        Describe 'DSR_ReplaceText\Get-TargetResource' {
+        Describe 'DSR_ReplaceText\Get-TargetResource' -Tag 'Get' {
             Context 'File exists and search text can be found and encoding is in desired state' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -309,10 +306,8 @@ Setting3.Test=Value4
                 }
             }
         }
-        #endregion
 
-        #region Function Set-TargetResource
-        Describe 'DSR_ReplaceText\Set-TargetResource' {
+        Describe 'DSR_ReplaceText\Set-TargetResource' -Tag 'Set' {
             Context 'File exists and search text can be found' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -589,12 +584,9 @@ Setting3.Test=Value4
                         -Exactly 1
                 }
             }
-
         }
-        #endregion
 
-        #region Function Test-TargetResource
-        Describe 'DSR_ReplaceString\Test-TargetResource' {
+        Describe 'DSR_ReplaceString\Test-TargetResource' -Tag 'Test' {
             Context 'File exists search text cannot be found and AllowAppend is TRUE' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -1013,9 +1005,7 @@ Setting3.Test=Value4
                 }
             }
         }
-        #endregion
 
-        #region Function Assert-ParametersValid
         Describe 'DSR_ReplaceText\Assert-ParametersValid' {
             Context 'File exists' {
                 # verifiable (should be called) mocks
@@ -1060,7 +1050,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
+                    -Message ($script:localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {
@@ -1077,7 +1067,6 @@ Setting3.Test=Value4
                 }
             }
         }
-        #endregion
 
         Describe 'DSR_ReplaceText\Add-ConfigurationEntry' {
             Context 'Append text' {
