@@ -1,26 +1,14 @@
-# Suppressed as per PSSA Rule Severity guidelines for unit/integration tests:
-# https://github.com/PowerShell/DscResources/blob/master/PSSARuleSeverities.md
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-param ()
-
 Set-StrictMode -Version 'Latest'
 
 $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
 
-# Import the Storage Common Modules
+# Import the Networking Common Modules
 Import-Module -Name (Join-Path -Path $modulePath `
         -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
             -ChildPath 'FileContentDsc.Common.psm1'))
 
-# Import the Storage Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath `
-        -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
-            -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
-
 # Import Localization Strings
-$localizedData = Get-LocalizedData `
-    -ResourceName 'DSR_ReplaceText' `
-    -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -ResourceName 'DSR_ReplaceText'
 
 <#
     .SYNOPSIS
@@ -54,7 +42,7 @@ function Get-TargetResource
     $fileContent = Get-Content -Path $Path -Raw
     $fileEncoding = Get-FileEncoding $Path
 
-    Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
+    Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
         $Path, $Search)
 
     $text = ''
@@ -65,14 +53,14 @@ function Get-TargetResource
     if ($results.Count -eq 0)
     {
         # No matches found - already in state
-        Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+        Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
             $Path, $Search)
     }
     else
     {
         $text = ($results.Value -join ',')
 
-        Write-Verbose -Message ($localizedData.StringMatchFoundMessage -f `
+        Write-Verbose -Message ($script:localizedData.StringMatchFoundMessage -f `
             $Path, $Search, $text)
     } # if
 
@@ -114,9 +102,7 @@ function Get-TargetResource
 #>
 function Set-TargetResource
 {
-    # Should process is called in a helper functions but not directly in Set-TargetResource
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '')]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -166,7 +152,7 @@ function Set-TargetResource
 
     if ($Type -eq 'Secret')
     {
-        Write-Verbose -Message ($localizedData.StringReplaceSecretMessage -f `
+        Write-Verbose -Message ($script:localizedData.StringReplaceSecretMessage -f `
             $Path)
 
         $Text = $Secret.GetNetworkCredential().Password
@@ -175,12 +161,12 @@ function Set-TargetResource
     {
         if ($Encoding -eq $fileEncoding)
         {
-            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
             $Path, $Text)
         }
         else
         {
-            Write-Verbose -Message ($localizedData.StringReplaceTextMessage -f `
+            Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
             $Path, $Text)
 
             # Add encoding parameter and value to the hashtable
@@ -238,7 +224,7 @@ function Set-TargetResource
 #>
 function Test-TargetResource
 {
-    [OutputType([Boolean])]
+    [OutputType([System.Boolean])]
     [CmdletBinding()]
     param
     (
@@ -287,7 +273,7 @@ function Test-TargetResource
     $fileContent = Get-Content -Path $Path -Raw
     $fileEncoding = Get-FileEncoding $Path
 
-    Write-Verbose -Message ($localizedData.SearchForTextMessage -f `
+    Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
         $Path, $Search)
 
     # Search the file content for any matches
@@ -298,7 +284,7 @@ function Test-TargetResource
         if ($AllowAppend -eq $true)
         {
             # No matches found - but we want to append
-            Write-Verbose -Message ($localizedData.StringNotFoundMessageAppend -f `
+            Write-Verbose -Message ($script:localizedData.StringNotFoundMessageAppend -f `
                     $Path, $Search)
 
             return $false
@@ -308,7 +294,7 @@ function Test-TargetResource
             if ($Encoding -eq $fileEncoding)
             {
                 # No matches found and encoding is in desired state
-                Write-Verbose -Message ($localizedData.StringNotFoundMessage -f `
+                Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
                 $Path, $Search)
 
                 return $true
@@ -316,7 +302,7 @@ function Test-TargetResource
             else
             {
                 # No matches found but encoding is not in desired state
-                Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
+                Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f `
                 $fileEncoding, $Encoding)
 
                 return $false
@@ -325,7 +311,7 @@ function Test-TargetResource
     }
 
     # Flag to signal whether settings are correct
-    [Boolean] $desiredConfigurationMatch = $true
+    [System.Boolean] $desiredConfigurationMatch = $true
 
     if ($Type -eq 'Secret')
     {
@@ -342,12 +328,12 @@ function Test-TargetResource
 
     if ($desiredConfigurationMatch)
     {
-        Write-Verbose -Message ($localizedData.StringNoReplacementMessage -f `
+        Write-Verbose -Message ($script:localizedData.StringNoReplacementMessage -f `
             $Path, $Search)
     }
     else
     {
-        Write-Verbose -Message ($localizedData.StringReplacementRequiredMessage -f `
+        Write-Verbose -Message ($script:localizedData.StringReplacementRequiredMessage -f `
             $Path, $Search)
     } # if
 
@@ -423,7 +409,7 @@ function Assert-ParametersValid
     if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileParentNotFoundError -f $parentPath) `
+            -Message ($script:localizedData.FileParentNotFoundError -f $parentPath) `
             -ArgumentName 'Path'
     } # if
 }
@@ -440,7 +426,7 @@ function Assert-ParametersValid
 #>
 function Add-ConfigurationEntry
 {
-    [OutputType([String])]
+    [OutputType([System.String])]
     [CmdletBinding()]
     param
     (
