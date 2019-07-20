@@ -1,6 +1,6 @@
 # Versions
 
-## Unreleased
+## 1.3.0.0
 
 - Opted into Common Tests 'Common Tests - Validate Localization' -
   fixes [Issue #31](https://github.com/PlagueHO/FileContentDsc/issues/32).
