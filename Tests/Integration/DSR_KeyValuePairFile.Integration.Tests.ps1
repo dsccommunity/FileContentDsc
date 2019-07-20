@@ -79,10 +79,14 @@ Setting3.Test=Value4
 
 "@
 
+    $script:testFileExpectedEmptyContent = @"
+$($script:testName)=$($script:testText)
+"@
+
         # Load the DSC config to use for testing
         . $script:confgurationFilePath -ConfigurationName $script:configurationName
 
-        Context 'A text file containing the key to be replaced with another text string' {
+        Context 'When the key value pair text file contains a key value to be replaced with a text string' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -92,7 +96,6 @@ Setting3.Test=Value4
                     -Force
             }
 
-            #region DEFAULT TESTS
             It 'Should compile and apply the MOF without throwing' {
                 {
                     $configData = @{
@@ -149,7 +152,7 @@ Setting3.Test=Value4
             }
         }
 
-        Context 'A text file containing the key to be replaced with another secret text string' {
+        Context 'When the key value pair text file contains a key value to be replaced with a secret text string' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -159,7 +162,6 @@ Setting3.Test=Value4
                     -Force
             }
 
-            #region DEFAULT TESTS
             It 'Should compile and apply the MOF without throwing' {
                 {
                     $configData = @{
@@ -217,7 +219,7 @@ Setting3.Test=Value4
             }
         }
 
-        Context 'A text file containing the key to have the keys removed' {
+        Context 'When the key value pair text file contains a key that needs to be removed' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -227,7 +229,6 @@ Setting3.Test=Value4
                     -Force
             }
 
-            #region DEFAULT TESTS
             It 'Should compile and apply the MOF without throwing' {
                 {
                     $configData = @{
@@ -282,7 +283,7 @@ Setting3.Test=Value4
             }
         }
 
-        Context 'A text file that requires encoding be changed' {
+        Context 'When the key value pair text file requires encoding be changed' {
             BeforeAll {
                 # Create the text file to use for testing
                 Set-Content `
@@ -293,7 +294,6 @@ Setting3.Test=Value4
                     -Force
             }
 
-            #region DEFAULT TESTS
             It 'Should compile and apply the MOF without throwing' {
                 {
                     $configData = @{
@@ -342,6 +342,134 @@ Setting3.Test=Value4
 
             It 'Should convert file encoding to the expected type' {
                 Get-FileEncoding -Path $script:testTextFile | Should -Be $script:fileEncodingParameters.Encoding
+            }
+
+            AfterAll {
+                if (Test-Path -Path $script:testTextFile)
+                {
+                    Remove-Item -Path $script:testTextFile -Force
+                }
+            }
+        }
+
+        Context 'When the key value pair text file does not exist' {
+            BeforeAll {
+                # Make sure the test file does not exist
+                Remove-Item -Path $script:testTextFile -Force -ErrorAction SilentlyContinue
+            }
+
+            It 'Should compile and apply the MOF without throwing' {
+                {
+                    $configData = @{
+                        AllNodes = @(
+                            @{
+                                NodeName = 'localhost'
+                                Path     = $script:testTextFile
+                                Name     = $script:testName
+                                Ensure   = 'Present'
+                                Type     = 'Text'
+                                Text     = $script:testText
+                            }
+                        )
+                    }
+
+                    & $script:configurationName `
+                        -OutputPath $TestDrive `
+                        -ConfigurationData $configData
+
+                    Start-DscConfiguration `
+                        -Path $TestDrive `
+                        -ComputerName localhost `
+                        -Wait `
+                        -Verbose `
+                        -Force `
+                        -ErrorAction Stop
+                } | Should -Not -Throw
+            }
+
+            It 'Should be able to call Get-DscConfiguration without throwing' {
+                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should -Not -throw
+            }
+
+            It 'Should have set the resource and all the parameters should match' {
+                $script:current = $script:currentDscConfig | Where-Object {
+                    $_.ConfigurationName -eq $script:configurationName
+                }
+                $current.Path             | Should -Be $script:testTextFile
+                $current.Name             | Should -Be $script:testName
+                $current.Ensure           | Should -Be 'Present'
+                $current.Type             | Should -Be 'Text'
+                $current.Text             | Should -Be $script:testText
+            }
+
+            It 'Should be convert the file content to match expected content' {
+                Get-Content -Path $script:testTextFile -Raw | Should -Be $script:testFileExpectedEmptyContent
+            }
+
+            AfterAll {
+                if (Test-Path -Path $script:testTextFile)
+                {
+                    Remove-Item -Path $script:testTextFile -Force
+                }
+            }
+        }
+
+        Context 'When the key value pair text file that is empty' {
+            BeforeAll {
+                # Make sure the test file is empty
+                Set-Content `
+                    -Path $script:testTextFile `
+                    -Value '' `
+                    -NoNewline `
+                    -Force
+                }
+
+            It 'Should compile and apply the MOF without throwing' {
+                {
+                    $configData = @{
+                        AllNodes = @(
+                            @{
+                                NodeName = 'localhost'
+                                Path     = $script:testTextFile
+                                Name     = $script:testName
+                                Ensure   = 'Present'
+                                Type     = 'Text'
+                                Text     = $script:testText
+                            }
+                        )
+                    }
+
+                    & $script:configurationName `
+                        -OutputPath $TestDrive `
+                        -ConfigurationData $configData
+
+                    Start-DscConfiguration `
+                        -Path $TestDrive `
+                        -ComputerName localhost `
+                        -Wait `
+                        -Verbose `
+                        -Force `
+                        -ErrorAction Stop
+                } | Should -Not -Throw
+            }
+
+            It 'Should be able to call Get-DscConfiguration without throwing' {
+                { $script:currentDscConfig = Get-DscConfiguration -Verbose -ErrorAction Stop } | Should -Not -throw
+            }
+
+            It 'Should have set the resource and all the parameters should match' {
+                $script:current = $script:currentDscConfig | Where-Object {
+                    $_.ConfigurationName -eq $script:configurationName
+                }
+                $current.Path             | Should -Be $script:testTextFile
+                $current.Name             | Should -Be $script:testName
+                $current.Ensure           | Should -Be 'Present'
+                $current.Type             | Should -Be 'Text'
+                $current.Text             | Should -Be $script:testText
+            }
+
+            It 'Should be convert the file content to match expected content' {
+                Get-Content -Path $script:testTextFile -Raw | Should -Be $script:testFileExpectedEmptyContent
             }
 
             AfterAll {

@@ -13,6 +13,9 @@
   - Removing uneccesary `#region` blocks.
   - Conversion of double quotes to single quotes where possible.
   - Replace variables with string litterals in `describe` block description.
+- KeyValuePairFile:
+  - Improve unit tests to simplify and cover additional test cases.
+  - Fix error occuring when file is empty or does not exist - fixes [Issue #34](https://github.com/PlagueHO/FileContentDsc/issues/34).
 
 ## 1.2.0.0
 
