@@ -41,7 +41,7 @@ function Get-TargetResource
 
     $ensure = 'Absent'
     $text = $null
-    $fileEncoding = 'ASCII'
+    $fileEncoding = $null
 
     if (Test-Path -Path $Path)
     {

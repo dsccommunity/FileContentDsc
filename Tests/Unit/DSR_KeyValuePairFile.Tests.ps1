@@ -138,16 +138,20 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Test-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -Exactly -Times 0
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -179,18 +183,22 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Test-Path `
                         -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
                         -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
                         -ParameterFilter { $path -eq $script:testTextFile } `
+                        -Scope Context `
                         -Exactly -Times 1
                 }
             }
@@ -225,17 +233,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Test-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -271,17 +283,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Test-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -313,17 +329,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq "$script:testName=$script:testText")
@@ -352,17 +372,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq "$script:testName=$script:testText")
@@ -373,12 +397,10 @@ $($script:testAddedName)=$($script:testText)
 
             Context 'When the file exists and contains a matching key that should exist' {
                 Mock -CommandName Get-Content `
-                    -MockWith { $script:testFileContent } `
-                    -Verifiable
+                    -MockWith { $script:testFileContent }
 
                 Mock -CommandName Get-FileEncoding `
-                    -MockWith { $script:testCompliantEncoding.Encoding } `
-                    -Verifiable
+                    -MockWith { $script:testCompliantEncoding.Encoding }
 
                 Mock -CommandName Set-Content
 
@@ -394,17 +416,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedTextContent)
@@ -435,17 +461,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedSecretContent)
@@ -465,8 +495,7 @@ $($script:testAddedName)=$($script:testText)
                     -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedTextContentAdded)
-                    } `
-                    -Verifiable
+                    }
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -480,17 +509,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedTextContentAdded)
@@ -521,17 +554,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedTextContentUpper)
@@ -561,17 +598,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -597,17 +638,21 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Set-Content `
+                        -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
                             ($value -eq $script:testFileExpectedAbsentContent)
@@ -645,12 +690,15 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -Exactly -Times 0
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -678,12 +726,15 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -Exactly -Times 0
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -711,13 +762,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -745,13 +799,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -Exactly -Times 0
                 }
             }
@@ -782,13 +839,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -820,13 +880,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -858,13 +921,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -896,13 +962,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -935,13 +1004,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -974,13 +1046,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1013,13 +1088,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1053,13 +1131,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1092,13 +1173,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1130,13 +1214,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1169,13 +1256,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1207,13 +1297,16 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Assert-ParametersValid `
+                        -Scope Context `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-Content `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1238,10 +1331,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Split-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Test-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
@@ -1264,10 +1359,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Split-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
                     Assert-MockCalled -CommandName Test-Path `
+                        -Scope Context `
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
                 }
