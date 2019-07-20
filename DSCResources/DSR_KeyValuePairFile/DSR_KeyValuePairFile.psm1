@@ -1,26 +1,14 @@
-# Suppressed as per PSSA Rule Severity guidelines for unit/integration tests:
-# https://github.com/PowerShell/DscResources/blob/master/PSSARuleSeverities.md
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-param ()
-
 Set-StrictMode -Version 'Latest'
 
 $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
 
-# Import the Storage Common Modules
+# Import the Networking Common Modules
 Import-Module -Name (Join-Path -Path $modulePath `
         -ChildPath (Join-Path -Path 'FileContentDsc.Common' `
             -ChildPath 'FileContentDsc.Common.psm1'))
 
-# Import the Storage Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath `
-        -ChildPath (Join-Path -Path 'FileContentDsc.ResourceHelper' `
-            -ChildPath 'FileContentDsc.ResourceHelper.psm1'))
-
 # Import Localization Strings
-$localizedData = Get-LocalizedData `
-    -ResourceName 'DSR_KeyValuePairFile' `
-    -ResourcePath (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -ResourceName 'DSR_KeyValuePairFile'
 
 <#
     .SYNOPSIS
@@ -51,43 +39,55 @@ function Get-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw
-    $fileEncoding = Get-FileEncoding -Path $Path
-
-    Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-        $Path, $Name)
-
-    # Setup the Regex Options that will be used
-    $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
-
-    # Search the key that matches the requested key
-    $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
-
     $ensure = 'Absent'
     $text = $null
+    $fileEncoding = $null
 
-    if ($results.Count -eq 0)
+    if (Test-Path -Path $Path)
     {
-        # No matches found
-        Write-Verbose -Message ($localizedData.KeyNotFoundMessage -f `
-            $Path, $Name)
+        $fileContent = Get-Content -Path $Path -Raw
+        $fileEncoding = Get-FileEncoding -Path $Path
+
+        if ($null -ne $fileContent)
+        {
+            Write-Verbose -Message ($script:localizedData.SearchForKeyMessage -f $Path, $Name)
+
+            # Setup the Regex Options that will be used
+            $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
+
+            # Search the key that matches the requested key
+            $results = [regex]::Matches($fileContent, "^[\s]*$Name=([^\n\r]*)", $regExOptions)
+
+            if ($results.Count -eq 0)
+            {
+                # No matches found
+                Write-Verbose -Message ($script:localizedData.KeyNotFoundMessage -f $Path, $Name)
+            }
+            else
+            {
+                # One of more key value pairs were found
+                $ensure = 'Present'
+                $textValues = @()
+
+                foreach ($match in $results)
+                {
+                    $textValues += $match.Groups[1].Value
+                }
+
+                $text = ($textValues -join ',')
+
+                Write-Verbose -Message ($script:localizedData.KeyFoundMessage -f $Path, $Name, $text)
+            } # if
+        }
+        else
+        {
+            Write-Verbose -Message ($script:localizedData.KeyValuePairFileIsEmpty -f $Path)
+        }
     }
     else
     {
-        # One of more key value pairs were found
-        $ensure = 'Present'
-        $textValues = @()
-
-        foreach ($match in $results)
-        {
-            $textValues += $match.Groups[1].Value
-        }
-
-        $text = ($textValues -join ',')
-
-        Write-Verbose -Message ($localizedData.KeyFoundMessage -f `
-            $Path, $Name, $text)
-    } # if
+        Write-Verbose -Message ($script:localizedData.KeyValuePairFileNotFound -f $Path)
+    }
 
     return @{
         Path            = $Path
@@ -137,9 +137,7 @@ function Get-TargetResource
 #>
 function Set-TargetResource
 {
-    # Should process is called in a helper functions but not directly in Set-TargetResource
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '')]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -180,7 +178,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -188,7 +186,7 @@ function Set-TargetResource
     Assert-ParametersValid @PSBoundParameters
 
     $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
-    $fileEncoding = Get-FileEncoding -Path $Path
+    $fileEncoding = Get-FileEncoding -Path $Path -ErrorAction SilentlyContinue
 
     $fileProperties = @{
         Path      = $Path
@@ -196,8 +194,7 @@ function Set-TargetResource
         Force     = $true
     }
 
-    Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-        $Path, $Name)
+    Write-Verbose -Message ($script:localizedData.SearchForKeyMessage -f $Path, $Name)
 
     if ($Type -eq 'Secret')
     {
@@ -211,6 +208,7 @@ function Set-TargetResource
 
         # Setup the Regex Options that will be used
         $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
+
         if ($IgnoreNameCase)
         {
             $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
@@ -234,16 +232,14 @@ function Set-TargetResource
 
                 $fileContent += $keyValuePair
 
-                Write-Verbose -Message ($localizedData.KeyAddMessage -f `
-                    $Path, $Name)
+                Write-Verbose -Message ($script:localizedData.KeyAddMessage -f $Path, $Name)
             }
             else
             {
                 # The key value pair was found so update it
                 $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)($eolChars*)", $keyValuePair, $regExOptions)
 
-                Write-Verbose -Message ($localizedData.KeyUpdateMessage -f `
-                    $Path, $Name)
+                Write-Verbose -Message ($script:localizedData.KeyUpdateMessage -f $Path, $Name)
             } # if
         }
         else
@@ -257,8 +253,7 @@ function Set-TargetResource
                 }
                 else
                 {
-                    Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-                        $fileEncoding, $Encoding)
+                    Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f $fileEncoding, $Encoding)
                 }
             }
             else
@@ -266,8 +261,7 @@ function Set-TargetResource
                 # The Key exists in the file but should not so remove it
                 $fileContent = [regex]::Replace($fileContent, "^[\s]*$Name=(.*)$eolChars", '', $regExOptions)
 
-                Write-Verbose -Message ($localizedData.KeyRemoveMessage -f `
-                    $Path, $Name)
+                Write-Verbose -Message ($script:localizedData.KeyRemoveMessage -f $Path, $Name)
             }
         } # if
     }
@@ -324,7 +318,7 @@ function Set-TargetResource
 #>
 function Test-TargetResource
 {
-    [OutputType([Boolean])]
+    [OutputType([System.Boolean])]
     [CmdletBinding()]
     param
     (
@@ -366,30 +360,39 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
         [System.String]
         $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    # Flag to signal whether settings are correct
-    [Boolean] $desiredConfigurationMatch = $true
-
-    # Check if file being managed exists. If not return $False.
+    <#
+        If the file being managed does not exist then return true if
+        the key should be absent or false if it should be present.
+    #>
     if (-not (Test-Path -Path $Path))
     {
-        return $false
+        Write-Verbose -Message ($script:localizedData.KeyValuePairFileNotFound -f $Path)
+
+        return ($Ensure -eq 'Absent')
     }
 
     $fileContent = Get-Content -Path $Path -Raw
+
+    if ($null -eq $fileContent)
+    {
+        Write-Verbose -Message ($script:localizedData.KeyValuePairFileIsEmpty -f $Path)
+
+        return ($Ensure -eq 'Absent')
+    }
+
+    $desiredConfigurationMatch = $true
     $fileEncoding = Get-FileEncoding -Path $Path
-
-    Write-Verbose -Message ($localizedData.SearchForKeyMessage -f `
-        $Path, $Name)
-
-    # Setup the Regex Options that will be used
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
+
+    Write-Verbose -Message ($script:localizedData.SearchForKeyMessage -f $Path, $Name)
+
     if ($IgnoreNameCase)
     {
         $regExOptions += [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
@@ -404,16 +407,14 @@ function Test-TargetResource
         if ($Ensure -eq 'Present')
         {
             # The key value pairs should exist but do not
-            Write-Verbose -Message ($localizedData.KeyNotFoundButShouldExistMessage -f `
-                $Path, $Name)
+            Write-Verbose -Message ($script:localizedData.KeyNotFoundButShouldExistMessage -f $Path, $Name)
 
             $desiredConfigurationMatch = $false
         }
         else
         {
             # The key value pairs should exist and do
-            Write-Verbose -Message ($localizedData.KeyNotFoundAndShouldNotExistMessage -f `
-                $Path, $Name)
+            Write-Verbose -Message ($script:localizedData.KeyNotFoundAndShouldNotExistMessage -f $Path, $Name)
         } # if
     }
     else
@@ -439,15 +440,13 @@ function Test-TargetResource
 
             if ($desiredConfigurationMatch)
             {
-                Write-Verbose -Message ($localizedData.KeyFoundButNoReplacementMessage -f `
-                $Path, $Name)
+                Write-Verbose -Message ($script:localizedData.KeyFoundButNoReplacementMessage -f $Path, $Name)
             }
         }
         else
         {
             # The key value pairs should not exist
-            Write-Verbose -Message ($localizedData.KeyFoundButShouldNotExistMessage -f `
-                $Path, $Name)
+            Write-Verbose -Message ($script:localizedData.KeyFoundButShouldNotExistMessage -f $Path, $Name)
 
             $desiredConfigurationMatch = $false
         } # if
@@ -456,8 +455,7 @@ function Test-TargetResource
     if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne $fileEncoding))
     {
         # File encoding is not in desired state
-        Write-Verbose -Message ($localizedData.FileEncodingNotInDesiredState -f `
-        $fileEncoding, $Encoding)
+        Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f $fileEncoding, $Encoding)
 
         $desiredConfigurationMatch = $false
     }
@@ -543,17 +541,18 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
         [System.String]
         $Encoding
     )
 
     # Does the file's parent path exist?
     $parentPath = Split-Path -Path $Path -Parent
+
     if (-not (Test-Path -Path $parentPath))
     {
         New-InvalidArgumentException `
-            -Message ($localizedData.FileParentNotFoundError -f $Path) `
+            -Message ($script:localizedData.FileParentNotFoundError -f $Path) `
             -ArgumentName 'Path'
     } # if
 }

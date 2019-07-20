@@ -25,12 +25,11 @@ $TestEnvironment = Initialize-TestEnvironment `
 # Begin Testing
 try
 {
-    #region Pester Tests
-
-    # The InModuleScope command allows you to perform white-box unit testing on the internal
-    # (non-exported) code of a Script Module.
+    <#
+        The InModuleScope command allows you to perform white-box unit testing on the internal
+        (non-exported) code of a Script Module.
+    #>
     InModuleScope 'DSR_IniSettingsFile' {
-        #region Pester Test Initialization
         $script:testTextFile = 'TestFile.ini'
         $script:testText = 'Test Text'
         $script:testSecret = 'Test Secret'
@@ -39,10 +38,8 @@ try
         $script:testTextNoMatch = 'No Match'
         $script:testSecureSecret = ConvertTo-SecureString -String $script:testSecret -AsPlainText -Force
         $script:testSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Dummy', $script:testSecureSecret)
-        #endregion
 
-        #region Function Get-TargetResource
-        Describe 'DSR_IniSettingsFile\Get-TargetResource' {
+        Describe 'DSR_IniSettingsFile\Get-TargetResource' -Tag 'Get' {
             Context 'When file exists and entry can be found' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -145,10 +142,8 @@ try
                 }
             }
         }
-        #endregion
 
-        #region Function Set-TargetResource
-        Describe 'DSR_IniSettingsFile\Set-TargetResource' {
+        Describe 'DSR_IniSettingsFile\Set-TargetResource' -Tag 'Set' {
             Context 'When file exists and text is passed' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -346,10 +341,8 @@ try
                 }
             }
         }
-        #endregion
 
-        #region Function Test-TargetResource
-        Describe 'DSR_ReplaceString\Test-TargetResource' {
+        Describe 'DSR_ReplaceString\Test-TargetResource' -Tag 'Test' {
             Context 'When file exists and text is passed and matches' {
                 # verifiable (should be called) mocks
                 Mock `
@@ -647,9 +640,7 @@ try
                 }
             }
         }
-        #endregion
 
-        #region Function Assert-ParametersValid
         Describe 'DSR_IniSettingsFile\Assert-ParametersValid' {
             Context 'When file exists' {
                 # verifiable (should be called) mocks
@@ -695,7 +686,7 @@ try
                     -Verifiable
 
                 $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($localizedData.FileParentNotFoundError -f $script:testTextFile) `
+                    -Message ($script:localizedData.FileParentNotFoundError -f $script:testTextFile) `
                     -ArgumentName 'Path'
 
                 It 'Should throw expected exception' {

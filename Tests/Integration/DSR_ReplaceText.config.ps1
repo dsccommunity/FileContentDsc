@@ -1,7 +1,7 @@
 param
 (
     [Parameter(Mandatory = $true)]
-    [String]
+    [System.String]
     $ConfigurationName
 )
 

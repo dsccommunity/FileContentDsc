@@ -1,5 +1,22 @@
 # Versions
 
+## 1.3.0.0
+
+- Opted into Common Tests 'Common Tests - Validate Localization' -
+  fixes [Issue #31](https://github.com/PlagueHO/FileContentDsc/issues/32).
+- Combined all `FileContent.ResourceHelper` module functions into
+  `FileContent.Common` module - fixes [Issue #32](https://github.com/PlagueHO/FileContentDsc/issues/32).
+- Renamed all localization strings so that they are detected by
+  'Common Tests - Validate Localization'.
+- Correct style violations in unit tests:
+  - Adding `Get`, `Set` and `Test` tags to appropriate `describe` blocks.
+  - Removing uneccesary `#region` blocks.
+  - Conversion of double quotes to single quotes where possible.
+  - Replace variables with string litterals in `describe` block description.
+- KeyValuePairFile:
+  - Improve unit tests to simplify and cover additional test cases.
+  - Fix error occuring when file is empty or does not exist - fixes [Issue #34](https://github.com/PlagueHO/FileContentDsc/issues/34).
+
 ## 1.2.0.0
 
 - Added .VSCode settings for applying DSC PSSA rules - fixes [Issue #25](https://github.com/PlagueHO/FileContentDsc/issues/25).
