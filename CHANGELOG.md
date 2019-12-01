@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Transferred ownership to DSCCommunity.org.
+- Transferred ownership to DSCCommunity.org -
+  fixes [Issue #31](https://github.com/dsccommunity/FileContentDsc/issues/39).
 
 ## 1.3.0.0
 
