@@ -1,5 +1,9 @@
 # Versions
 
+## Unreleased
+
+- Transferred ownership to DSCCommunity.org.
+
 ## 1.3.0.0
 
 - Opted into Common Tests 'Common Tests - Validate Localization' -
