@@ -21,22 +21,22 @@ Module Guidelines](https://github.com/PowerShell/DscResources/blob/master/HighQu
 ## Documentation and Examples
 
 For a full list of resources in FileContentDsc and examples on their use, check out
-the [FileContentDsc wiki](https://github.com/PlagueHO/FileContentDsc/wiki).
+the [FileContentDsc wiki](https://github.com/dsccommunity/FileContentDsc/wiki).
 
 ## Branches
 
 ### master
 
-[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/master?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/master)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/dsccommunity/FileContentDsc?branch=master&svg=true)](https://ci.appveyor.com/project/dsccommunity/FileContentDsc/branch/master)
+[![codecov](https://codecov.io/gh/dsccommunity/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/dsccommunity/FileContentDsc/branch/master)
 
 This is the branch containing the latest release - no contributions should be made
 directly to this branch.
 
 ### dev
 
-[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/dev)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/dsccommunity/FileContentDsc?branch=dev&svg=true)](https://ci.appveyor.com/project/dsccommunity/FileContentDsc/branch/dev)
+[![codecov](https://codecov.io/gh/dsccommunity/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/dsccommunity/FileContentDsc/branch/dev)
 
 This is the development branch to which contributions should be proposed by contributors
 as pull requests. This development branch will periodically be merged to the master
