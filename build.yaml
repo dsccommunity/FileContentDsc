@@ -52,7 +52,7 @@ Pester:
     - tests/Unit
   ExcludeTag:
   Tag:
-  CodeCoverageThreshold: 75
+  CodeCoverageThreshold: 65
 
 DscTest:
   OutputFormat: NUnitXML
