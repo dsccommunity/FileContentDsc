@@ -962,7 +962,7 @@ function Get-IniSettingFileValue
     )
 
     $fullPath = Resolve-Path -Path $Path
-    Return [IniFile]::GetIniSetting($fullPath, $Section, $Key, '')
+    return [IniFile]::GetIniSetting($fullPath, $Section, $Key, '')
 }
 
 <#
