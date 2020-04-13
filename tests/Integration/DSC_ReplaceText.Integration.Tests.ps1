@@ -1,32 +1,32 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
 param ()
 
-$script:DSCModuleName   = 'FileContentDsc'
-$script:DSCResourceName = 'DSC_ReplaceText'
-
-#region HEADER
-# Integration Test Template Version: 1.1.1
-[System.String] $script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-
-if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
-{
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $script:moduleRoot -ChildPath '\DSCResource.Tests\'))
-}
-
-Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
-Import-Module (Join-Path -Path $script:moduleRoot -ChildPath "$($script:DSCModuleName).psd1") -Force
-# Helper module import required for the Get-FileEncoding function
-Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Modules\FileContentDsc.Common') -Force
-$TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $script:DSCModuleName `
-    -DSCResourceName $script:DSCResourceName `
-    -TestType Integration
-#endregion
+$script:dscModuleName = 'FileContentDsc'
+$script:dscResourceName = 'DSC_ReplaceText'
 
 try
 {
-    Describe 'ReplaceText Integration Tests' {
+    Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
+}
+catch [System.IO.FileNotFoundException]
+{
+    throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
+}
+
+$script:testEnvironment = Initialize-TestEnvironment `
+    -DSCModuleName $script:dscModuleName `
+    -DSCResourceName $script:dscResourceName `
+    -ResourceType 'Mof' `
+    -TestType 'Integration'
+
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath '..\TestHelpers\CommonTestHelper.psm1')
+
+# Helper module import required for the Get-FileEncoding function
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath '..\..\source\Modules\FileContentDsc.Common') -Force
+
+try
+{
+    Describe "$($script:dscResourceName)_Integration" {
         $script:confgurationFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'DSC_ReplaceText.config.ps1'
         $script:configurationName = 'ReplaceText'
         $script:testTextFile = Join-Path -Path $TestDrive -ChildPath 'TestFile.txt'
@@ -280,7 +280,5 @@ Setting3.Test=Value4
 }
 finally
 {
-    #region FOOTER
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
-    #endregion
+    Restore-TestEnvironment -TestEnvironment $script:testEnvironment
 }
