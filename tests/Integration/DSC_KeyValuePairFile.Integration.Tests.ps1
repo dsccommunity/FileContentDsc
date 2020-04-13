@@ -21,6 +21,9 @@ $script:testEnvironment = Initialize-TestEnvironment `
 
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath '..\TestHelpers\CommonTestHelper.psm1')
 
+# Helper module import required for the Get-FileEncoding function
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath '..\..\source\Modules\FileContentDsc.Common') -Force
+
 try
 {
     Describe "$($script:dscResourceName)_Integration" {
