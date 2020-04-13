@@ -81,20 +81,6 @@ function Get-InvalidOperationRecord
     return New-Object @newObjectParams
 }
 
-<#
-    .SYNOPSIS
-        Enters a DSC Resource test environment.
-
-    .PARAMETER DscResourceModuleName
-        The name of the module that contains the DSC Resource to test.
-
-    .PARAMETER DscResourceName
-        The name of the DSC resource to test.
-
-    .PARAMETER TestType
-        Specifies whether the test environment will run a Unit test or an Integration test.
-#>
-
 Export-ModuleMember -Function `
     'Get-InvalidArgumentRecord', `
     'Get-InvalidOperationRecord'
