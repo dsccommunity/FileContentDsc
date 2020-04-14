@@ -1,5 +1,32 @@
 # FileContentDsc
 
+[![Build Status](https://dev.azure.com/dsccommunity/FileContentDsc/_apis/build/status/dsccommunity.FileContentDsc?branchName=master)](https://dev.azure.com/dsccommunity/FileContentDsc/_build/latest?definitionId=31&branchName=master)
+![Code Coverage](https://img.shields.io/azure-devops/coverage/dsccommunity/FileContentDsc/31/master)
+[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/FileContentDsc/31/master)](https://dsccommunity.visualstudio.com/FileContentDsc/_test/analytics?definitionId=31&contextType=build)
+[![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/FileContentDsc?label=FileContentDsc%20Preview)](https://www.powershellgallery.com/packages/FileContentDsc/)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/FileContentDsc?label=FileContentDsc)](https://www.powershellgallery.com/packages/FileContentDsc/)
+
+## Code of Conduct
+
+This project has adopted [this code of conduct](CODE_OF_CONDUCT.md).
+
+## Releases
+
+For each merge to the branch `master` a preview release will be
+deployed to [PowerShell Gallery](https://www.powershellgallery.com/).
+Periodically a release version tag will be pushed which will deploy a
+full release to [PowerShell Gallery](https://www.powershellgallery.com/).
+
+## Contributing
+
+Please check out common DSC Community [contributing guidelines](https://dsccommunity.org/guidelines/contributing).
+
+## Change log
+
+A full list of changes in each version can be found in the [change log](CHANGELOG.md).
+
+## Resources
+
 This resource module contains resources for setting the content of files.
 Configuration text files are the most common use case for this module.
 
@@ -11,37 +38,7 @@ The **FileContent** module contains the following resources:
 - **ReplaceText**: Replaces strings matching a regular expression in a file,
   and sets file encoding.
 
-**This project is not maintained or supported by Microsoft.**
-
-This project has adopted this [Open Source Code of Conduct](CODE_OF_CONDUCT.md).
-
-This module should meet the [PowerShell DSC Resource Kit High Quality Resource
-Module Guidelines](https://github.com/PowerShell/DscResources/blob/master/HighQualityModuleGuidelines.md).
-
 ## Documentation and Examples
 
 For a full list of resources in FileContentDsc and examples on their use, check out
-the [FileContentDsc wiki](https://github.com/PlagueHO/FileContentDsc/wiki).
-
-## Branches
-
-### master
-
-[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/master?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/master)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/master)
-
-This is the branch containing the latest release - no contributions should be made
-directly to this branch.
-
-### dev
-
-[![Build status](https://ci.appveyor.com/api/projects/status/b3vo36jocq0tvojw/branch/dev?svg=true)](https://ci.appveyor.com/project/PlagueHO/filecontentdsc/branch/dev)
-[![codecov](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/PlagueHO/FileContentDsc/branch/dev)
-
-This is the development branch to which contributions should be proposed by contributors
-as pull requests. This development branch will periodically be merged to the master
-branch, and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
-
-## Contributing
-
-Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+the [FileContentDsc wiki](https://github.com/dsccommunity/FileContentDsc/wiki).
