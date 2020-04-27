@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated to use continuous delivery pattern using Azure DevOps - fixes
   [Issue #41](https://github.com/dsccommunity/FileContentDsc/issues/41).
 - Updated build badges in README.MD.
-- Change Azure DevOps Pipeline definition to include `source/*` - Fixes [Issue #44](https://github.com/dsccommunity/FileContentDsc/issues/44).
-- Updated pipeline to use `latest` version of `ModuleBuilder` - Fixes [Issue #44](https://github.com/dsccommunity/FileContentDsc/issues/44).
-- Merge `HISTORIC_CHANGELOG.md` into `CHANGELOG.md` - Fixes [Issue #45](https://github.com/dsccommunity/FileContentDsc/issues/45).
+- Change Azure DevOps Pipeline definition to include `source/*` - Fixes [Issue #45](https://github.com/dsccommunity/FileContentDsc/issues/45).
+- Updated pipeline to use `latest` version of `ModuleBuilder` - Fixes [Issue #45](https://github.com/dsccommunity/FileContentDsc/issues/45).
+- Merge `HISTORIC_CHANGELOG.md` into `CHANGELOG.md` - Fixes [Issue #46](https://github.com/dsccommunity/FileContentDsc/issues/46).
 
 ## [1.3.0.151] - 2019-07-20
 
