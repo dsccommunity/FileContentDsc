@@ -51,7 +51,8 @@ function Get-TextEolCharacter
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param (
+    param
+    (
         [Parameter(Mandatory = $true)]
         [System.String]
         $Text
@@ -86,7 +87,8 @@ function Get-TextEolCharacter
 function Set-IniSettingFileValue
 {
     [CmdletBinding()]
-    param (
+    param
+    (
         [Parameter(Mandatory = $true)]
         [System.String]
         $Path,
@@ -125,7 +127,8 @@ function Get-IniSettingFileValue
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param (
+    param
+    (
         [Parameter(Mandatory = $true)]
         [System.String]
         $Path,
