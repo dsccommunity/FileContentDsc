@@ -58,6 +58,7 @@ function Get-TextEolCharacter
     )
 
     $eolChar = "`r`n"
+
     if (-not $Text.Contains("`r`n") -and $Text.Contains("`r"))
     {
         $eolChar = "`r"
@@ -170,7 +171,7 @@ function Get-FileEncoding
         $Path
     )
 
-    [byte[]]$byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
+    [System.Byte[]] $byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
 
     if ($byte[0] -eq 0xef -and $byte[1] -eq 0xbb -and $byte[2] -eq 0xbf)
     {
