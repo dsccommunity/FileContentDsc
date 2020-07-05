@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change Azure DevOps Pipeline definition to include `source/*` - Fixes [Issue #45](https://github.com/dsccommunity/FileContentDsc/issues/45).
 - Updated pipeline to use `latest` version of `ModuleBuilder` - Fixes [Issue #45](https://github.com/dsccommunity/FileContentDsc/issues/45).
 - Merge `HISTORIC_CHANGELOG.md` into `CHANGELOG.md` - Fixes [Issue #46](https://github.com/dsccommunity/FileContentDsc/issues/46).
+- Fixed build failures caused by changes in `ModuleBuilder` module v1.7.0
+  by changing `CopyDirectories` to `CopyPaths` - Fixes [Issue #49](https://github.com/dsccommunity/FileContentDsc/issues/49).
+- Updated to use the common module _DscResource.Common_ - Fixes [Issue #48](https://github.com/dsccommunity/FileContentDsc/issues/48).
+- Pin `Pester` module to 4.10.1 because Pester 5.0 is missing code
+  coverage - Fixes [Issue #50](https://github.com/dsccommunity/FileContentDsc/issues/50).
+- Automatically publish documentation to GitHub Wiki - Fixes [Issue #51](https://github.com/dsccommunity/FileContentDsc/issues/51).
 
 ## [1.3.0.151] - 2019-07-20
 

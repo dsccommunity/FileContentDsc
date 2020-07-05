@@ -81,7 +81,59 @@ function Get-InvalidOperationRecord
     return New-Object @newObjectParams
 }
 
+<#
+    .SYNOPSIS
+        Gets file encoding. Defaults to ASCII.
+
+    .DESCRIPTION
+        The Get-FileEncoding function determines encoding by looking at Byte Order Mark (BOM).
+        Based on port of C# code from http://www.west-wind.com/Weblog/posts/197245.aspx
+
+    .EXAMPLE
+        Get-ChildItem  *.ps1 | select FullName, @{n='Encoding';e={Get-FileEncoding $_.FullName}} | where {$_.Encoding -ne 'ASCII'}
+        This command gets ps1 files in current directory where encoding is not ASCII
+
+    .EXAMPLE
+        Get-ChildItem  *.ps1 | select FullName, @{n='Encoding';e={Get-FileEncoding $_.FullName}} | where {$_.Encoding -ne 'ASCII'} | `
+            foreach {(get-content $_.FullName) | set-content $_.FullName -Encoding ASCII}
+        Same as previous example but fixes encoding using set-content
+#>
+function Get-FileEncoding
+{
+    [CmdletBinding()]
+    [OutputType([System.String])]
+    param
+    (
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [System.String]
+        $Path
+    )
+
+    [System.Byte[]] $byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
+
+    if ($byte[0] -eq 0xef -and $byte[1] -eq 0xbb -and $byte[2] -eq 0xbf)
+    {
+        return 'UTF8'
+    }
+    elseif ($byte[0] -eq 0xff -and $byte[1] -eq 0xfe)
+    {
+        return 'UTF32'
+    }
+    elseif ($byte[0] -eq 0xfe -and $byte[1] -eq 0xff)
+    {
+        return 'BigEndianUnicode'
+    }
+    elseif ($byte[0] -eq 0 -and $byte[1] -eq 0 -and $byte[2] -eq 0xfe -and $byte[3] -eq 0xff)
+    {
+        return 'BigEndianUTF32'
+    }
+    else
+    {
+        return 'ASCII'
+    }
+}
+
 Export-ModuleMember -Function `
     'Get-InvalidArgumentRecord', `
-    'Get-InvalidOperationRecord'
-
+    'Get-InvalidOperationRecord', `
+    'Get-FileEncoding'
