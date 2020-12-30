@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pin `Pester` module to 4.10.1 because Pester 5.0 is missing code
   coverage - Fixes [Issue #50](https://github.com/dsccommunity/FileContentDsc/issues/50).
 - Automatically publish documentation to GitHub Wiki - Fixes [Issue #51](https://github.com/dsccommunity/FileContentDsc/issues/51).
+- Renamed `master` branch to `main` - Fixes [Issue #53](https://github.com/dsccommunity/FileContentDsc/issues/53).
 
 ## [1.3.0.151] - 2019-07-20
 
