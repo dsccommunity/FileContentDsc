@@ -222,7 +222,7 @@ function Set-TextContent
         $Path,
 
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipelineByPropertyName = $true, ValueFromPipeline = $true)]
-        [System.String]
+        [Object[]]
         $Value,
 
         [Parameter()]
