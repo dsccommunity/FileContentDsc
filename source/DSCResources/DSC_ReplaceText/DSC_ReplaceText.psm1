@@ -136,7 +136,7 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -194,7 +194,7 @@ function Set-TargetResource
 
     $fileProperties.Add('Value', $fileContent)
 
-    Set-Content @fileProperties
+    Set-TextContent @fileProperties
 }
 
 <#
@@ -259,7 +259,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -401,7 +401,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )

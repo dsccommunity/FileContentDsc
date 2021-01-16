@@ -180,7 +180,7 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -281,7 +281,7 @@ function Set-TargetResource
         $fileProperties.Add('Encoding', $Encoding)
     }
 
-    Set-Content @fileProperties
+    Set-TextContent @fileProperties
 }
 
 <#
@@ -362,7 +362,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -543,7 +543,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
