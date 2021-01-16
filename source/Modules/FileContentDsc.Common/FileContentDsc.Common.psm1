@@ -198,9 +198,95 @@ function Get-FileEncoding
     }
 }
 
+<#
+    .SYNOPSIS
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .DESCRIPTION
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .EXAMPLE
+        Set-ContentEnhanced -Path 'C:\hello.txt' -Value 'Hello World' -Encoding UTF8NoBOM
+        This command creates a text file encoded in UTF-8 without BOM (Byte Order Mark).
+#>
+function Set-ContentEnhanced
+{
+    [CmdletBinding()]
+    [OutputType([void])]
+    param
+    (
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [System.String[]]
+        $Path,
+
+        [Parameter(Position = 1, Mandatory = $true, ValueFromPipelineByPropertyName = $true, ValueFromPipeline = $true)]
+        [System.String]
+        $Value,
+
+        [Parameter()]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
+        [System.String]
+        $Encoding,
+
+        [Parameter()]
+        [switch]
+        $NoNewLine,
+
+        [Parameter()]
+        [switch]
+        $Force
+    )
+
+    $setContentParams = @{
+        Path      = $Path
+        Force     = $Force
+        NoNewLine = $NoNewLine
+    }
+
+    $EncodingParam = $null
+    if ($PSBoundParameters.ContainsKey('Encoding'))
+    {
+        # PS v6+ can handle all Encoding parameters natively
+        if ($PSVersionTable.PSVersion.Major -ge 6)
+        {
+            $EncodingParam = $Encoding
+        }
+        else
+        {
+            if ($Encoding -eq 'UTF8BOM')
+            {
+                $EncodingParam = 'utf8'
+            }
+            # PS v5.1 and earlier can not handle UTF8 without BOM
+            # We need to convert Value to Bytes.
+            elseif ($Encoding -eq 'UTF8NoBOM')
+            {
+                $EncodingParam = 'Byte'
+                $Value = [System.Text.Encoding]::UTF8.GetBytes($Value)
+            }
+            else
+            {
+                $EncodingParam = $Encoding
+            }
+        }
+    }
+
+    if ($null -ne $EncodingParam)
+    {
+        $setContentParams.Add('Encoding', $EncodingParam)
+    }
+
+    $setContentParams.Add('Value', $Value)
+
+    Set-Content @setContentParams
+}
+
 Export-ModuleMember -Function @(
     'Get-TextEolCharacter',
     'Set-IniSettingFileValue',
     'Get-IniSettingFileValue',
     'Get-FileEncoding'
+    'Set-ContentEnhanced'
 )
