@@ -208,10 +208,10 @@ function Get-FileEncoding
         This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
 
     .EXAMPLE
-        Set-ContentEnhanced -Path 'C:\hello.txt' -Value 'Hello World' -Encoding UTF8NoBOM
+        Set-TextContent -Path 'C:\hello.txt' -Value 'Hello World' -Encoding UTF8NoBOM
         This command creates a text file encoded in UTF-8 without BOM (Byte Order Mark).
 #>
-function Set-ContentEnhanced
+function Set-TextContent
 {
     [CmdletBinding()]
     [OutputType([void])]
@@ -288,5 +288,5 @@ Export-ModuleMember -Function @(
     'Set-IniSettingFileValue',
     'Get-IniSettingFileValue',
     'Get-FileEncoding'
-    'Set-ContentEnhanced'
+    'Set-TextContent'
 )
