@@ -320,7 +320,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -347,7 +347,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -363,7 +363,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -390,7 +390,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -407,7 +407,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -434,7 +434,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -451,7 +451,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -479,7 +479,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -496,7 +496,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content `
+                Mock -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedTextContentAdded)
@@ -527,7 +527,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -544,7 +544,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -572,7 +572,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `
@@ -589,7 +589,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -616,7 +616,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -Exactly -Times 0
                 }
@@ -629,7 +629,7 @@ $($script:testAddedName)=$($script:testText)
                 Mock -CommandName Get-FileEncoding `
                     -MockWith { $script:testCompliantEncoding.Encoding }
 
-                Mock -CommandName Set-Content
+                Mock -CommandName Set-ContentEnhanced
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
@@ -656,7 +656,7 @@ $($script:testAddedName)=$($script:testText)
                         -ParameterFilter { $path -eq $script:testTextFile } `
                         -Exactly -Times 1
 
-                    Assert-MockCalled -CommandName Set-Content `
+                    Assert-MockCalled -CommandName Set-ContentEnhanced `
                         -Scope Context `
                         -ParameterFilter {
                             ($path -eq $script:testTextFile) -and `

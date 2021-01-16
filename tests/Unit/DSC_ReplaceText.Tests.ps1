@@ -333,7 +333,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
-                    -CommandName Set-Content `
+                    -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testFileExpectedTextContent)
@@ -359,7 +359,7 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
-                        -CommandName Set-Content `
+                        -CommandName Set-ContentEnhanced `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedTextContent)
@@ -388,7 +388,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
-                    -CommandName Set-Content `
+                    -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testFileExpectedTextContentNewKey)
@@ -415,7 +415,7 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
-                        -CommandName Set-Content `
+                        -CommandName Set-ContentEnhanced `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedTextContentNewKey)
@@ -443,7 +443,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
-                    -CommandName Set-Content `
+                    -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testFileContent)
@@ -470,7 +470,7 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
-                        -CommandName Set-Content `
+                        -CommandName Set-ContentEnhanced `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileContent)
@@ -499,7 +499,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
-                    -CommandName Set-Content `
+                    -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testFileExpectedSecretContent)
@@ -526,7 +526,7 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
-                        -CommandName Set-Content `
+                        -CommandName Set-ContentEnhanced `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testFileExpectedSecretContent)
@@ -555,7 +555,7 @@ Setting3.Test=Value4
                     -Verifiable
 
                 Mock `
-                    -CommandName Set-Content `
+                    -CommandName Set-ContentEnhanced `
                     -ParameterFilter {
                     ($path -eq $script:testTextFile) -and `
                     ($value -eq $script:testTextReplace)
@@ -581,7 +581,7 @@ Setting3.Test=Value4
                         -Exactly 1
 
                     Assert-MockCalled `
-                        -CommandName Set-Content `
+                        -CommandName Set-ContentEnhanced `
                         -ParameterFilter {
                         ($path -eq $script:testTextFile) -and `
                         ($value -eq $script:testTextReplace)
