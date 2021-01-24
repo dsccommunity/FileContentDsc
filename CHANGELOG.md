@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coverage - Fixes [Issue #50](https://github.com/dsccommunity/FileContentDsc/issues/50).
 - Automatically publish documentation to GitHub Wiki - Fixes [Issue #51](https://github.com/dsccommunity/FileContentDsc/issues/51).
 - Renamed `master` branch to `main` - Fixes [Issue #53](https://github.com/dsccommunity/FileContentDsc/issues/53).
+- Updated `GitVersion.yml` to latest pattern - Fixes [Issue #57](https://github.com/dsccommunity/FileContentDsc/issues/57).
 - Added `UTF8BOM` and `UTF8NoBOM` to the acceptable values for Encoding parameter to the KeyValuePairFile and ReplaceText - Fixes [Issue #56](https://github.com/dsccommunity/FileContentDsc/issues/56).
 
 ## [1.3.0.151] - 2019-07-20
