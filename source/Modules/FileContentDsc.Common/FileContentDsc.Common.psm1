@@ -174,11 +174,24 @@ function Get-FileEncoding
         $Path
     )
 
-    [System.Byte[]] $byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
+    # The parameter for reading a file as a byte stream are different between PSv6 and later and earlier.
+    $ByteParam = if ($PSVersionTable.PSVersion.Major -ge 6)
+    {
+        @{
+            AsByteStream = $true
+        }
+    }
+    else
+    {
+        @{
+            Encoding = 'byte'
+        }
+    }
 
+    [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 4 -TotalCount 4 -Path $Path
     if ($byte[0] -eq 0xef -and $byte[1] -eq 0xbb -and $byte[2] -eq 0xbf)
     {
-        return 'UTF8'
+        return 'UTF8BOM'
     }
     elseif ($byte[0] -eq 0xff -and $byte[1] -eq 0xfe)
     {
@@ -194,8 +207,104 @@ function Get-FileEncoding
     }
     else
     {
-        return 'ASCII'
+        # Read all bytes for guessing encoding.
+        [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 0 -Path $Path
+
+        # If a text file includes code after 0x7f, which should not exist in ASCII, it is determined as UTF8NoBOM.
+        if ($byte -gt 0x7f)
+        {
+            return 'UTF8NoBOM'
+        }
+        else
+        {
+            return 'ASCII'
+        }
     }
+}
+
+<#
+    .SYNOPSIS
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .DESCRIPTION
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .EXAMPLE
+        Set-TextContent -Path 'C:\hello.txt' -Value 'Hello World' -Encoding UTF8NoBOM
+        This command creates a text file encoded in UTF-8 without BOM (Byte Order Mark).
+#>
+function Set-TextContent
+{
+    [CmdletBinding()]
+    [OutputType([void])]
+    param
+    (
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [System.String[]]
+        $Path,
+
+        [Parameter(Position = 1, Mandatory = $true, ValueFromPipelineByPropertyName = $true, ValueFromPipeline = $true)]
+        [Object[]]
+        $Value,
+
+        [Parameter()]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
+        [System.String]
+        $Encoding,
+
+        [Parameter()]
+        [switch]
+        $NoNewLine,
+
+        [Parameter()]
+        [switch]
+        $Force
+    )
+
+    $setContentParams = @{
+        Path      = $Path
+        Force     = $Force
+        NoNewLine = $NoNewLine
+    }
+
+    $EncodingParam = $null
+    if ($PSBoundParameters.ContainsKey('Encoding'))
+    {
+        # PS v6+ can handle all Encoding parameters natively
+        if ($PSVersionTable.PSVersion.Major -ge 6)
+        {
+            $EncodingParam = $Encoding
+        }
+        else
+        {
+            if ($Encoding -eq 'UTF8BOM')
+            {
+                $EncodingParam = 'utf8'
+            }
+            # PS v5.1 and earlier can not handle UTF8 without BOM
+            # We need to convert Value to Bytes.
+            elseif ($Encoding -eq 'UTF8NoBOM')
+            {
+                $EncodingParam = 'Byte'
+                $Value = [System.Text.Encoding]::UTF8.GetBytes($Value)
+            }
+            else
+            {
+                $EncodingParam = $Encoding
+            }
+        }
+    }
+
+    if ($null -ne $EncodingParam)
+    {
+        $setContentParams.Add('Encoding', $EncodingParam)
+    }
+
+    $setContentParams.Add('Value', $Value)
+
+    Set-Content @setContentParams
 }
 
 Export-ModuleMember -Function @(
@@ -203,4 +312,5 @@ Export-ModuleMember -Function @(
     'Set-IniSettingFileValue',
     'Get-IniSettingFileValue',
     'Get-FileEncoding'
+    'Set-TextContent'
 )

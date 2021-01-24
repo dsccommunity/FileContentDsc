@@ -47,8 +47,19 @@ function Get-TargetResource
 
     if (Test-Path -Path $Path)
     {
-        $fileContent = Get-Content -Path $Path -Raw
-        $fileEncoding = Get-FileEncoding -Path $Path
+        $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+        if ($null -eq $fileEncoding)
+        {
+            $fileContent = Get-Content -Path $Path -Raw
+        }
+        elseif ($fileEncoding -like 'UTF8*')
+        {
+            $fileContent = Get-Content -Path $Path -Raw -Encoding 'UTF8'
+        }
+        else
+        {
+            $fileContent = Get-Content -Path $Path -Raw -Encoding $fileEncoding
+        }
 
         if ($null -ne $fileContent)
         {
@@ -180,15 +191,26 @@ function Set-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
-    $fileEncoding = Get-FileEncoding -Path $Path -ErrorAction SilentlyContinue
+    $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+    if ($null -eq $fileEncoding)
+    {
+        $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+    }
+    elseif ($fileEncoding -like 'UTF8*')
+    {
+        $fileContent = Get-Content -Path $Path -Raw -Encoding 'UTF8' -ErrorAction SilentlyContinue
+    }
+    else
+    {
+        $fileContent = Get-Content -Path $Path -Raw -Encoding $fileEncoding -ErrorAction SilentlyContinue
+    }
 
     $fileProperties = @{
         Path      = $Path
@@ -248,10 +270,13 @@ function Set-TargetResource
         {
             if ($results.Count -eq 0)
             {
-                if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -eq $fileEncoding))
+                if ($PSBoundParameters.ContainsKey('Encoding') -and `
+                    (($Encoding -eq $fileEncoding) -or `
+                        ($Encoding -eq 'UTF8' -and $fileEncoding -like 'UTF8*') -or `
+                        ($Encoding -eq 'UTF8NoBOM' -and $fileEncoding -eq 'ASCII')))
                 {
-                        # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
-                        return
+                    # The Key does not exists and should not, and encoding is in the desired state, so don't do anything
+                    return
                 }
                 else
                 {
@@ -281,7 +306,7 @@ function Set-TargetResource
         $fileProperties.Add('Encoding', $Encoding)
     }
 
-    Set-Content @fileProperties
+    Set-TextContent @fileProperties
 }
 
 <#
@@ -362,7 +387,7 @@ function Test-TargetResource
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -380,7 +405,19 @@ function Test-TargetResource
         return ($Ensure -eq 'Absent')
     }
 
-    $fileContent = Get-Content -Path $Path -Raw
+    $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+    if ($null -eq $fileEncoding)
+    {
+        $fileContent = Get-Content -Path $Path -Raw
+    }
+    elseif ($fileEncoding -like 'UTF8*')
+    {
+        $fileContent = Get-Content -Path $Path -Raw -Encoding 'UTF8'
+    }
+    else
+    {
+        $fileContent = Get-Content -Path $Path -Raw -Encoding $fileEncoding
+    }
 
     if ($null -eq $fileContent)
     {
@@ -390,7 +427,6 @@ function Test-TargetResource
     }
 
     $desiredConfigurationMatch = $true
-    $fileEncoding = Get-FileEncoding -Path $Path
     $regExOptions = [System.Text.RegularExpressions.RegexOptions]::Multiline
 
     Write-Verbose -Message ($script:localizedData.SearchForKeyMessage -f $Path, $Name)
@@ -456,10 +492,23 @@ function Test-TargetResource
 
     if ($PSBoundParameters.ContainsKey('Encoding') -and ($Encoding -ne $fileEncoding))
     {
-        # File encoding is not in desired state
-        Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f $fileEncoding, $Encoding)
+        if ($Encoding -eq 'UTF8' -and $fileEncoding -like 'UTF8*')
+        {
+            #If the Encoding specified as UTF8, Either UTF8NoBOM or UTF8BOM is acceptable
+            $desiredConfigurationMatch = $true
+        }
+        elseif ($Encoding -eq 'UTF8NoBOM' -and $fileEncoding -eq 'ASCII')
+        {
+            #If the Encoding specified as UTF8NoBOM, Either UTF8NoBOM or ASCII is acceptable
+            $desiredConfigurationMatch = $true
+        }
+        else
+        {
+            # File encoding is not in desired state
+            Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f $fileEncoding, $Encoding)
 
-        $desiredConfigurationMatch = $false
+            $desiredConfigurationMatch = $false
+        }
     }
 
     return $desiredConfigurationMatch
@@ -543,7 +592,7 @@ function Assert-ParametersValid
         $IgnoreValueCase = $false,
 
         [Parameter()]
-        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF32')]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
