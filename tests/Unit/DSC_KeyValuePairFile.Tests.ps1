@@ -127,9 +127,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -172,9 +172,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -222,9 +222,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -272,9 +272,9 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Get-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -324,11 +324,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -350,9 +350,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq "$script:testName=$script:testText")
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq "$script:testName=$script:testText")
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -367,11 +367,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -393,9 +393,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq "$script:testName=$script:testText")
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq "$script:testName=$script:testText")
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -411,11 +411,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -437,9 +437,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedTextContent)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContent)
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -455,12 +455,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -482,9 +482,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedSecretContent)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedSecretContent)
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -498,17 +498,17 @@ $($script:testAddedName)=$($script:testText)
 
                 Mock -CommandName Set-TextContent `
                     -ParameterFilter {
-                        ($path -eq $script:testTextFile) -and `
-                        ($value -eq $script:testFileExpectedTextContentAdded)
-                    }
+                    ($path -eq $script:testTextFile) -and `
+                    ($value -eq $script:testFileExpectedTextContentAdded)
+                }
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testAddedName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testAddedName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -530,9 +530,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedTextContentAdded)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContentAdded)
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -548,12 +548,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -IgnoreNameCase:$true `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -IgnoreNameCase:$true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -575,9 +575,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedTextContentUpper)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedTextContentUpper)
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -593,11 +593,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Ensure 'Absent' `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Encoding $script:fileEncodingParameters.Encoding `
+                            -Ensure 'Absent' `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -633,11 +633,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { Set-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Absent' `
-                        -IgnoreNameCase:$true `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Absent' `
+                            -IgnoreNameCase:$true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -659,9 +659,9 @@ $($script:testAddedName)=$($script:testText)
                     Assert-MockCalled -CommandName Set-TextContent `
                         -Scope Context `
                         -ParameterFilter {
-                            ($path -eq $script:testTextFile) -and `
-                            ($value -eq $script:testFileExpectedAbsentContent)
-                        } `
+                        ($path -eq $script:testTextFile) -and `
+                        ($value -eq $script:testFileExpectedAbsentContent)
+                    } `
                         -Exactly -Times 1
                 }
             }
@@ -681,11 +681,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -717,11 +717,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Absent' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Absent' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -753,11 +753,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -777,7 +777,7 @@ $($script:testAddedName)=$($script:testText)
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
                         -Scope Context `
-                        -Exactly -Times 0
+                        -Exactly -Times 1
                 }
             }
 
@@ -790,11 +790,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Absent' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Absent' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -814,7 +814,7 @@ $($script:testAddedName)=$($script:testText)
 
                     Assert-MockCalled -CommandName Get-FileEncoding `
                         -Scope Context `
-                        -Exactly -Times 0
+                        -Exactly -Times 1
                 }
             }
 
@@ -830,11 +830,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -871,11 +871,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Absent' `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Absent' `
+                            -Encoding $script:fileEncodingParameters.Encoding `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -912,11 +912,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Ensure 'Absent' `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Encoding $script:fileEncodingParameters.Encoding `
+                            -Ensure 'Absent' `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -953,11 +953,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -994,12 +994,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -Encoding $script:fileEncodingParameters.Encoding `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1036,12 +1036,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1078,12 +1078,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1120,13 +1120,13 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Type 'Secret' `
-                        -Secret $script:testSecretCredential `
-                        -Encoding $script:fileEncodingParameters.Encoding `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Type 'Secret' `
+                            -Secret $script:testSecretCredential `
+                            -Encoding $script:fileEncodingParameters.Encoding `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1163,12 +1163,12 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName.ToUpper() `
-                        -Ensure 'Present' `
-                        -Text $script:testText `
-                        -IgnoreNameCase:$true `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName.ToUpper() `
+                            -Ensure 'Present' `
+                            -Text $script:testText `
+                            -IgnoreNameCase:$true `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1205,11 +1205,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Present' `
-                        -Text $script:testText.ToUpper() `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Present' `
+                            -Text $script:testText.ToUpper() `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
@@ -1288,11 +1288,11 @@ $($script:testAddedName)=$($script:testText)
 
                 It 'Should not throw an exception' {
                     { $script:result = Test-TargetResource `
-                        -Path $script:testTextFile `
-                        -Name $script:testName `
-                        -Ensure 'Absent' `
-                        -Text $script:testText `
-                        -Verbose
+                            -Path $script:testTextFile `
+                            -Name $script:testName `
+                            -Ensure 'Absent' `
+                            -Text $script:testText `
+                            -Verbose
                     } | Should -Not -Throw
                 }
 
