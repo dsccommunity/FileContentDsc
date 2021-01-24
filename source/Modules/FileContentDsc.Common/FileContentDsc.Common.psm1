@@ -177,11 +177,15 @@ function Get-FileEncoding
     # The parameter for reading a file as a byte stream are different between PSv6 and later and earlier.
     $ByteParam = if ($PSVersionTable.PSVersion.Major -ge 6)
     {
-        @{AsByteStream = $true }
+        @{
+            AsByteStream = $true
+        }
     }
     else
     {
-        @{Encoding = 'byte' }
+        @{
+            Encoding = 'byte'
+        }
     }
 
     [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 4 -TotalCount 4 -Path $Path
