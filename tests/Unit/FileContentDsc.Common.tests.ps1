@@ -57,23 +57,35 @@ InModuleScope $script:subModuleName {
     }
 
     Describe 'FileContentDsc.Common\Get-FileEncoding' {
-        $testTextFile = "TestDrive:\TestFile.txt"
-        $value = 'testText'
+        $testTextFile = "$TestDrive\TestFile.txt"
         $testCases = @(
             @{
                 encoding = 'ASCII'
+                value    = [byte[]](97, 98, 99)
             },
             @{
                 encoding = 'BigEndianUnicode'
+                value    = [byte[]](254, 255, 0, 97, 0, 98, 0, 99)
             },
             @{
                 encoding = 'BigEndianUTF32'
+                value    = [byte[]](0, 0, 254, 255, 0, 0, 0, 97, 0, 0, 0, 98, 0, 0, 0, 99)
             },
             @{
                 encoding = 'UTF8'
+                value    = [byte[]](239, 187, 191, 97, 98, 99)
+            },
+            @{
+                encoding = 'UTF8BOM'
+                value    = [byte[]](239, 187, 191, 97, 98, 99)
+            },
+            @{
+                encoding = 'UTF8NoBOM'
+                value    = [byte[]](97, 98, 99, 226, 157, 164)
             },
             @{
                 encoding = 'UTF32'
+                value    = [byte[]](255, 254, 0, 0, 97, 0, 0, 0, 98, 0, 0, 0, 99, 0, 0, 0)
             }
         )
 
@@ -83,11 +95,24 @@ InModuleScope $script:subModuleName {
                 (
                     [Parameter()]
                     [System.String]
-                    $Encoding
+                    $Encoding,
+
+                    [Parameter()]
+                    [byte[]]
+                    $value
                 )
 
-                Set-Content $testTextFile -Value $value -Encoding $Encoding
-                Get-FileEncoding -Path $testTextFile | Should -Be $Encoding
+                # Create a test file in byte format so that it does not depend on the PowerShell version.
+                [SYstem.IO.File]::WriteAllBytes($testTextFile, $value)
+
+                if ($Encoding -eq 'UTF8')
+                {
+                    Get-FileEncoding -Path $testTextFile | Should -Be 'UTF8BOM'
+                }
+                else
+                {
+                    Get-FileEncoding -Path $testTextFile | Should -Be $Encoding
+                }
             }
         }
     }

@@ -174,11 +174,20 @@ function Get-FileEncoding
         $Path
     )
 
-    [System.Byte[]] $byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
+    # The parameter for reading a file as a byte stream are different between PSv6 and later and earlier.
+    $ByteParam = if ($PSVersionTable.PSVersion.Major -ge 6)
+    {
+        @{AsByteStream = $true }
+    }
+    else
+    {
+        @{Encoding = 'byte' }
+    }
 
+    [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 4 -TotalCount 4 -Path $Path
     if ($byte[0] -eq 0xef -and $byte[1] -eq 0xbb -and $byte[2] -eq 0xbf)
     {
-        return 'UTF8'
+        return 'UTF8BOM'
     }
     elseif ($byte[0] -eq 0xff -and $byte[1] -eq 0xfe)
     {
@@ -194,7 +203,18 @@ function Get-FileEncoding
     }
     else
     {
-        return 'ASCII'
+        # Read all bytes for guessing encoding.
+        [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 0 -Path $Path
+
+        # If a text file includes code after 0x7f, which should not exist in ASCII, it is determined as UTF8NoBOM.
+        if ($byte -gt 0x7f)
+        {
+            return 'UTF8NoBOM'
+        }
+        else
+        {
+            return 'ASCII'
+        }
     }
 }
 
