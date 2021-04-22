@@ -5,6 +5,7 @@
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/FileContentDsc/31/main)](https://dsccommunity.visualstudio.com/FileContentDsc/_test/analytics?definitionId=31&contextType=build)
 [![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/FileContentDsc?label=FileContentDsc%20Preview)](https://www.powershellgallery.com/packages/FileContentDsc/)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/FileContentDsc?label=FileContentDsc)](https://www.powershellgallery.com/packages/FileContentDsc/)
+[![codecov](https://codecov.io/gh/dsccommunity/FileContentDsc/branch/main/graph/badge.svg)](https://codecov.io/gh/dsccommunity/FileContentDsc)
 
 ## Code of Conduct
 

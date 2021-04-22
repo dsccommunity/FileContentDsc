@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatically publish documentation to GitHub Wiki - Fixes [Issue #51](https://github.com/dsccommunity/FileContentDsc/issues/51).
 - Renamed `master` branch to `main` - Fixes [Issue #53](https://github.com/dsccommunity/FileContentDsc/issues/53).
 - Updated `GitVersion.yml` to latest pattern - Fixes [Issue #57](https://github.com/dsccommunity/FileContentDsc/issues/57).
+- Updated build to use `Sampler.GitHubTasks` - Fixes [Issue #60](https://github.com/dsccommunity/FileContentDsc/issues/60).
+- Added support for publishing code coverage to `CodeCov.io` and
+  Azure Pipelines - Fixes [Issue #61](https://github.com/dsccommunity/FileContentDsc/issues/61).
 
 ## [1.3.0.151] - 2019-07-20
 
