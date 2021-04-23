@@ -112,6 +112,13 @@ stages:
               testRunTitle: 'Unit (Windows Server 2016)'
             condition: succeededOrFailed()
 
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Test Artifact'
+            inputs:
+              targetPath: '$(buildFolderName)/$(testResultFolderName)/'
+              artifactName: $(testArtifactName)
+              parallel: true
+
       - job: Code_Coverage
         displayName: 'Publish Code Coverage'
         dependsOn: Test_Unit_2016
