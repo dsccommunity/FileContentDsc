@@ -27,6 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated build to use `Sampler.GitHubTasks` - Fixes [Issue #60](https://github.com/dsccommunity/FileContentDsc/issues/60).
 - Added support for publishing code coverage to `CodeCov.io` and
   Azure Pipelines - Fixes [Issue #61](https://github.com/dsccommunity/FileContentDsc/issues/61).
+- Updated .github issue templates to standard - Fixes [Issue #64](https://github.com/dsccommunity/FileContentDsc/issues/64).
+- Added Create_ChangeLog_GitHub_PR task to publish stage of build pipeline.
+- Added SECURITY.md.
+- Updated pipeline Deploy_Module anb Code_Coverage jobs to use ubuntu-latest
+  images - Fixes [Issue #63](https://github.com/dsccommunity/FileContentDsc/issues/63).
+- Updated pipeline unit tests and integration tests to use Windows Server 2019 and
+  Windows Server 2022 images - Fixes [Issue #63](https://github.com/dsccommunity/FileContentDsc/issues/63).
+
+### Fixed
+
+- Fixed pipeline by replacing the GitVersion task in the `azure-pipelines.yml`
+  with a script.
 
 ## [1.3.0.151] - 2019-07-20
 
