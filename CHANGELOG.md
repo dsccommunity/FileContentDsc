@@ -34,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   images - Fixes [Issue #63](https://github.com/dsccommunity/FileContentDsc/issues/63).
 - Updated pipeline unit tests and integration tests to use Windows Server 2019 and
   Windows Server 2022 images - Fixes [Issue #63](https://github.com/dsccommunity/FileContentDsc/issues/63).
+- CI Pipeline
+  - Updated pipeline files to match current DSC Community patterns - fixes [Issue #71](https://github.com/dsccommunity/FileContentDsc/issues/71).
+  - Updated HQRM and build steps to use windows-latest image.
 
 ### Fixed
 
