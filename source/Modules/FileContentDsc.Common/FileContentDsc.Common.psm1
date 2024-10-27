@@ -5,7 +5,7 @@ Import-Module -Name (Join-Path -Path $modulePath -ChildPath 'DscResource.Common'
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 # Add the types for reading/writing INI files
-Add-Type -TypeDefinition @"
+Add-Type -TypeDefinition @'
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Text;
@@ -36,7 +36,7 @@ Add-Type -TypeDefinition @"
             return sb.ToString();
         }
     }
-"@
+'@
 
 <#
     .SYNOPSIS
@@ -174,11 +174,24 @@ function Get-FileEncoding
         $Path
     )
 
-    [System.Byte[]] $byte = Get-Content -Encoding byte -ReadCount 4 -TotalCount 4 -Path $Path
+    # The parameter for reading a file as a byte stream are different between PSv6 and later and earlier.
+    $ByteParam = if ($PSVersionTable.PSVersion.Major -ge 6)
+    {
+        @{
+            AsByteStream = $true
+        }
+    }
+    else
+    {
+        @{
+            Encoding = 'byte'
+        }
+    }
 
+    [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 4 -TotalCount 4 -Path $Path
     if ($byte[0] -eq 0xef -and $byte[1] -eq 0xbb -and $byte[2] -eq 0xbf)
     {
-        return 'UTF8'
+        return 'UTF8BOM'
     }
     elseif ($byte[0] -eq 0xff -and $byte[1] -eq 0xfe)
     {
@@ -194,13 +207,187 @@ function Get-FileEncoding
     }
     else
     {
-        return 'ASCII'
+        # Read all bytes for guessing encoding.
+        [System.Byte[]] $byte = Get-Content @ByteParam -ReadCount 0 -Path $Path
+
+        # If a text file includes code after 0x7f, which should not exist in ASCII, it is determined as UTF8NoBOM.
+        if ($byte -gt 0x7f)
+        {
+            return 'UTF8NoBOM'
+        }
+        else
+        {
+            return 'ASCII'
+        }
     }
+}
+
+<#
+    .SYNOPSIS
+        Gets file content with specified file encoding.
+
+    .DESCRIPTION
+        The function Get-FileContent function reads the contents of a text file with specified encoding.
+
+    .EXAMPLE
+        Get-FileContent -Path C:\text.txt -Encoding UTF8
+        This command returns the contents of a text file read as UTF8 encoded.
+#>
+function Get-FileContent
+{
+    [CmdletBinding()]
+    [OutputType([System.String])]
+    param
+    (
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [System.String]
+        $Path,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [AllowEmptyString()]
+        [System.String]
+        $Encoding
+    )
+
+    $GetContentParam = @{
+        Path = $Path
+        Raw  = $true
+    }
+
+    if ($Encoding -like 'UTF8*')
+    {
+        $GetContentParam.Encoding = 'UTF8'
+    }
+    elseif (-not [string]::IsNullOrEmpty($Encoding))
+    {
+        $GetContentParam.Encoding = $Encoding
+    }
+
+    Get-Content @GetContentParam
+}
+
+<#
+    .SYNOPSIS
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .DESCRIPTION
+        Writes or replaces the content in an item with new content.
+        This is an enhanced version of the Set-Content that allows UTF8BOM and UTF8NoBOM encodings in PS v5.1 and earlier.
+
+    .EXAMPLE
+        Set-TextContent -Path 'C:\hello.txt' -Value 'Hello World' -Encoding UTF8NoBOM
+        This command creates a text file encoded in UTF-8 without BOM (Byte Order Mark).
+#>
+function Set-TextContent
+{
+    [CmdletBinding()]
+    [OutputType([void])]
+    param
+    (
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [System.String[]]
+        $Path,
+
+        [Parameter(Position = 1, Mandatory = $true, ValueFromPipelineByPropertyName = $true, ValueFromPipeline = $true)]
+        [Object[]]
+        $Value,
+
+        [Parameter()]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
+        [System.String]
+        $Encoding,
+
+        [Parameter()]
+        [switch]
+        $NoNewLine,
+
+        [Parameter()]
+        [switch]
+        $Force
+    )
+
+    $setContentParams = @{
+        Path      = $Path
+        Force     = $Force
+        NoNewLine = $NoNewLine
+    }
+
+    $EncodingParam = $null
+    if ($PSBoundParameters.ContainsKey('Encoding'))
+    {
+        # PS v6+ can handle all Encoding parameters natively
+        if ($PSVersionTable.PSVersion.Major -ge 6)
+        {
+            $EncodingParam = $Encoding
+        }
+        else
+        {
+            if ($Encoding -eq 'UTF8BOM')
+            {
+                $EncodingParam = 'utf8'
+            }
+            # PS v5.1 and earlier can not handle UTF8 without BOM
+            # We need to convert Value to Bytes.
+            elseif ($Encoding -eq 'UTF8NoBOM')
+            {
+                $EncodingParam = 'Byte'
+                $Value = [System.Text.Encoding]::UTF8.GetBytes($Value)
+            }
+            else
+            {
+                $EncodingParam = $Encoding
+            }
+        }
+    }
+
+    if ($null -ne $EncodingParam)
+    {
+        $setContentParams.Add('Encoding', $EncodingParam)
+    }
+
+    $setContentParams.Add('Value', $Value)
+
+    Set-Content @setContentParams
+}
+
+<#
+    .SYNOPSIS
+        Tests if the file encoding matches the expected value.
+
+    .DESCRIPTION
+        Tests if the file encoding matches the expected value.
+        Note: This command returns a permissive test result for the presence or absence of a UTF8 BOM.
+        This means that if you expect "UTF8", the test will succeed with or without a BOM.
+
+    .EXAMPLE
+        Test-FileEncodingEqual -FileEncoding 'UTF8BOM' -ExpectedEncoding 'UTF8'
+#>
+function Test-FileEncodingEqual
+{
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $FileEncoding,
+
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ExpectedEncoding
+    )
+
+    ($ExpectedEncoding -eq $FileEncoding) -or `
+    ($ExpectedEncoding -eq 'UTF8' -and $FileEncoding -like 'UTF8*') -or `
+    ($ExpectedEncoding -eq 'UTF8NoBOM' -and $FileEncoding -eq 'ASCII')
 }
 
 Export-ModuleMember -Function @(
     'Get-TextEolCharacter',
     'Set-IniSettingFileValue',
     'Get-IniSettingFileValue',
-    'Get-FileEncoding'
+    'Get-FileEncoding',
+    'Get-FileContent',
+    'Set-TextContent',
+    'Test-FileEncodingEqual'
 )

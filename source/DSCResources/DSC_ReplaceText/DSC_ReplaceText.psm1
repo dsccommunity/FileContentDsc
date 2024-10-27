@@ -41,11 +41,11 @@ function Get-TargetResource
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw
-    $fileEncoding = Get-FileEncoding $Path
+    $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+    $fileContent = Get-FileContent -Path $Path -Encoding $fileEncoding
 
     Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
-        $Path, $Search)
+            $Path, $Search)
 
     $text = ''
 
@@ -56,14 +56,14 @@ function Get-TargetResource
     {
         # No matches found - already in state
         Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
-            $Path, $Search)
+                $Path, $Search)
     }
     else
     {
         $text = ($results.Value -join ',')
 
         Write-Verbose -Message ($script:localizedData.StringMatchFoundMessage -f `
-            $Path, $Search, $text)
+                $Path, $Search, $text)
     } # if
 
     return @{
@@ -136,15 +136,15 @@ function Set-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
 
     Assert-ParametersValid @PSBoundParameters
 
-    $fileContent = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
-    $fileEncoding = Get-FileEncoding $Path
+    $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+    $fileContent = Get-FileContent -Path $Path -Encoding $fileEncoding -ErrorAction SilentlyContinue
 
     $fileProperties = @{
         Path      = $Path
@@ -155,25 +155,17 @@ function Set-TargetResource
     if ($Type -eq 'Secret')
     {
         Write-Verbose -Message ($script:localizedData.StringReplaceSecretMessage -f `
-            $Path)
+                $Path)
 
         $Text = $Secret.GetNetworkCredential().Password
     }
     elseif ($PSBoundParameters.ContainsKey('Encoding'))
     {
-        if ($Encoding -eq $fileEncoding)
-        {
-            Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
-            $Path, $Text)
-        }
-        else
-        {
-            Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
-            $Path, $Text)
+        Write-Verbose -Message ($script:localizedData.StringReplaceTextMessage -f `
+                $Path, $Text)
 
-            # Add encoding parameter and value to the hashtable
-            $fileProperties.Add('Encoding', $Encoding)
-        }
+        # Add encoding parameter and value to the hashtable
+        $fileProperties.Add('Encoding', $Encoding)
     }
 
     if ($null -eq $fileContent)
@@ -194,7 +186,7 @@ function Set-TargetResource
 
     $fileProperties.Add('Value', $fileContent)
 
-    Set-Content @fileProperties
+    Set-TextContent @fileProperties
 }
 
 <#
@@ -259,7 +251,7 @@ function Test-TargetResource
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )
@@ -272,11 +264,11 @@ function Test-TargetResource
         return $false
     }
 
-    $fileContent = Get-Content -Path $Path -Raw
-    $fileEncoding = Get-FileEncoding $Path
+    $fileEncoding = Get-FileEncoding $Path -ErrorAction SilentlyContinue
+    $fileContent = Get-FileContent -Path $Path -Encoding $fileEncoding
 
     Write-Verbose -Message ($script:localizedData.SearchForTextMessage -f `
-        $Path, $Search)
+            $Path, $Search)
 
     # Search the file content for any matches
     $results = [regex]::Matches($fileContent, $Search)
@@ -293,11 +285,11 @@ function Test-TargetResource
         }
         if ($PSBoundParameters.ContainsKey('Encoding'))
         {
-            if ($Encoding -eq $fileEncoding)
+            if (Test-FileEncodingEqual -FileEncoding $fileEncoding -ExpectedEncoding $Encoding)
             {
                 # No matches found and encoding is in desired state
                 Write-Verbose -Message ($script:localizedData.StringNotFoundMessage -f `
-                $Path, $Search)
+                        $Path, $Search)
 
                 return $true
             }
@@ -305,7 +297,7 @@ function Test-TargetResource
             {
                 # No matches found but encoding is not in desired state
                 Write-Verbose -Message ($script:localizedData.FileEncodingNotInDesiredState -f `
-                $fileEncoding, $Encoding)
+                        $fileEncoding, $Encoding)
 
                 return $false
             }
@@ -331,12 +323,12 @@ function Test-TargetResource
     if ($desiredConfigurationMatch)
     {
         Write-Verbose -Message ($script:localizedData.StringNoReplacementMessage -f `
-            $Path, $Search)
+                $Path, $Search)
     }
     else
     {
         Write-Verbose -Message ($script:localizedData.StringReplacementRequiredMessage -f `
-            $Path, $Search)
+                $Path, $Search)
     } # if
 
     return $desiredConfigurationMatch
@@ -401,7 +393,7 @@ function Assert-ParametersValid
         $AllowAppend = $false,
 
         [Parameter()]
-        [ValidateSet("ASCII", "BigEndianUnicode", "BigEndianUTF32", "UTF8", "UTF32")]
+        [ValidateSet('ASCII', 'BigEndianUnicode', 'BigEndianUTF32', 'UTF8', 'UTF8BOM', 'UTF8NoBOM', 'UTF32')]
         [System.String]
         $Encoding
     )

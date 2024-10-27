@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coverage - Fixes [Issue #50](https://github.com/dsccommunity/FileContentDsc/issues/50).
 - Automatically publish documentation to GitHub Wiki - Fixes [Issue #51](https://github.com/dsccommunity/FileContentDsc/issues/51).
 - Renamed `master` branch to `main` - Fixes [Issue #53](https://github.com/dsccommunity/FileContentDsc/issues/53).
+- Added `UTF8BOM` and `UTF8NoBOM` options to the Encoding parameter of the KeyValuePairFile and ReplaceText - Fixes [Issue #56](https://github.com/dsccommunity/FileContentDsc/issues/56).
 - Updated `GitVersion.yml` to latest pattern - Fixes [Issue #57](https://github.com/dsccommunity/FileContentDsc/issues/57).
 - Updated build to use `Sampler.GitHubTasks` - Fixes [Issue #60](https://github.com/dsccommunity/FileContentDsc/issues/60).
 - Added support for publishing code coverage to `CodeCov.io` and
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI Pipeline
   - Updated pipeline files to match current DSC Community patterns - fixes [Issue #71](https://github.com/dsccommunity/FileContentDsc/issues/71).
   - Updated HQRM and build steps to use windows-latest image.
+  - Keep GitVersion.Tool as v5
 
 ### Fixed
 
