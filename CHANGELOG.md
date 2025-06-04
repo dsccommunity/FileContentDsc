@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI Pipeline
   - Updated pipeline files to match current DSC Community patterns - fixes [Issue #71](https://github.com/dsccommunity/FileContentDsc/issues/71).
   - Updated HQRM and build steps to use windows-latest image.
+  - Removed `windows-2019` before deprecation fixes [#76](https://github.com/dsccommunity/FileContentDsc/issues/76).
+  - Added `windows-2025` images.
 
 ### Fixed
 
